@@ -1,13 +1,13 @@
-package com.dnd.schedule;
+package com.dnd.tikitaka;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ScheduleApplication {
+public class TikitakaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ScheduleApplication.class, args);
+        SpringApplication.run(TikitakaApplication.class, args);
     }
 
 }
