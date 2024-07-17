@@ -1,10 +1,10 @@
-package com.dnd.schedule;
+package com.dnd.tikitaka;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ScheduleApplicationTests {
+class TikitakaApplicationTests {
 
     @Test
     void contextLoads() {
