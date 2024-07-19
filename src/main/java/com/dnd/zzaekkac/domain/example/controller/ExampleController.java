@@ -1,8 +1,9 @@
-package com.dnd.tikitaka.domain.example.controller;
+package com.dnd.zzaekkac.domain.example.controller;
 
-import com.dnd.tikitaka.domain.example.dto.request.ExampleCreateRequestDto;
-import com.dnd.tikitaka.domain.example.dto.response.ExampleResponse;
-import com.dnd.tikitaka.domain.example.service.ExampleService;
+import com.dnd.zzaekkac.domain.example.dto.request.ExampleCreateRequestDto;
+import com.dnd.zzaekkac.domain.example.dto.request.ExampleUpdateRequestDto;
+import com.dnd.zzaekkac.domain.example.dto.response.ExampleResponse;
+import com.dnd.zzaekkac.domain.example.service.ExampleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,6 @@ public class ExampleController {
      */
     @GetMapping
     public ResponseEntity<List<ExampleResponse>> getList() {
-        //TODO: Paging 처리에 대해 고민해보기
         List<ExampleResponse> responseList = exampleService.getList();
         return ResponseEntity.status(HttpStatus.OK).body(responseList);
     }
@@ -47,8 +47,33 @@ public class ExampleController {
     public ResponseEntity<Void> save(@Valid @RequestBody ExampleCreateRequestDto request) {
         exampleService.save(request);
 
-        // TODO: 응답 상태 코드 -> 201, 200?
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * Example 수정 메서드.
+     *
+     * @param id      Example ID
+     * @param request ExampleUpdateRequestDto
+     * @return status : 200 (OK)
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@PathVariable("id") Long id,
+                                       @Valid @RequestBody ExampleUpdateRequestDto request) {
+        exampleService.update(id, request);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * Example 삭제 메서드.
+     *
+     * @param id Example ID
+     * @return status : 200 (OK)
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        exampleService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

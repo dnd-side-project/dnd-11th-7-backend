@@ -1,4 +1,4 @@
-package com.dnd.tikitaka.domain.example.entity;
+package com.dnd.zzaekkac.domain.example.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,6 +30,11 @@ public class Example {
 
     @Builder
     public Example(String name, String content) {
+        this.name = name;
+        this.content = content;
+    }
+
+    public void update(String name, String content) {
         this.name = name;
         this.content = content;
     }

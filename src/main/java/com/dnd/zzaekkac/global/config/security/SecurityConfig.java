@@ -1,4 +1,4 @@
-package com.dnd.tikitaka.global.config.security;
+package com.dnd.zzaekkac.global.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

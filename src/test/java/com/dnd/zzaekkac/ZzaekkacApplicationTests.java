@@ -1,10 +1,10 @@
-package com.dnd.tikitaka;
+package com.dnd.zzaekkac;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TikitakaApplicationTests {
+class ZzaekkacApplicationTests {
 
     @Test
     void contextLoads() {
