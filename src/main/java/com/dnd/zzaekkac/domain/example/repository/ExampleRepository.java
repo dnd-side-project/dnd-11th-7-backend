@@ -1,6 +1,6 @@
-package com.dnd.tikitaka.domain.example.repository;
+package com.dnd.zzaekkac.domain.example.repository;
 
-import com.dnd.tikitaka.domain.example.entity.Example;
+import com.dnd.zzaekkac.domain.example.entity.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

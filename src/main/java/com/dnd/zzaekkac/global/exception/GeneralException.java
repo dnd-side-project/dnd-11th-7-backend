@@ -1,4 +1,4 @@
-package com.dnd.tikitaka.global.exception;
+package com.dnd.zzaekkac.global.exception;
 
 import lombok.Getter;
 

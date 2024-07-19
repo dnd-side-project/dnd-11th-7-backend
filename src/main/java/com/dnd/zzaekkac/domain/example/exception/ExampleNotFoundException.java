@@ -1,6 +1,6 @@
-package com.dnd.tikitaka.domain.example.exception;
+package com.dnd.zzaekkac.domain.example.exception;
 
-import com.dnd.tikitaka.global.exception.GeneralException;
+import com.dnd.zzaekkac.global.exception.GeneralException;
 
 /**
  * Example NotFound 예외.

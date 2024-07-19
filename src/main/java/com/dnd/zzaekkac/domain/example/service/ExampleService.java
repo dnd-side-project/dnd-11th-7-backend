@@ -1,9 +1,11 @@
-package com.dnd.tikitaka.domain.example.service;
+package com.dnd.zzaekkac.domain.example.service;
 
-import com.dnd.tikitaka.domain.example.dto.request.ExampleCreateRequestDto;
-import com.dnd.tikitaka.domain.example.dto.response.ExampleResponse;
-import com.dnd.tikitaka.domain.example.entity.Example;
-import com.dnd.tikitaka.domain.example.repository.ExampleRepository;
+import com.dnd.zzaekkac.domain.example.dto.request.ExampleCreateRequestDto;
+import com.dnd.zzaekkac.domain.example.dto.request.ExampleUpdateRequestDto;
+import com.dnd.zzaekkac.domain.example.dto.response.ExampleResponse;
+import com.dnd.zzaekkac.domain.example.entity.Example;
+import com.dnd.zzaekkac.domain.example.exception.ExampleNotFoundException;
+import com.dnd.zzaekkac.domain.example.repository.ExampleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,23 +34,13 @@ public class ExampleService {
     @Transactional(readOnly = true)
     public List<ExampleResponse> getList() {
 
-        // TODO : DTO 변환을 어떻게 할 것인가?
-
-        // 1번 방법 - 생성자에 Entity를 넣어서 변환하자
-        List<ExampleResponse> constructor = exampleRepository.findAll().stream()
-                .map(ExampleResponse::new)
-                .collect(Collectors.toList());
-
-        // 2번 방법 - Builder를 사용해서 변환하자
-        List<ExampleResponse> builder = exampleRepository.findAll().stream()
+        return exampleRepository.findAll().stream()
                 .map(example -> ExampleResponse.builder()
                         .id(example.getId())
                         .name(example.getName())
                         .content(example.getContent())
                         .build())
                 .collect(Collectors.toList());
-
-        return constructor;
     }
 
     /**
@@ -65,7 +57,35 @@ public class ExampleService {
                 .build();
 
         exampleRepository.save(example);
+    }
 
-        // TODO: return -> ID 값을 넘겨줄 것인가?
+    /**
+     * Example 수정 메서드.
+     *
+     * @param id      Example ID
+     * @param request ExampleUpdateRequestDto
+     */
+    @Transactional
+    public void update(Long id, ExampleUpdateRequestDto request) {
+
+        Example example = exampleRepository.findById(id)
+                .orElseThrow(ExampleNotFoundException::new);
+
+        // dirty checking 사용하여 update
+        example.update(request.getName(), request.getContent());
+    }
+
+    /**
+     * Example 삭제 메서드.
+     * @param id Example ID
+     */
+    @Transactional
+    public void delete(Long id) {
+
+        if (!exampleRepository.existsById(id)) {
+            throw new ExampleNotFoundException();
+        }
+
+        exampleRepository.deleteById(id);
     }
 }
