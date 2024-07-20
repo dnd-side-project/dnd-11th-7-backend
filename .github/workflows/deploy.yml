@@ -25,7 +25,9 @@ jobs:
           distribution: 'temurin'
 
       - name: application.properties 파일 생성
-        run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
 
       # 테스트 및 빌드 진행 (gradle)
       - name: Build with Gradle
