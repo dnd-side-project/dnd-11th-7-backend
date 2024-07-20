@@ -21,6 +21,7 @@ public class AuthController {
     /**
      * 로그인/가입 성공 시 메인으로 리다이렉트 -> 추후 수정 필요
      *
+     * <li>로그인 uri : http://localhost:8080/api/v1/auth/oauth2/kakao</li>
      * <li>OAuth2SuccessHandler를 통해 성공하여 GetMapping의 링크로 리다이렉트</li>
      * <li>해당 링크로 이동 시 메인 페이지로 이동</li>
      * <li>token과 만료시간(지금은 3600으로 잡음)을 사용할 수도 있을 것</li>

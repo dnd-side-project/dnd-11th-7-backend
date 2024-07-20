@@ -53,6 +53,7 @@ public class SecurityConfig {
      * <li>httpBasic 비활성화</li>
      * <li>세션 비활성화</li>
      * <li>OAuth2 로그인 설정 : 로그인 url, 리다이렉트 url, 유저 서비스, 성공 시 핸들러</li>
+     * <li>로그인 uri : http://localhost:8080/api/v1/auth/oauth2/kakao</li>
      * <li>인증 실패 시 메시지 임시 설정 -> 추후 변경 필요</li>
      * <li>필터 체인에 JWT Authentication Filter 추가</li>
      */
