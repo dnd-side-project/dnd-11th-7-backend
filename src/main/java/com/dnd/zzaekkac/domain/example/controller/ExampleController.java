@@ -46,7 +46,6 @@ public class ExampleController {
     @PostMapping
     public ResponseEntity<Void> save(@Valid @RequestBody ExampleCreateRequestDto request) {
         exampleService.save(request);
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
