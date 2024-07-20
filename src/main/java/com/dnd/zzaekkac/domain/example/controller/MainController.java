@@ -15,6 +15,6 @@ public class MainController {
 
     @GetMapping("/")
     public String main() {
-        return "Hello, World";
+        return "CI/CD 테스트용 메인 페이지입니다.";
     }
 }
