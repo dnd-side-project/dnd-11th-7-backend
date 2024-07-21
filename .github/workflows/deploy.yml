@@ -31,7 +31,7 @@ jobs:
 
       # 테스트 및 빌드 진행 (gradle)
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew clean build
 
       # AWS Credential 설정
       - name: AWS Credentials
