@@ -44,7 +44,7 @@ public class MemberService extends DefaultOAuth2UserService {
 
         Member member = new Member();
 
-        if(oauth2ClientName.equals("kakao")){
+        if("kakao".equals(oauth2ClientName)){
             member = Member.builder()
                     .memberNickname(properties.get("nickname").toString())
                     .kakaoId(Long.parseLong(attributes.get("id").toString()))

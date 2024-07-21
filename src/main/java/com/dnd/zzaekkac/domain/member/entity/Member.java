@@ -16,14 +16,13 @@ import java.util.Map;
  * 회원 엔티티입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 20.
+ * @version 2024. 07. 21.
  */
 
 @Entity
 @Getter
 @SQLDelete(sql = "update `Member` set `is_delete` = true where `member_id`=?")
 @SQLRestriction("is_delete = FALSE")
-@Table(name="Member")
 @NoArgsConstructor
 public class Member implements OAuth2User {
 

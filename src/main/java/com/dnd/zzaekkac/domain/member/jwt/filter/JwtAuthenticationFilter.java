@@ -28,7 +28,7 @@ import java.util.List;
  * 권한과 인증 방식을 검사하는 필터입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 20.
+ * @version 2024. 07. 21.
  */
 
 @Component
@@ -50,33 +50,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String token = parseBearerToken(request);
-            if(token == null){ // Bearer 인증 방식이 아니거나 빈 값일 경우 진행하지 말고 다음 필터로 바로 넘김
-                filterChain.doFilter(request, response);
-                return;
-            }
-            String kakaoId = jwtProvider.validate(token);
-            if(kakaoId == null){ // 검증 실패 시 다음 필터로 바로 넘김
-                filterChain.doFilter(request, response);
-                return;
-            }
-            Member member = memberRepository.findByKakaoId(Long.parseLong(kakaoId));
-            Role role = member.getRole(); // ROLE_USER, ROLE_ADMIN
-
-            // 예시 : ROLE_MASTER, ROLE_DEVELOPER
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(role.toString()));
-
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(kakaoId, null, authorities); // pwd는 토큰에 추가X -> null
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            securityContext.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(securityContext);
-        } catch (Exception e){
-            e.printStackTrace();
+        String token = parseBearerToken(request);
+        if(token == null){ // Bearer 인증 방식이 아니거나 빈 값일 경우 진행하지 말고 다음 필터로 바로 넘김
+            filterChain.doFilter(request, response);
+            return;
         }
+        String kakaoId = jwtProvider.validate(token);
+        if(kakaoId == null){ // 검증 실패 시 다음 필터로 바로 넘김
+            filterChain.doFilter(request, response);
+            return;
+        }
+        Member member = memberRepository.findByKakaoId(Long.parseLong(kakaoId));
+        Role role = member.getRole(); // ROLE_USER, ROLE_ADMIN
+
+        // 예시 : ROLE_MASTER, ROLE_DEVELOPER
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.toString()));
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(kakaoId, null, authorities); // pwd는 토큰에 추가X -> null
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+        securityContext.setAuthentication(authenticationToken);
+        SecurityContextHolder.setContext(securityContext);
 
         filterChain.doFilter(request, response);
     }
