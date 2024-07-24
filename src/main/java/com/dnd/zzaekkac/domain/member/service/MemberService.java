@@ -42,16 +42,27 @@ public class MemberService extends DefaultOAuth2UserService {
         Map<String, Object> attributes = oAuth2User.getAttributes();
         Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
 
-        Member member = new Member();
-
-        if("kakao".equals(oauth2ClientName)){
-            member = Member.builder()
-                    .memberNickname(properties.get("nickname").toString())
-                    .kakaoId(Long.parseLong(attributes.get("id").toString()))
-                    .memberProfile(properties.get("profile_image").toString())
-                    .build();
+        long kakaoId = Long.parseLong(attributes.get("id").toString());
+        String nickname = properties.get("nickname").toString();
+        String profile = properties.get("profile_image").toString();
+        if(memberRepository.existsByKakaoId(kakaoId)){
+            Member member = memberRepository.findByKakaoId(kakaoId);
+            member.update(nickname, profile);
+            memberRepository.save(member);
+            return member;
         }
-        memberRepository.save(member);
-        return member;
+        else{
+            Member member = new Member();
+
+            if("kakao".equals(oauth2ClientName)){
+                member = Member.builder()
+                        .memberNickname(nickname)
+                        .kakaoId(kakaoId)
+                        .memberProfile(profile)
+                        .build();
+            }
+            memberRepository.save(member);
+            return member;
+        }
     }
 }
