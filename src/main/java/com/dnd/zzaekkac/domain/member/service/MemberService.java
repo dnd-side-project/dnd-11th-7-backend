@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  * Member의 Service입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 20.
+ * @version 2024. 07. 24.
  */
 
 @Service
@@ -35,6 +36,7 @@ public class MemberService extends DefaultOAuth2UserService {
      */
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String oauth2ClientName = userRequest.getClientRegistration().getClientName();

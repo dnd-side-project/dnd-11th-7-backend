@@ -17,7 +17,7 @@ import java.util.Date;
  * JWT를 만들고 검증하는 Provider입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 20.
+ * @version 2024. 07. 24.
  */
 
 @Component
@@ -26,26 +26,43 @@ public class JwtProvider {
     private String secretKey;
 
     /**
-     * JWT를 만드는 메소드
+     * JWT access Token을 만드는 메소드
      *
      * <li>특이 사항으로, JWT를 member의 기본키로 생성하는 것이 아님.</li>
      * <li>kakaoId로 생성함</li>
+     * <li>만료시간 30분</li>
      *
      * @param kakaoId String
      * @return JWT
      */
 
-    public String create(String kakaoId){
-        // 만료 시간
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
-
-        // 비밀 키 만들기
+    public String createAccessToken(String kakaoId) {
+        Date expiredDate = Date.from(Instant.now().plus(30, ChronoUnit.MINUTES));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-
-        // JWT 만들기
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
-                .setSubject(kakaoId).setIssuedAt(new Date()).setExpiration(expiredDate)
+                .setSubject(kakaoId)
+                .setIssuedAt(new Date())
+                .setExpiration(expiredDate)
+                .compact();
+    }
+
+    /**
+     * JWT refresh Token을 만드는 메소드
+     *
+     * <li>로그아웃에 사용</li>
+     * <li>만료시간 1주일</li>
+     *
+     * @return JWT
+     */
+
+    public String createRefreshToken() {
+        Date expiredDate = Date.from(Instant.now().plus(7, ChronoUnit.DAYS));
+        Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        return Jwts.builder()
+                .signWith(key, SignatureAlgorithm.HS256)
+                .setIssuedAt(new Date())
+                .setExpiration(expiredDate)
                 .compact();
     }
 
@@ -56,17 +73,17 @@ public class JwtProvider {
      * @return subject
      */
 
-    public String validate(String jwt){
+    public String validate(String jwt) {
         String subject = null;
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        try{
+        try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(jwt)
                     .getBody();
             subject = claims.getSubject();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -16,7 +16,7 @@ import java.util.Map;
  * 회원 엔티티입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 21.
+ * @version 2024. 07. 24.
  */
 
 @Entity

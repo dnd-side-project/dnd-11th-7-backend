@@ -292,4 +292,5 @@ gradle-app.setting
 # idea 폴더
 /.idea/
 
-application.properties
+# properties
+*.properties
