@@ -1,6 +1,7 @@
 package com.dnd.jjakkak.domain.category.exception;
 
-import com.dnd.zzaekkac.global.exception.GeneralException;
+
+import com.dnd.jjakkak.global.exception.GeneralException;
 
 /**
  * 존재하지 않는 카테고리 예외입니다.
