@@ -1,0 +1,48 @@
+= 째깍(jjakkak) API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 5
+:seclinks:
+
+== 개요
+
+이 API 문서는 **DND 11기 7조 째깍 서비스**의 API 문서를 유용하게 볼수 있게 도와줍니다.
+
+NOTE: 기본적인 구성은 다음과 같습니다
+
+=== API 구성
+
+[source]
+----
+/api/v1/**
+----
+
+=== Domain Name 구성
+
+[source]
+----
+43.202.65.170.nip.io
+----
+
+=== 참여 인원
+
+[cols=2*]
+|===
+| *이름*
+| *GitHub 주소*
+
+| 정승조
+| https://github.com/f1v3-dev
+
+| 류태웅
+| https://github.com/RTUnu12
+|===
+
+'''
+
+= API
+:sectnums:
+
+include::api/category.adoc[]
