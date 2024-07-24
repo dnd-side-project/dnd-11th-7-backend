@@ -20,6 +20,9 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         super(Category.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CategoryResponseDto> getCategories() {
         QCategory category = QCategory.category;

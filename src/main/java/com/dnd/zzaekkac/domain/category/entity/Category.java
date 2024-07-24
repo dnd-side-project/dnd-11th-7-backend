@@ -1,6 +1,7 @@
 package com.dnd.zzaekkac.domain.category.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @Entity
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category {
 
     @Id

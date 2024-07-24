@@ -22,11 +22,22 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    /**
+     * 카테고리 전체 목록을 조회하는 메서드입니다.
+     *
+     * @return 카테고리 응답 DTO 리스트
+     */
     @Transactional(readOnly = true)
     public List<CategoryResponseDto> getCategoryList() {
         return categoryRepository.getCategories();
     }
 
+    /**
+     * 카테고리의 ID로 단건 조회하는 메서드입니다.
+     *
+     * @param id 카테고리 ID
+     * @return 카테고리 응답 DTO
+     */
     @Transactional(readOnly = true)
     public CategoryResponseDto getCategory(Long id) {
 

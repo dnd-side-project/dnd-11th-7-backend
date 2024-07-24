@@ -14,5 +14,10 @@ import java.util.List;
 @NoRepositoryBean
 public interface CategoryRepositoryCustom {
 
+    /**
+     * 카테고리 전체 목록을 DTO 형태로 반환하는 메서드입니다.
+     *
+     * @return 카테고리 응답 DTO 리스트
+     */
     List<CategoryResponseDto> getCategories();
 }
