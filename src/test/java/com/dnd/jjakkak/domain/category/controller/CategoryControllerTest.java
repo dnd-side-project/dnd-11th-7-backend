@@ -3,7 +3,8 @@ package com.dnd.jjakkak.domain.category.controller;
 import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.category.service.CategoryService;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,19 @@ class CategoryControllerTest {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @BeforeEach
-    void setUp() {
+    @Autowired
+    EntityManager entityManager;
+
+    @AfterEach
+    void clear() {
+        categoryRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("카테고리 전체 목록 조회")
+    void testGetCategoryList() throws Exception {
+
+        // given
         Category school = Category.builder()
                 .categoryName("학교")
                 .build();
@@ -60,11 +72,8 @@ class CategoryControllerTest {
                 .build();
 
         categoryRepository.saveAll(List.of(school, friend, meeting));
-    }
 
-    @Test
-    @DisplayName("카테고리 전체 목록 조회")
-    void testGetCategoryList() throws Exception {
+        // expected
         mockMvc.perform(get("/api/v1/categories"))
                 .andExpectAll(
                         status().isOk(),
@@ -86,11 +95,20 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 단건 조회 - 성공")
     void testGetCategory_Success() throws Exception {
-        mockMvc.perform(get("/api/v1/categories/{id}", 1L))
+
+        // given
+        Category school = Category.builder()
+                .categoryName("학교")
+                .build();
+
+        categoryRepository.save(school);
+
+        // expected
+        mockMvc.perform(get("/api/v1/categories/{id}", school.getCategoryId()))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.categoryName").value("학교"),
-                        jsonPath("$.categoryId").value(1)
+                        jsonPath("$.categoryId").value(school.getCategoryId()),
+                        jsonPath("$.categoryName").value("학교")
                 )
                 .andDo(document("category/getCategory/success",
                         preprocessRequest(prettyPrint()),
@@ -107,6 +125,8 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 단건 조회 - 실패 (404)")
     void testGetCategory_Fail() throws Exception {
+
+        // expected
         mockMvc.perform(get("/api/v1/categories/{id}", 100L))
                 .andExpect(status().isNotFound())
                 .andDo(document("category/getCategory/fail-404",
