@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author 정승조
  * @version 2024. 07. 24.
  */
-
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureRestDocs(uriHost = "43.202.65.170.nip.io", uriPort = 80)
 @AutoConfigureMockMvc
@@ -127,7 +128,7 @@ class CategoryControllerTest {
     void testGetCategory_Fail() throws Exception {
 
         // expected
-        mockMvc.perform(get("/api/v1/categories/{id}", 100L))
+        mockMvc.perform(get("/api/v1/categories/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound())
                 .andDo(document("category/getCategory/fail-404",
                         preprocessRequest(prettyPrint()),

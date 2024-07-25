@@ -556,16 +556,16 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 164
+Content-Length: 161
 
 [ {
-  "categoryId" : 59,
+  "categoryId" : 2,
   "categoryName" : "학교"
 }, {
-  "categoryId" : 60,
+  "categoryId" : 3,
   "categoryName" : "친구"
 }, {
-  "categoryId" : 61,
+  "categoryId" : 4,
   "categoryName" : "회의"
 } ]</code></pre>
 </div>
@@ -621,7 +621,7 @@ Content-Length: 164
 <div class="listingblock">
 <div class="title">Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/58 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/1 HTTP/1.1
 Host: 43.202.65.170.nip.io</code></pre>
 </div>
 </div>
@@ -639,10 +639,10 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 52
+Content-Length: 51
 
 {
-  "categoryId" : 58,
+  "categoryId" : 1,
   "categoryName" : "학교"
 }</code></pre>
 </div>
@@ -679,7 +679,7 @@ Content-Length: 52
 <div class="listingblock">
 <div class="title">Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/100 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/9223372036854775807 HTTP/1.1
 Host: 43.202.65.170.nip.io</code></pre>
 </div>
 </div>
