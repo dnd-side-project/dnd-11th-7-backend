@@ -116,17 +116,20 @@ class MeetingControllerTest {
                         preprocessRequest(prettyPrint()),
                         requestFields(
                                 fieldWithPath("meetingName").description("모임 이름")
-                                        .attributes(key("constraint").value("모임 이름은 2자 이상 20자 이하로 입력해주세요.")),
+                                        .attributes(key("constraint").value("모임 이름은 1자 이상 10자 이하로 입력해주세요.")),
                                 fieldWithPath("meetingStartDate").description("모임 시작 날짜")
                                         .attributes(key("constraint").value("모임 시작일은 종료일 이전이어야 합니다.")),
                                 fieldWithPath("meetingEndDate").description("모임 종료 날짜")
                                         .attributes(key("constraint").value("모임 종료일은 시작일 이후이어야 합니다.")),
                                 fieldWithPath("numberOfPeople").description("모임 인원")
                                         .attributes(key("constraint").value("모임 인원은 2명 이상 10명 이하로 설정해주세요.")),
-                                fieldWithPath("isOnline").description("온라인 여부"),
-                                fieldWithPath("isAnonymous").description("익명 여부"),
+                                fieldWithPath("isOnline").description("온라인 여부")
+                                        .optional()
+                                        .attributes(key("constraint").value("default = null")),
+                                fieldWithPath("isAnonymous").description("익명 여부")
+                                        .attributes(key("constraint").value("default = false (실명)")),
                                 fieldWithPath("voteEndDate").description("투표 종료 날짜")
-                                        .attributes(key("constraint").value("투표 종료일은 모임 시작일로 설정해주세요.")),
+                                        .attributes(key("constraint").value("투표 종료일은 모임 시작일 이전이어야 합니다.")),
                                 fieldWithPath("categoryIds").description("카테고리 아이디 목록")
                                         .attributes(key("constraint").value("1개 이상의 카테고리를 선택해주세요."))
                         )));
