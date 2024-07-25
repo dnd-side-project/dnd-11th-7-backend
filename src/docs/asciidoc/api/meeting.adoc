@@ -1,0 +1,24 @@
+== 모임
+
+=== 모임 생성 - 성공
+
+.HTTP Request
+include::{snippets}/meeting/create/success/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/meeting/create/success/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/meeting/create/success/http-response.adoc[]
+
+=== 모임 생성 - 실패
+
+.HTTP Request
+include::{snippets}/meeting/create/fail/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/meeting/create/fail/http-response.adoc[]
+
+.Error Response
+include::{snippets}/meeting/create/fail/response-fields.adoc[]
+
