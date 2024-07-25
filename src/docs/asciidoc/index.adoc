@@ -46,3 +46,5 @@ NOTE: 기본적인 구성은 다음과 같습니다
 :sectnums:
 
 include::api/category.adoc[]
+
+include::api/meeting.adoc[]
