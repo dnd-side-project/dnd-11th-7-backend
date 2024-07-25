@@ -5,6 +5,9 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
+# querydsl ignore
+/src/main/generated/
+
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -289,4 +292,5 @@ gradle-app.setting
 # idea 폴더
 /.idea/
 
-application.properties
+# properties
+*.properties
