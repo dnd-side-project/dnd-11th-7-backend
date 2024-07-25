@@ -151,12 +151,12 @@ class MeetingControllerTest {
                                 fieldWithPath("code").description("상태 코드"),
                                 fieldWithPath("message").description("에러 메시지"),
                                 fieldWithPath("validation").description("유효성 검사 오류 목록"),
-                                fieldWithPath("validation.categoryIds").description("카테고리는 최소 1개 이상 8개 이하로 선택해주세요."),
-                                fieldWithPath("validation.meetingEndDate").description("모임 일정 종료일은 필수 값입니다."),
                                 fieldWithPath("validation.meetingName").description("모임명은 필수 값입니다."),
+                                fieldWithPath("validation.meetingStartDate").description("모임 일정 시작일은 필수 값입니다."),
+                                fieldWithPath("validation.meetingEndDate").description("모임 일정 종료일은 필수 값입니다."),
                                 fieldWithPath("validation.numberOfPeople").description("인원수는 필수 값입니다."),
                                 fieldWithPath("validation.voteEndDate").description("투표 종료일은 필수 값입니다."),
-                                fieldWithPath("validation.meetingStartDate").description("모임 일정 시작일은 필수 값입니다.")
+                                fieldWithPath("validation.categoryIds").description("카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
                         ))
                 );
     }
