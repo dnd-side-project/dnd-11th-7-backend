@@ -1,4 +1,4 @@
-package com.dnd.jjakkak.group.entity;
+package com.dnd.jjakkak.domain.meeting.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -19,21 +19,21 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Group {
+public class Meeting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_id")
-    private Long groupId;
+    @Column(name = "meeting_id")
+    private Long meetingId;
 
-    @Column(nullable = false, name = "group_name", length = 30)
-    private String groupName;
+    @Column(nullable = false, name = "meeting_name", length = 30)
+    private String meetingName;
 
-    @Column(nullable = false, name = "group_start_date")
-    private LocalDate groupStartDate;
+    @Column(nullable = false, name = "meeting_start_date")
+    private LocalDate meetingStartDate;
 
-    @Column(nullable = false, name = "group_end_date")
-    private LocalDate groupEndDate;
+    @Column(nullable = false, name = "meeting_end_date")
+    private LocalDate meetingEndDate;
 
     @Column(nullable = false, name = "number_of_people")
     private Integer numberOfPeople;
@@ -52,14 +52,22 @@ public class Group {
     private LocalDateTime confirmedSchedule;
 
     @Builder
-    public Group(String groupName, LocalDate groupStartDate, LocalDate groupEndDate, Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous, LocalDateTime voteEndDate, LocalDateTime confirmedSchedule) {
-        this.groupName = groupName;
-        this.groupStartDate = groupStartDate;
-        this.groupEndDate = groupEndDate;
+    public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate, Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous, LocalDateTime voteEndDate) {
+        this.meetingName = meetingName;
+        this.meetingStartDate = meetingStartDate;
+        this.meetingEndDate = meetingEndDate;
         this.numberOfPeople = numberOfPeople;
         this.isOnline = isOnline;
         this.isAnonymous = isAnonymous != null ? isAnonymous : false;
         this.voteEndDate = voteEndDate;
+    }
+
+    /**
+     * 모임 일정이 확정되었을 경우 확정된 일자의 값을 넣어줍니다.
+     *
+     * @param confirmedSchedule 확정된 일자
+     */
+    public void updateConfirmedSchedule(LocalDateTime confirmedSchedule) {
         this.confirmedSchedule = confirmedSchedule;
     }
 }
