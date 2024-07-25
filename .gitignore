@@ -292,4 +292,8 @@ gradle-app.setting
 # idea 폴더
 /.idea/
 
+# properties
 application.properties
+
+# Spring REST Docs
+/src/main/resources/static/api/
