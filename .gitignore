@@ -293,4 +293,7 @@ gradle-app.setting
 /.idea/
 
 # properties
-*.properties
+application.properties
+
+# Spring REST Docs
+/src/main/resources/static/
