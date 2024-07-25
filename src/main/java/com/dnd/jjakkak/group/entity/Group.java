@@ -1,4 +1,4 @@
-package com.dnd.zzaekkac.domain.group.entity;
+package com.dnd.jjakkak.group.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
