@@ -45,7 +45,7 @@ public class Meeting {
     @ColumnDefault("false")
     private Boolean isAnonymous;
 
-    @Column(nullable = false, name = "vote_end_date", columnDefinition = "DATETIME DEFAULT schedule_start_date - 1")
+    @Column(nullable = false, name = "vote_end_date")
     private LocalDateTime voteEndDate;
 
     @Column(name = "confirmed_schedule")
