@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
  * RefreshToken의 Service입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 24.
+ * @version 2024. 07. 27.
  */
 
 @Service
@@ -23,18 +23,28 @@ public class RefreshTokenService {
      * Refresh Token CRUD
      *
      * @param memberId long
-     * @param token String
-     * @return RefreshToken
+     * @param token    String
      */
 
     @Transactional
-    public RefreshToken createRefreshToken(long memberId, String token) {
+    public void createRefreshToken(long memberId, String token) {
         RefreshToken refreshToken = new RefreshToken(token, memberId);
-        return refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(refreshToken);
     }
 
     @Transactional
     public void deleteRefreshToken(String token) {
         refreshTokenRepository.deleteByToken(token);
+    }
+
+    /**
+     * Refresh Token의 유효성을 검증하는 메소드
+     *
+     * @param token String
+     * @return 유효하면 true, 그렇지 않으면 false
+     */
+    @Transactional(readOnly = true)
+    public boolean validateRefreshToken(String token) {
+        return refreshTokenRepository.existsByToken(token);
     }
 }

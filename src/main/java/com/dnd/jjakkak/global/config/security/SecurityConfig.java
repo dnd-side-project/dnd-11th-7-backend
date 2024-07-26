@@ -29,7 +29,7 @@ import java.io.IOException;
  * Spring Security Configuration Class.
  *
  * @author 류태웅
- * @version 2024. 07. 20.
+ * @version 2024. 07. 27.
  */
 
 @Configurable
@@ -65,8 +65,9 @@ public class SecurityConfig {
                         .configurationSource(corsConfigurationSource())
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request.anyRequest().permitAll())
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll()
+                )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

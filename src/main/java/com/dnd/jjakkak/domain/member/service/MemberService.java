@@ -30,6 +30,7 @@ public class MemberService extends DefaultOAuth2UserService {
      *
      * <li>loadUser릁 통해 멤버를 불러온 뒤</li>
      * <li>json에서 각 정보를 추출하여 builder로 Member 생성 후 save</li>
+     * <li>지금은 profile을 null로 하였는데 나중엔 기본 프사로 값을 채워야 할 듯?</li>
      *
      * @param userRequest OAuth2UserRequest
      * @throws OAuth2AuthenticationException OAuth2AuthenticationException
@@ -47,29 +48,27 @@ public class MemberService extends DefaultOAuth2UserService {
 
         long kakaoId = Long.parseLong(attributes.get("id").toString());
         String nickname = properties.get("nickname").toString();
-        String profile = properties.get("profile_image").toString();
         Optional<Member> member = memberRepository.findByKakaoId(kakaoId);
         if(member.isPresent()){
-            return updateMember(member.get(), nickname, profile);
+            return updateMember(member.get(), nickname);
         }
         else{
             Member newMember = new Member();
             if("kakao".equals(oauth2ClientName)){
-                newMember = createMember(nickname, kakaoId, profile);
+                newMember = createMember(nickname, kakaoId);
             }
             memberRepository.save(newMember);
             return newMember;
         }
     }
-    private Member updateMember(Member member, String nickname, String profile){
-        member.update(nickname, profile);
+    private Member updateMember(Member member, String nickname){
+        member.update(nickname);
         return member;
     }
-    private Member createMember(String nickname, long kakaoId, String profile){
+    private Member createMember(String nickname, long kakaoId){
         return Member.builder()
                 .memberNickname(nickname)
                 .kakaoId(kakaoId)
-                .memberProfile(profile)
                 .build();
     }
 }

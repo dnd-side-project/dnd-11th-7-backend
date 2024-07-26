@@ -1,6 +1,7 @@
 package com.dnd.jjakkak.domain.member.jwt.provider;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -60,10 +61,11 @@ public class JwtProvider {
      * @return JWT
      */
 
-    public String createRefreshToken() {
+    public String createRefreshToken(String kakaoId) {
         Date expiredDate = Date.from(Instant.now().plus(7, ChronoUnit.DAYS));
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
+                .setSubject(kakaoId)
                 .setIssuedAt(new Date())
                 .setExpiration(expiredDate)
                 .compact();
@@ -85,10 +87,29 @@ public class JwtProvider {
                     .parseClaimsJws(jwt)
                     .getBody();
             subject = claims.getSubject();
+            log.info("subject, {}", subject);
+        } catch (ExpiredJwtException e) {
+            log.error("JWT 만료", e);
+            return null;
         } catch (Exception e) {
             log.error("JWT 검증 실패", e);
             return null;
         }
         return subject;
+    }
+
+    /**
+     * RefreshToken에서 subject를 추출하는 메소드
+     *
+     * @param jwt String
+     * @return subject
+     */
+    public String getSubjectFromRefreshToken(String jwt) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+        return claims.getSubject();
     }
 }
