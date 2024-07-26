@@ -4,13 +4,18 @@ import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.entity.MeetingCategory;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 모임 서비스 클래스입니다.
@@ -59,5 +64,57 @@ public class MeetingService {
 
             meetingCategoryRepository.save(meetingCategory);
         }
+    }
+
+    /**
+     * 전체 모임 목록을 조회하는 메서드입니다.
+     *
+     * @return 모임 목록
+     */
+    @Transactional(readOnly = true)
+    public List<MeetingResponseDto> getMeetingList() {
+
+        List<MeetingResponseDto> meetingResponseDtoList = new ArrayList<>();
+        List<Meeting> meetingList = meetingRepository.findAll();
+        for (Meeting meeting : meetingList) {
+            MeetingResponseDto meetingResponseDto = MeetingResponseDto.builder()
+                    .meetingId(meeting.getMeetingId())
+                    .meetingName(meeting.getMeetingName())
+                    .meetingStartDate(meeting.getMeetingStartDate())
+                    .meetingEndDate(meeting.getMeetingEndDate())
+                    .numberOfPeople(meeting.getNumberOfPeople())
+                    .isOnline(meeting.getIsOnline())
+                    .isAnonymous(meeting.getIsAnonymous())
+                    .voteEndDate(meeting.getVoteEndDate())
+                    .build();
+
+            meetingResponseDtoList.add(meetingResponseDto);
+        }
+
+        return meetingResponseDtoList;
+    }
+
+    /**
+     * 모임을 조회하는 메서드입니다.
+     *
+     * @param id 조회할 모임 ID
+     * @return 모임 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public MeetingResponseDto getMeeting(Long id) {
+
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(MeetingNotFoundException::new);
+
+        return MeetingResponseDto.builder()
+                .meetingId(meeting.getMeetingId())
+                .meetingName(meeting.getMeetingName())
+                .meetingStartDate(meeting.getMeetingStartDate())
+                .meetingEndDate(meeting.getMeetingEndDate())
+                .numberOfPeople(meeting.getNumberOfPeople())
+                .isOnline(meeting.getIsOnline())
+                .isAnonymous(meeting.getIsAnonymous())
+                .voteEndDate(meeting.getVoteEndDate())
+                .build();
     }
 }
