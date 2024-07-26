@@ -51,7 +51,6 @@ public class BlacklistService {
     /**
      * 만료된 블랙리스트 토큰을 삭제합니다.
      */
-    @Transactional
     public void removeExpiredTokens() {
         blacklistedTokenRepository.deleteByExpirationDateBefore(LocalDateTime.now());
     }
