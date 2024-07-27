@@ -1,4 +1,4 @@
-name: zzaekkac server deploy
+name: jjakkak server deploy
 
 # main branch -> push 이벤트 발생 시 실행
 on:
@@ -46,26 +46,26 @@ jobs:
 
       # Docker image build
       - name: Docker image build
-        run: docker build -t zzaekkac-server .
+        run: docker build -t jjakkak-server .
 
       # Docker tag
       - name: Docker tag
-        run: docker tag zzaekkac-server ${{ steps.login-ecr.outputs.registry }}/zzaekkac-server:latest
+        run: docker tag jjakkak-server ${{ steps.login-ecr.outputs.registry }}/jjakkak-server:latest
 
       # Docker push (ECR)
       - name: Docker push
-        run: docker push ${{ steps.login-ecr.outputs.registry }}/zzaekkac-server:latest
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/jjakkak-server:latest
 
       # ssh 접속 후 git pull 방식
       - name: ssh
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAMAE }}
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            docker stop zzaekkac-server || true
-            docker rm zzaekkac-server || true
-            docker pull ${{ steps.login-ecr.outputs.registry }}/zzaekkac-server:latest
-            docker run -d --name zzaekkac-server -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/zzaekkac-server:latest
+            docker stop jjakkak-server || true
+            docker rm jjakkak-server || true
+            docker pull ${{ steps.login-ecr.outputs.registry }}/jjakkak-server:latest
+            docker run -d --name jjakkak-server -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/jjakkak-server:latest
