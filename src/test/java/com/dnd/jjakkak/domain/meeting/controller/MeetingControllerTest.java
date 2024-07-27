@@ -7,7 +7,6 @@ import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
-import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +53,7 @@ class MeetingControllerTest {
     MeetingService groupService;
 
     @Autowired
-    MeetingRepository groupRepository;
+    MeetingRepository meetingRepository;
 
     @Autowired
     CategoryRepository categoryRepository;
@@ -63,10 +62,7 @@ class MeetingControllerTest {
     ObjectMapper objectMapper;
 
     Category school, friend, teamProject, meeting, study, hobby, volunteer, etc;
-    @Autowired
-    private MeetingRepository meetingRepository;
-    @Autowired
-    private MemberRepository memberRepository;
+
 
     @BeforeEach
     void setUp() {

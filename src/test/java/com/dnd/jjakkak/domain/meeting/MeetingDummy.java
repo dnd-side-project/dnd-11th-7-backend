@@ -54,7 +54,8 @@ public class MeetingDummy {
      * @return MeetingResponseDto 객체
      */
     public static MeetingResponseDto createResponseDto() {
-        MeetingResponseDto responseDto = new MeetingResponseDto(
+
+        return new MeetingResponseDto(
                 1L,
                 "세븐일레븐",
                 LocalDate.of(2024, 7, 27),
@@ -64,8 +65,6 @@ public class MeetingDummy {
                 false,
                 LocalDateTime.of(2024, 7, 26, 23, 59, 59)
         );
-
-        return responseDto;
     }
 
     public static List<Meeting> createMeetingList() {
