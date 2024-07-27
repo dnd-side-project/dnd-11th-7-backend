@@ -22,3 +22,30 @@ include::{snippets}/meeting/create/fail/http-response.adoc[]
 .Error Response
 include::{snippets}/meeting/create/fail/response-fields.adoc[]
 
+=== 모임 전체 조회
+.Response Fields
+include::{snippets}/meeting/getMeetingList/success/response-fields.adoc[]
+
+.HTTP Request
+include::{snippets}/meeting/getMeetingList/success/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/meeting/getMeetingList/success/http-response.adoc[]
+
+=== 모임 개별 조회 - 성공
+
+include::{snippets}/meeting/getMeeting/success/path-parameters.adoc[]
+
+.HTTP Request
+include::{snippets}/meeting/getMeeting/success/http-request.adoc[]
+
+
+.HTTP Response
+include::{snippets}/meeting/getMeeting/success/http-response.adoc[]
+
+=== 모임 개별 조회 - 실패
+
+.HTTP Request
+include::{snippets}/meeting/getMeeting/fail/http-request.adoc[]
+
+include::{snippets}/meeting/getMeeting/fail/http-response.adoc[]

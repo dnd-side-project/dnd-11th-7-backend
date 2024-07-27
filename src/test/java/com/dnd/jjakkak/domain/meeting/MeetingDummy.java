@@ -1,6 +1,8 @@
 package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -45,4 +47,51 @@ public class MeetingDummy {
     public static MeetingCreateRequestDto createInvalidRequestDto() {
         return new MeetingCreateRequestDto();
     }
+
+    /**
+     * MeetingResponseDto 객체를 생성하여 반환합니다.
+     *
+     * @return MeetingResponseDto 객체
+     */
+    public static MeetingResponseDto createResponseDto() {
+        MeetingResponseDto responseDto = new MeetingResponseDto(
+                1L,
+                "세븐일레븐",
+                LocalDate.of(2024, 7, 27),
+                LocalDate.of(2024, 7, 29),
+                6,
+                true,
+                false,
+                LocalDateTime.of(2024, 7, 26, 23, 59, 59)
+        );
+
+        return responseDto;
+    }
+
+    public static List<Meeting> createMeetingList() {
+
+        Meeting meeting = Meeting.builder()
+                .meetingName("DND 7조 회의")
+                .meetingStartDate(LocalDate.of(2024, 7, 27))
+                .meetingEndDate(LocalDate.of(2024, 7, 29))
+                .numberOfPeople(6)
+                .isOnline(true)
+                .isAnonymous(false)
+                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
+                .build();
+
+        Meeting study = Meeting.builder()
+                .meetingName("Java 스터디")
+                .meetingStartDate(LocalDate.of(2024, 8, 1))
+                .meetingEndDate(LocalDate.of(2024, 8, 5))
+                .numberOfPeople(4)
+                .isOnline(true)
+                .isAnonymous(false)
+                .voteEndDate(LocalDateTime.of(2024, 7, 30, 23, 59, 59))
+                .build();
+
+        return List.of(meeting, study);
+    }
+
+
 }

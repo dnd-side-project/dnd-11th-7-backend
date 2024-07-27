@@ -4,8 +4,10 @@ import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
+import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,16 +17,22 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -55,6 +63,10 @@ class MeetingControllerTest {
     ObjectMapper objectMapper;
 
     Category school, friend, teamProject, meeting, study, hobby, volunteer, etc;
+    @Autowired
+    private MeetingRepository meetingRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
@@ -162,5 +174,97 @@ class MeetingControllerTest {
                                 fieldWithPath("validation.categoryIds").description("카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("모임 조회 테스트 - 전체 조회")
+    void testGetMeetingList() throws Exception {
+        // given
+        List<Meeting> meetingList = MeetingDummy.createMeetingList();
+        meetingRepository.saveAll(meetingList);
+
+        // expected
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/meeting")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("meeting/getMeetingList/success",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[].meetingId").description("모임 아이디"),
+                                fieldWithPath("[].meetingName").description("모임 이름"),
+                                fieldWithPath("[].meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("[].meetingEndDate").description("모임 종료 날짜"),
+                                fieldWithPath("[].numberOfPeople").description("모임 인원"),
+                                fieldWithPath("[].isOnline").description("온라인 여부"),
+                                fieldWithPath("[].isAnonymous").description("익명 여부"),
+                                fieldWithPath("[].voteEndDate").description("투표 종료 날짜")
+                        )));
+    }
+
+    @Test
+    @DisplayName("모임 조회 테스트 - 단건 조회 (성공)")
+    void testGetMeeting_Success() throws Exception {
+        // given
+        Meeting meeting = Meeting.builder()
+                .meetingName("DND 7조 회의")
+                .meetingStartDate(LocalDate.of(2024, 7, 27))
+                .meetingEndDate(LocalDate.of(2024, 7, 29))
+                .numberOfPeople(6)
+                .isOnline(true)
+                .isAnonymous(false)
+                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
+                .build();
+
+        meetingRepository.save(meeting);
+
+        // expected
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/meeting/{meetingId}", meeting.getMeetingId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.meetingId").value(meeting.getMeetingId()),
+                        jsonPath("$.meetingName").value(meeting.getMeetingName()),
+                        jsonPath("$.meetingStartDate").value(meeting.getMeetingStartDate().toString()),
+                        jsonPath("$.meetingEndDate").value(meeting.getMeetingEndDate().toString()),
+                        jsonPath("$.numberOfPeople").value(meeting.getNumberOfPeople()),
+                        jsonPath("$.isOnline").value(meeting.getIsOnline()),
+                        jsonPath("$.isAnonymous").value(meeting.getIsAnonymous()),
+                        jsonPath("$.voteEndDate").value(meeting.getVoteEndDate().toString())
+                )
+                .andDo(document("meeting/getMeeting/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("meetingId").description("모임 아이디")),
+                        responseFields(
+                                fieldWithPath("meetingId").description("모임 아이디"),
+                                fieldWithPath("meetingName").description("모임 이름"),
+                                fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
+                                fieldWithPath("numberOfPeople").description("모임 인원"),
+                                fieldWithPath("isOnline").description("온라인 여부"),
+                                fieldWithPath("isAnonymous").description("익명 여부"),
+                                fieldWithPath("voteEndDate").description("투표 종료 날짜")
+                        )));
+    }
+
+    @Test
+    @DisplayName("모임 조회 테스트 - 단건 조회 (실패)")
+    void testGetMeeting_Fail() throws Exception {
+
+        // expected
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/meeting/{meetingId}", Long.MAX_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(document("meeting/getMeeting/fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("meetingId").description("모임 아이디")),
+                        responseFields(
+                                fieldWithPath("code").description("상태 코드"),
+                                fieldWithPath("message").description("에러 메시지"),
+                                fieldWithPath("validation").description("유효성 검사 오류 목록")
+                        )));
     }
 }
