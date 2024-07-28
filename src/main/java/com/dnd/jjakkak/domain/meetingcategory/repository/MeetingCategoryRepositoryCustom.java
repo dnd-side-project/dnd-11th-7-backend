@@ -11,6 +11,11 @@ import org.springframework.data.repository.NoRepositoryBean;
 @NoRepositoryBean
 public interface MeetingCategoryRepositoryCustom {
 
+    /**
+     * 모임 ID로 전체 모임 카테고리를 삭제하는 메서드입니다.
+     *
+     * @param meetingId 모임 ID
+     */
     void deleteByMeetingId(Long meetingId);
 
 }
