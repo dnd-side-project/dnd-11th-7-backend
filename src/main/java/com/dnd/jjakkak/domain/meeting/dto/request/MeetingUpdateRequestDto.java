@@ -49,6 +49,11 @@ public class MeetingUpdateRequestDto {
     @NotNull(message = "투표 종료일은 필수 값입니다.")
     private LocalDateTime voteEndDate;
 
+    /**
+     * 모임 일정을 검증하는 메서드입니다.
+     *
+     * @throws InvalidMeetingDateException 모임 일정이 유효하지 않을 경우 발생합니다.
+     */
     public void checkMeetingDate() {
         InvalidMeetingDateException invalidMeetingDateException = new InvalidMeetingDateException();
 

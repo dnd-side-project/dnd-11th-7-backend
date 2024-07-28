@@ -3,7 +3,7 @@ package com.dnd.jjakkak.domain.meeting.exception;
 import com.dnd.jjakkak.global.exception.GeneralException;
 
 /**
- * {class name}.
+ * 모임 일정이 존재하지 않을 때 발생하는 예외 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 07. 26.

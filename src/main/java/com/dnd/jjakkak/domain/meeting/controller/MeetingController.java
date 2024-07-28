@@ -88,6 +88,12 @@ public class MeetingController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 모임을 삭제하는 메서드입니다.
+     *
+     * @param id 삭제할 모임 ID
+     * @return 200 (OK)
+     */
     @DeleteMapping("/{meetingId}")
     public ResponseEntity<Void> deleteMeeting(@PathVariable("meetingId") Long id) {
         meetingService.deleteMeeting(id);
