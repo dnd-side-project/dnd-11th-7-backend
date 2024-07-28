@@ -1,11 +1,13 @@
 package com.dnd.jjakkak.domain.meeting.entity;
 
+import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
+import com.dnd.jjakkak.domain.meeting.exception.InvalidMeetingDateException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +44,6 @@ public class Meeting {
     private Boolean isOnline;
 
     @Column(name = "is_anonymous")
-    @ColumnDefault("false")
     private Boolean isAnonymous;
 
     @Column(nullable = false, name = "vote_end_date")
@@ -52,22 +53,46 @@ public class Meeting {
     private LocalDateTime confirmedSchedule;
 
     @Builder
-    public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate, Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous, LocalDateTime voteEndDate) {
+    public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
+                   Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous, LocalDateTime voteEndDate) {
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
         this.numberOfPeople = numberOfPeople;
         this.isOnline = isOnline;
-        this.isAnonymous = isAnonymous != null ? isAnonymous : false;
+        this.isAnonymous = isAnonymous;
         this.voteEndDate = voteEndDate;
     }
 
+
     /**
-     * 모임 일정이 확정되었을 경우 확정된 일자의 값을 넣어줍니다.
+     * 확정된 모임 일자를 설정합니다.
      *
-     * @param confirmedSchedule 확정된 일자
+     * @param requestDto 확정된 모임 일자 수정 요청 DTO
      */
-    public void updateConfirmedSchedule(LocalDateTime confirmedSchedule) {
-        this.confirmedSchedule = confirmedSchedule;
+    public void updateConfirmedSchedule(MeetingConfirmRequestDto requestDto) {
+
+        // 확정된 일자가 유효한지 확인합니다.
+        if (requestDto.getConfirmedSchedule().isBefore(this.meetingStartDate.atStartOfDay()) ||
+                requestDto.getConfirmedSchedule().isAfter(this.meetingEndDate.atStartOfDay())) {
+            throw new InvalidMeetingDateException();
+        }
+
+        this.confirmedSchedule = requestDto.getConfirmedSchedule();
+    }
+
+    /**
+     * 모임 정보를 수정합니다.
+     *
+     * @param requestDto 수정 요청 DTO
+     */
+    public void updateMeeting(MeetingUpdateRequestDto requestDto) {
+        this.meetingName = requestDto.getMeetingName();
+        this.meetingStartDate = requestDto.getMeetingStartDate();
+        this.meetingEndDate = requestDto.getMeetingEndDate();
+        this.numberOfPeople = requestDto.getNumberOfPeople();
+        this.isOnline = requestDto.getIsOnline();
+        this.isAnonymous = requestDto.getIsAnonymous();
+        this.voteEndDate = requestDto.getVoteEndDate();
     }
 }

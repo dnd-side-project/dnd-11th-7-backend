@@ -1,6 +1,8 @@
 package com.dnd.jjakkak.domain.meeting.controller;
 
+import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import jakarta.validation.Valid;
@@ -55,5 +57,40 @@ public class MeetingController {
     @GetMapping("/{meetingId}")
     public ResponseEntity<MeetingResponseDto> getMeeting(@PathVariable("meetingId") Long id) {
         return ResponseEntity.ok(meetingService.getMeeting(id));
+    }
+
+    /**
+     * 모임을 수정하는 메서드입니다.
+     *
+     * @param id         모임 ID
+     * @param requestDto 수정된 모임 정보 DTO
+     * @return 200 (OK)
+     */
+    @PatchMapping("/{meetingId}")
+    public ResponseEntity<Void> updateMeeting(@PathVariable("meetingId") Long id,
+                                              @Valid @RequestBody MeetingUpdateRequestDto requestDto) {
+
+        meetingService.updateMeeting(id, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 모임의 확정된 일자를 수정하는 메서드입니다.
+     *
+     * @param id         모임 ID
+     * @param requestDto 확정된 일자 수정 요청 DTO
+     * @return 200 (OK)
+     */
+    @PatchMapping("/{meetingId}/confirm")
+    public ResponseEntity<Void> confirmMeeting(@PathVariable("meetingId") Long id,
+                                               @Valid @RequestBody MeetingConfirmRequestDto requestDto) {
+        meetingService.confirmMeeting(id, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{meetingId}")
+    public ResponseEntity<Void> deleteMeeting(@PathVariable("meetingId") Long id) {
+        meetingService.deleteMeeting(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 모임 생성 요청 DTO 클래스입니다.
+ * 모임 수정 요청 DTO 클래스입니다.
  *
  * @author 정승조
- * @version 2024. 07. 25.
+ * @version 2024. 07. 28.
  */
 @Getter
 @ToString
-public class MeetingCreateRequestDto {
+public class MeetingUpdateRequestDto {
 
     @Size(min = 1, max = 8, message = "카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
     private final List<Long> categoryIds = new ArrayList<>();
