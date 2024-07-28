@@ -137,6 +137,24 @@ public class MeetingService {
 
         // dirty checking - 모임 정보를 수정합니다.
         meeting.updateMeeting(requestDto);
+
+        // 모임의 카테고리 값도 수정 필요
+        // 기존 모임과 연결된 카테고리 정보를 삭제합니다.
+        meetingCategoryRepository.deleteByMeetingId(meeting.getMeetingId());
+
+        for (Long categoryId : requestDto.getCategoryIds()) {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(CategoryNotFoundException::new);
+
+            MeetingCategory.Pk pk = new MeetingCategory.Pk(meeting.getMeetingId(), category.getCategoryId());
+            MeetingCategory meetingCategory = MeetingCategory.builder()
+                    .pk(pk)
+                    .meeting(meeting)
+                    .category(category)
+                    .build();
+
+            meetingCategoryRepository.save(meetingCategory);
+        }
     }
 
     /**

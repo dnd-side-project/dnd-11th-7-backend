@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author 정승조
  * @version 2024. 07. 25.
  */
-public interface MeetingCategoryRepository extends JpaRepository<MeetingCategory, MeetingCategory.Pk> {
+public interface MeetingCategoryRepository
+        extends JpaRepository<MeetingCategory, MeetingCategory.Pk>, MeetingCategoryRepositoryCustom {
 }
