@@ -5,6 +5,7 @@ import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,7 +46,7 @@ class MeetingServiceTest {
     CategoryRepository categoryRepository;
 
     @Mock
-    MeetingCategoryRepository groupCategoryRepository;
+    MeetingCategoryRepository meetingCategoryRepository;
 
     @Test
     @DisplayName("모임 생성 테스트 - 성공")
@@ -69,7 +71,7 @@ class MeetingServiceTest {
         // then
         verify(meetingRepository, times(1)).save(any());
         verify(categoryRepository, times(2)).findById(anyLong());
-        verify(groupCategoryRepository, times(2)).save(any());
+        verify(meetingCategoryRepository, times(2)).save(any());
 
     }
 
@@ -166,5 +168,78 @@ class MeetingServiceTest {
                 () -> meetingService.getMeeting(1L));
 
         verify(meetingRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("모임 수정 테스트 - 성공")
+    void testUpdateMeeting_Success() {
+
+        // given
+        Meeting meeting = Meeting.builder()
+                .meetingName("DND 7조 회의")
+                .meetingStartDate(LocalDate.of(2024, 7, 27))
+                .meetingEndDate(LocalDate.of(2024, 7, 29))
+                .numberOfPeople(6)
+                .isOnline(true)
+                .isAnonymous(false)
+                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
+                .build();
+
+        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
+
+        when(meetingRepository.findById(1L)).thenReturn(Optional.of(meeting));
+
+        Category hobby = Category.builder()
+                .categoryName("취미")
+                .build();
+
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(hobby));
+
+        // when
+        meetingService.updateMeeting(1L, MeetingDummy.updateRequestDto(1L));
+
+        // then
+        verify(meetingRepository, times(1)).findById(1L);
+        verify(categoryRepository, times(1)).findById(1L);
+        verify(meetingCategoryRepository, times(1)).deleteByMeetingId(1L);
+        verify(meetingCategoryRepository, times(1)).save(any());
+    }
+
+    @Test
+    @DisplayName("모임 수정 테스트 - 실패 (모임 없음)")
+    void testUpdateMeeting_Fail() {
+
+        // given
+        MeetingUpdateRequestDto meetingUpdateRequestDto = MeetingDummy.updateRequestDto(1L);
+        when(meetingRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // expected
+        assertThrows(MeetingNotFoundException.class,
+                () -> meetingService.updateMeeting(1L, meetingUpdateRequestDto));
+    }
+
+    @Test
+    @DisplayName("모임 삭제 테스트 - 성공")
+    void testDeleteMeeting_Success() {
+        // given
+        when(meetingRepository.existsById(anyLong())).thenReturn(true);
+
+        // when
+        meetingService.deleteMeeting(1L);
+
+        // then
+        verify(meetingRepository, times(1)).existsById(1L);
+        verify(meetingRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("모임 삭제 테스트 - 실패 (존재하지 않는 모임)")
+    void testDeleteMeeting_Fail() {
+        // given
+        when(meetingRepository.existsById(anyLong())).thenReturn(false);
+
+        // expected
+        assertThrows(MeetingNotFoundException.class,
+                () -> meetingService.deleteMeeting(1L));
     }
 }
