@@ -2,7 +2,6 @@ package com.dnd.jjakkak.domain.meetingcategory.repository;
 
 import com.dnd.jjakkak.domain.meetingcategory.entity.MeetingCategory;
 import com.dnd.jjakkak.domain.meetingcategory.entity.QMeetingCategory;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 /**
@@ -11,7 +10,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
  * @author 정승조
  * @version 2024. 07. 28.
  */
-@Slf4j
 public class MeetingCategoryRepositoryImpl extends QuerydslRepositorySupport implements MeetingCategoryRepositoryCustom {
 
     public MeetingCategoryRepositoryImpl() {
