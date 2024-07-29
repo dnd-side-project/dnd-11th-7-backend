@@ -53,8 +53,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
 
         // 토큰을 응답 헤더에 추가
-        response.getWriter().write("Authorization : Bearer " + token);
-        response.getWriter().write("RefreshToken : " + refreshToken);
+        response.setHeader("Authorization", "Bearer " + token);
+        response.setHeader("RefreshToken", refreshToken);
 
         // 로그인 성공 시 리다이렉트되는 URL은 추후 수정 필요
         response.sendRedirect("http://localhost:8080/auth/oauth-response/");

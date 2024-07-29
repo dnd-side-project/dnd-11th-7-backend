@@ -56,7 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("도착한 요청: {}", request);
+        log.info("도착한 요청: {}", request.getPathInfo());
         String token = parseBearerToken(request);
         log.info("도착한 토큰: {}", token);
         if(token == null){ // Bearer 인증 방식이 아니거나 빈 값일 경우 진행하지 말고 다음 필터로 바로 넘김
