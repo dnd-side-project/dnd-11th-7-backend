@@ -127,7 +127,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean isBearer = authorization.startsWith("Bearer ");
         if(!isBearer) return null; // 아닐 경우 Bearer 인증 방신이 아님 -> null
 
-        return authorization.substring(7);
+        String token = authorization.substring(7);
+        if ("undefined".equalsIgnoreCase(token)) {
+            return null;
+        }
+
+        return token;
     }
 
     /**
