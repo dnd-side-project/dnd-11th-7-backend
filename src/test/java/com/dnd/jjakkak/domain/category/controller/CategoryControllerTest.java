@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.category.controller;
 import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.category.service.CategoryService;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,9 +45,6 @@ class CategoryControllerTest {
 
     @Autowired
     CategoryRepository categoryRepository;
-
-    @Autowired
-    EntityManager entityManager;
 
     @AfterEach
     void clear() {
@@ -138,7 +134,7 @@ class CategoryControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("에러 코드"),
                                 fieldWithPath("message").description("에러 메시지"),
-                                fieldWithPath("validation").description("상세 에러 메시지")
+                                fieldWithPath("validation").description("유효성 검사 오류")
                         )
                 ));
     }
