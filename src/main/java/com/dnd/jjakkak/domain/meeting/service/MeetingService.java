@@ -12,6 +12,7 @@ import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.entity.MeetingCategory;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
+import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +30,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MeetingService {
 
+    private final ScheduleService scheduleService;
     private final MeetingRepository meetingRepository;
     private final MeetingCategoryRepository meetingCategoryRepository;
     private final CategoryRepository categoryRepository;
 
+    /**
+     * 모임을 생성하는 메서드입니다.
+     *
+     * @param requestDto 생성할 모임 정보 DTO
+     */
     @Transactional
     public void createMeeting(MeetingCreateRequestDto requestDto) {
 
@@ -65,6 +72,12 @@ public class MeetingService {
                     .build();
 
             meetingCategoryRepository.save(meetingCategory);
+        }
+
+        // 모임 생성 시 인원 수 만큼 기본 일정을 생성합니다.
+        // TODO: 개선할 수 있는 방법 찾아보기
+        for (int i = 0; i < meeting.getNumberOfPeople(); i++) {
+            scheduleService.createDefaultSchedule(meeting);
         }
     }
 

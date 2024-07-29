@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author 정승조
  * @version 2024. 07. 25.
  */
-public interface MeetingRepository extends JpaRepository<Meeting, Long> {
+public interface MeetingRepository extends JpaRepository<Meeting, Long>,
+        MeetingRepositoryCustom {
 }
