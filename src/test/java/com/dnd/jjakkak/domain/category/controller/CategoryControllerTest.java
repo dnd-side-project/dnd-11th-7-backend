@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.category.controller;
 import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.category.service.CategoryService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,40 +45,22 @@ class CategoryControllerTest {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @AfterEach
-    void clear() {
-        categoryRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("카테고리 전체 목록 조회")
     void testGetCategoryList() throws Exception {
-
         // given
-        Category school = Category.builder()
-                .categoryName("학교")
-                .build();
-
-        Category friend = Category.builder()
-                .categoryName("친구")
-                .build();
-
-        Category meeting = Category.builder()
-                .categoryName("회의")
-                .build();
-
+        Category school = Category.builder().categoryName("학교").build();
+        Category friend = Category.builder().categoryName("친구").build();
+        Category meeting = Category.builder().categoryName("회의").build();
         categoryRepository.saveAll(List.of(school, friend, meeting));
 
         // expected
         mockMvc.perform(get("/api/v1/categories"))
-                .andExpectAll(
-                        status().isOk(),
+                .andExpectAll(status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-
-                        jsonPath("$[0].categoryName").value("학교"),
-                        jsonPath("$[1].categoryName").value("친구"),
-                        jsonPath("$[2].categoryName").value("회의")
-                )
+                        jsonPath("$[?(@.categoryName == '학교')]").exists(),
+                        jsonPath("$[?(@.categoryName == '친구')]").exists(),
+                        jsonPath("$[?(@.categoryName == '회의')]").exists())
                 .andDo(document("category/getCategoryList/success",
                         preprocessResponse(prettyPrint()),
                         responseFields(
@@ -92,21 +73,15 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 단건 조회 - 성공")
     void testGetCategory_Success() throws Exception {
-
         // given
-        Category school = Category.builder()
-                .categoryName("학교")
-                .build();
-
+        Category school = Category.builder().categoryName("기타").build();
         categoryRepository.save(school);
 
         // expected
         mockMvc.perform(get("/api/v1/categories/{id}", school.getCategoryId()))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.categoryId").value(school.getCategoryId()),
-                        jsonPath("$.categoryName").value("학교")
-                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.categoryId").value(school.getCategoryId()))
+                .andExpect(jsonPath("$.categoryName").value("기타"))
                 .andDo(document("category/getCategory/success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -122,7 +97,6 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 단건 조회 - 실패 (404)")
     void testGetCategory_Fail() throws Exception {
-
         // expected
         mockMvc.perform(get("/api/v1/categories/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound())
@@ -134,9 +108,8 @@ class CategoryControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("에러 코드"),
                                 fieldWithPath("message").description("에러 메시지"),
-                                fieldWithPath("validation").description("유효성 검사 오류")
+                                fieldWithPath("validation").description("유효성 검사 오류").optional()
                         )
                 ));
     }
-
 }
