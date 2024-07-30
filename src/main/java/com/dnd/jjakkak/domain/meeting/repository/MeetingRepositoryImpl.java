@@ -38,4 +38,17 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         // 모임의 최대 인원과 현재 인원을 비교하여 모임이 꽉 찼는지 확인합니다.
         return maxPeople <= currentPeople;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAnonymous(Long meetingId) {
+        QMeeting meeting = QMeeting.meeting;
+
+        return Boolean.TRUE.equals(from(meeting)
+                .where(meeting.meetingId.eq(meetingId))
+                .select(meeting.isAnonymous)
+                .fetchOne());
+    }
 }
