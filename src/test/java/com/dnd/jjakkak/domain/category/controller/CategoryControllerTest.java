@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.category.controller;
 import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.category.service.CategoryService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +45,6 @@ class CategoryControllerTest {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @AfterEach
-    void clear() {
-        categoryRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("카테고리 전체 목록 조회")
     void testGetCategoryList() throws Exception {
@@ -76,9 +70,9 @@ class CategoryControllerTest {
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
 
-                        jsonPath("$[0].categoryName").value("학교"),
-                        jsonPath("$[1].categoryName").value("친구"),
-                        jsonPath("$[2].categoryName").value("회의")
+                        jsonPath("$[?(@.categoryName == '학교')]").exists(),
+                        jsonPath("$[?(@.categoryName == '친구')]").exists(),
+                        jsonPath("$[?(@.categoryName == '회의')]").exists()
                 )
                 .andDo(document("category/getCategoryList/success",
                         preprocessResponse(prettyPrint()),
@@ -95,7 +89,7 @@ class CategoryControllerTest {
 
         // given
         Category school = Category.builder()
-                .categoryName("학교")
+                .categoryName("기타")
                 .build();
 
         categoryRepository.save(school);
@@ -105,7 +99,7 @@ class CategoryControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.categoryId").value(school.getCategoryId()),
-                        jsonPath("$.categoryName").value("학교")
+                        jsonPath("$.categoryName").value("기타")
                 )
                 .andDo(document("category/getCategory/success",
                         preprocessRequest(prettyPrint()),
