@@ -16,7 +16,7 @@ import java.util.Map;
  * 회원 엔티티입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 21.
+ * @version 2024. 07. 29.
  */
 
 @Entity
@@ -44,7 +44,7 @@ public class Member implements OAuth2User {
     private String memberProfile;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "role")
+    @Column(nullable = false, name="role")
     private Role role;
 
     /**
@@ -52,20 +52,25 @@ public class Member implements OAuth2User {
      */
 
     @Builder
-    protected Member(String memberNickname, long kakaoId, String memberProfile) {
+    protected Member(String memberNickname, long kakaoId) {
         this.memberNickname = memberNickname;
         this.kakaoId = kakaoId;
-        this.memberProfile = memberProfile;
         this.isDelete = false;
         this.role = Role.ROLE_USER;
     }
 
     /**
-     * <li>사용하진 않으나 유저 정보 업데이터 시 사용할 메소드</li>
+     * <li>닉네임 업데이트일 시 사용할 메소드</li>
      */
 
-    public void update(String memberNickname, String memberProfile) {
+    public void updateNickname(String memberNickname){
         this.memberNickname = memberNickname;
+    }
+
+    /**
+     * <li>프로필 업데이트일 시 사용할 메소드</li>
+     */
+    public void updateProfile(String memberProfile){
         this.memberProfile = memberProfile;
     }
 

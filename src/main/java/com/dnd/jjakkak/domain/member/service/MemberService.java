@@ -1,57 +1,69 @@
 package com.dnd.jjakkak.domain.member.service;
 
+import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
+import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Member의 Service입니다.
+ * Member의 CRUD Service입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 20.
+ * @version 2024. 07. 29.
  */
 
 @Service
 @RequiredArgsConstructor
-public class MemberService extends DefaultOAuth2UserService {
+public class MemberService {
     private final MemberRepository memberRepository;
 
     /**
-     * 로그인/가입 시 회원 정보를 불러와 저장하는 메소드
+     * 닉네임 수정
      *
-     * <li>loadUser릁 통해 멤버를 불러온 뒤</li>
-     * <li>json에서 각 정보를 추출하여 builder로 Member 생성 후 save</li>
-     *
-     * @param userRequest OAuth2UserRequest
-     * @return member OAuth2User
-     * @throws OAuth2AuthenticationException OAuth2AuthenticationException
+     * @param id Long
+     * @param dto MemberUpdateNicknameRequestDto
      */
+    @Transactional
+    public void updateNickname(Long id, MemberUpdateNicknameRequestDto dto){
+        Member member = memberRepository.findById(id)
+                .orElseThrow(MemberNotFoundException::new);
+        member.updateNickname(dto.getMemberNickname());
+    }
 
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
-        String oauth2ClientName = userRequest.getClientRegistration().getClientName();
+    /**
+     * 프로필 수정
+     *
+     * @param id Long
+     * @param dto MemberUpdateProfileRequestDto
+     */
+    @Transactional
+    public void updateProfile(Long id, MemberUpdateProfileRequestDto dto){
+        Member member = memberRepository.findById(id)
+                .orElseThrow(MemberNotFoundException::new);
+        member.updateProfile(dto.getMemberProfile());
+    }
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
+    /**
+     * 회원 탈퇴
+     *
+     * @param id Long
+     */
+    @Transactional
+    public void deleteMember(Long id){
+        memberRepository.deleteById(id);
+    }
 
-        Member member = new Member();
-
-        if ("kakao".equals(oauth2ClientName)) {
-            member = Member.builder()
-                    .memberNickname(properties.get("nickname").toString())
-                    .kakaoId(Long.parseLong(attributes.get("id").toString()))
-                    .memberProfile(properties.get("profile_image").toString())
-                    .build();
-        }
-        memberRepository.save(member);
-        return member;
+    /**
+     * 매주 월요일 자정에 탈퇴 처리된 이용자 하드 삭제
+     *
+     */
+    @Scheduled(cron = "0 0 0 ? * MON") //매주 월요일 자정
+    public void deletedMemberAllDeleted(){
+        memberRepository.deleteAllByIsDeleteTrue();
     }
 }

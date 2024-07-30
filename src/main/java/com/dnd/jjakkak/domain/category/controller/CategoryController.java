@@ -42,7 +42,7 @@ public class CategoryController {
      * @return 200 (OK), Body: 카테고리 응답 DTO
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponseDto> getCategory(@PathVariable("id") Long id) {
         return ResponseEntity.ok(categoryService.getCategory(id));
     }
 
