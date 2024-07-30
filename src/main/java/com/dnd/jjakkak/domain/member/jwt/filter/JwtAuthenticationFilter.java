@@ -7,6 +7,7 @@ import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,7 +72,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error("엑세스 토큰이 만료됨", e);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Access Token expired\"}");
+            response.getWriter().write("{\"error\": \"Token expired\"}");
+            response.getWriter().flush();
+            return;
+        } catch (MalformedJwtException e){
+            log.error("손상된 토큰", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Malformed Token\"}");
             response.getWriter().flush();
             return;
         }
