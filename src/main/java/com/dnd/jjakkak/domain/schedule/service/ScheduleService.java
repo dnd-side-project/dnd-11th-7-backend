@@ -1,5 +1,7 @@
 package com.dnd.jjakkak.domain.schedule.service;
 
+import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateRequestDto;
+import com.dnd.jjakkak.domain.dateofschedule.service.DateOfScheduleService;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
@@ -31,6 +33,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
     private final MeetingRepository meetingRepository;
+    private final DateOfScheduleService dateOfScheduleService;
 
     @Transactional
     public void createDefaultSchedule(Meeting meeting) {
@@ -68,12 +71,12 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        // TODO 1: 이미 할당된 일정인가? (409 Conflict)
+        // 이미 할당된 일정인가? (409 Conflict)
         if (Boolean.TRUE.equals(schedule.getIsAssigned())) {
             throw new ScheduleAlreadyAssignedException();
         }
 
-        // TODO 2: 이미 모임의 인원이 다 찼는가? (
+        // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
         if (meetingRepository.checkMeetingFull(schedule.getMeeting().getMeetingId())) {
             throw new MeetingFullException();
         }
@@ -84,8 +87,21 @@ public class ScheduleService {
                     .orElseThrow(MemberNotFoundException::new);
 
             schedule.assignMember(member);
+            schedule.updateScheduleNickname(member.getMemberNickname());
         }
 
-        schedule.updateScheduleNickname(requestDto.getNickName());
+        // 익명인 경우에는 닉네임을 변경하지 않음
+        if (meetingRepository.isAnonymous(schedule.getMeeting().getMeetingId())) {
+            schedule.updateScheduleNickname("익명");
+        } else {
+            schedule.updateScheduleNickname(requestDto.getNickName());
+        }
+
+
+        // 일정 날짜 저장
+        for (DateOfScheduleCreateRequestDto dateOfScheduleCreateRequestDto : requestDto.getDateOfScheduleList()) {
+            dateOfScheduleService.createDateOfSchedule(schedule.getScheduleId(), dateOfScheduleCreateRequestDto);
+        }
+
     }
 }
