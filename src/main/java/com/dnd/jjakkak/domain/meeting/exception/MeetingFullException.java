@@ -18,6 +18,6 @@ public class MeetingFullException extends GeneralException {
 
     @Override
     public int getStatusCode() {
-        return 0;
+        return 400;
     }
 }
