@@ -195,11 +195,11 @@ public class MeetingService {
 
         // TODO 1: 모임을 생성한 리더가 맞는지 검증 확인 필요
 
-        // TODO 2: 모임과 엮인 모임 일정 테이블 삭제 로직 추가 필요
         if (!meetingRepository.existsById(id)) {
             throw new MeetingNotFoundException();
         }
 
         meetingRepository.deleteById(id);
+        meetingCategoryRepository.deleteByMeetingId(id);
     }
 }

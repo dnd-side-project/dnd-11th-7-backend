@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.List;
  * @author 정승조
  * @version 2024. 07. 25.
  */
+@Slf4j
 @Getter
 @ToString
 public class MeetingCreateRequestDto {
@@ -69,7 +71,7 @@ public class MeetingCreateRequestDto {
                     "투표 종료일은 모임 시작일 이전으로 설정해주세요.");
         }
 
-        if (ChronoUnit.DAYS.between(meetingEndDate, meetingStartDate) >= 14) {
+        if (ChronoUnit.DAYS.between(meetingStartDate, meetingEndDate) >= 14) {
             invalidMeetingDateException.addValidation(
                     "meetingStartDate, meetingEndDate",
                     "모임 시작일과 종료일은 최대 14일까지 설정 가능합니다.");
