@@ -12,6 +12,9 @@ import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.entity.MeetingCategory;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
+import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
+import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
+import com.dnd.jjakkak.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +25,8 @@ import java.util.List;
 /**
  * 모임 서비스 클래스입니다.
  *
- * @author 정승조
- * @version 2024. 07. 25.
+ * @author 류태웅
+ * @version 2024. 07. 30.
  */
 @Service
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final MeetingCategoryRepository meetingCategoryRepository;
     private final CategoryRepository categoryRepository;
+    private final MeetingMemberRepository meetingMemberRepository;
 
     @Transactional
     public void createMeeting(MeetingCreateRequestDto requestDto) {
@@ -118,6 +122,18 @@ public class MeetingService {
                 .isAnonymous(meeting.getIsAnonymous())
                 .voteEndDate(meeting.getVoteEndDate())
                 .build();
+    }
+
+    /**
+     * 모임에 속한 회원 조회
+     *
+     * @param id MeetingId
+     * @return List<MemberResponseDto>
+     */
+    @Transactional(readOnly = true)
+    public List<MemberResponseDto> getMeetingListByMeetingId(Long id){
+        List<Member> memberList = meetingMemberRepository.findByMeetingId(id);
+        return memberList.stream().map(MemberResponseDto::new).toList();
     }
 
     /**

@@ -5,6 +5,7 @@ import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
+import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,17 @@ public class MeetingController {
     @GetMapping("/{meetingId}")
     public ResponseEntity<MeetingResponseDto> getMeeting(@PathVariable("meetingId") Long id) {
         return ResponseEntity.ok(meetingService.getMeeting(id));
+    }
+
+    /**
+     * 모임에 속한 회원 조회
+     *
+     * @param id 조회할 모임 ID
+     * @return 200 (OK), body: 회원 응답 DTO
+     */
+    @GetMapping("/{meetingId}/memberList")
+    public ResponseEntity<List<MemberResponseDto>> getMemberListByMemberId(@PathVariable("meetingId") Long id) {
+        return ResponseEntity.ok(meetingService.getMeetingListByMeetingId(id));
     }
 
     /**

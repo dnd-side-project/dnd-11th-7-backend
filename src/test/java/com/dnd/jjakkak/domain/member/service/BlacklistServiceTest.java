@@ -34,8 +34,8 @@ class BlacklistServiceTest {
     void testIsTokenBlacklisted() {
         // given
         String token = "test_token";
-        BlacklistedToken blacklistedToken = new BlacklistedToken();
-        blacklistedToken.setToken(token);
+        BlacklistedToken blacklistedToken = BlacklistedToken.builder()
+                        .token(token).build();
         Mockito.when(blacklistedTokenRepository.findByToken(token))
                 .thenReturn(Optional.of(blacklistedToken));
 
@@ -52,9 +52,10 @@ class BlacklistServiceTest {
         // given
         String token = "test_token";
         LocalDateTime expirationDate = LocalDateTime.now().plusDays(1);
-        BlacklistedToken blacklistedToken = new BlacklistedToken();
-        blacklistedToken.setToken(token);
-        blacklistedToken.setExpirationDate(expirationDate);
+        BlacklistedToken blacklistedToken = BlacklistedToken.builder()
+                .token(token)
+                .expirationDate(expirationDate)
+                .build();
 
         // when
         blacklistService.blacklistToken(token, expirationDate);
