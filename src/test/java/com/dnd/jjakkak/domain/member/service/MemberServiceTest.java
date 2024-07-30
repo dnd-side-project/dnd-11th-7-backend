@@ -27,7 +27,7 @@ import java.util.Optional;
 class MemberServiceTest {
 
     @InjectMocks
-    MemberService memberService;
+    MemberOAuth2Service memberService;
 
     @Mock
     MemberRepository memberRepository;
