@@ -33,8 +33,8 @@ public class MemberOAuth2Service extends DefaultOAuth2UserService {
      * <li>지금은 profile을 null로 하였는데 나중엔 기본 프사로 값을 채워야 할 듯?</li>
      *
      * @param userRequest OAuth2UserRequest
-     * @throws OAuth2AuthenticationException OAuth2AuthenticationException
      * @return member OAuth2User
+     * @throws OAuth2AuthenticationException OAuth2AuthenticationException
      */
 
     @Override
@@ -49,19 +49,19 @@ public class MemberOAuth2Service extends DefaultOAuth2UserService {
         long kakaoId = Long.parseLong(attributes.get("id").toString());
         String nickname = properties.get("nickname").toString();
         Optional<Member> member = memberRepository.findByKakaoId(kakaoId);
-        if(member.isPresent()){
+        if (member.isPresent()) {
             return member.get();
         }
-        else{
-            Member newMember = new Member();
-            if("kakao".equals(oauth2ClientName)){
-                newMember = createMember(nickname, kakaoId);
-            }
-            memberRepository.save(newMember);
-            return newMember;
+
+        Member newMember = new Member();
+        if ("kakao".equals(oauth2ClientName)) {
+            newMember = createMember(nickname, kakaoId);
         }
+        memberRepository.save(newMember);
+        return newMember;
     }
-    private Member createMember(String nickname, long kakaoId){
+
+    private Member createMember(String nickname, long kakaoId) {
         return Member.builder()
                 .memberNickname(nickname)
                 .kakaoId(kakaoId)

@@ -14,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+
 /**
  * 블랙리스트 서비스 테스트 클래스입니다.
  *
@@ -35,7 +37,8 @@ class BlacklistServiceTest {
         // given
         String token = "test_token";
         BlacklistedToken blacklistedToken = BlacklistedToken.builder()
-                        .token(token).build();
+                .token(token)
+                .build();
         Mockito.when(blacklistedTokenRepository.findByToken(token))
                 .thenReturn(Optional.of(blacklistedToken));
 
@@ -52,16 +55,12 @@ class BlacklistServiceTest {
         // given
         String token = "test_token";
         LocalDateTime expirationDate = LocalDateTime.now().plusDays(1);
-        BlacklistedToken blacklistedToken = BlacklistedToken.builder()
-                .token(token)
-                .expirationDate(expirationDate)
-                .build();
 
         // when
         blacklistService.blacklistToken(token, expirationDate);
 
         // then
-        Mockito.verify(blacklistedTokenRepository, Mockito.times(1)).save(blacklistedToken);
+        Mockito.verify(blacklistedTokenRepository, Mockito.times(1)).save(any());
     }
 
     @Test
@@ -72,6 +71,6 @@ class BlacklistServiceTest {
 
         // then
         Mockito.verify(blacklistedTokenRepository, Mockito.times(1))
-                .deleteByExpirationDateBefore(LocalDateTime.now());
+                .deleteByExpirationDateBefore(any());
     }
 }

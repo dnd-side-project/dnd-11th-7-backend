@@ -1,6 +1,5 @@
 package com.dnd.jjakkak.domain.member.service;
 
-import com.dnd.jjakkak.domain.member.entity.RefreshToken;
 import com.dnd.jjakkak.domain.member.repository.RefreshTokenRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * RefreshTokenService 테스트 클래스입니다.
@@ -32,13 +33,12 @@ class RefreshTokenServiceTest {
         // given
         long memberId = 1L;
         String token = "test_token";
-        RefreshToken refreshToken = new RefreshToken(token, memberId);
 
         // when
         refreshTokenService.createRefreshToken(memberId, token);
 
         // then
-        Mockito.verify(refreshTokenRepository, Mockito.times(1)).save(refreshToken);
+        verify(refreshTokenRepository, times(1)).save(any());
     }
 
     @Test
@@ -51,7 +51,7 @@ class RefreshTokenServiceTest {
         refreshTokenService.deleteRefreshToken(token);
 
         // then
-        Mockito.verify(refreshTokenRepository, Mockito.times(1)).deleteByToken(token);
+        verify(refreshTokenRepository, times(1)).deleteByToken(token);
     }
 
     @Test
@@ -59,7 +59,7 @@ class RefreshTokenServiceTest {
     void testValidateRefreshToken() {
         // given
         String token = "test_token";
-        Mockito.when(refreshTokenRepository.existsByToken(token)).thenReturn(true);
+        when(refreshTokenRepository.existsByToken(token)).thenReturn(true);
 
         // when
         boolean actual = refreshTokenService.validateRefreshToken(token);

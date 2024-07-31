@@ -27,9 +27,9 @@ class BlacklistedTokenRepositoryTest {
     void testSaveAndFindBlacklistedToken() {
         // given
         BlacklistedToken token = BlacklistedToken.builder()
-                        .token("test_token")
-                        .expirationDate(LocalDateTime.now().plusDays(1))
-                        .build();
+                .token("test_token")
+                .expirationDate(LocalDateTime.now().plusDays(1))
+                .build();
         blacklistedTokenRepository.save(token);
 
         // when
@@ -45,9 +45,9 @@ class BlacklistedTokenRepositoryTest {
     void testDeleteExpiredTokens() {
         // given
         BlacklistedToken token = BlacklistedToken.builder()
-                        .token("expired_token")
-                        .expirationDate(LocalDateTime.now().minusDays(1))
-                        .build();
+                .token("expired_token")
+                .expirationDate(LocalDateTime.now().minusDays(1))
+                .build();
         blacklistedTokenRepository.save(token);
 
         // when

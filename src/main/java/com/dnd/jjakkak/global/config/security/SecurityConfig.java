@@ -2,9 +2,6 @@ package com.dnd.jjakkak.global.config.security;
 
 import com.dnd.jjakkak.domain.member.jwt.filter.JwtAuthenticationFilter;
 import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2SuccessHandler;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -14,16 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.io.IOException;
 
 /**
  * Spring Security Configuration Class.
@@ -94,7 +87,7 @@ public class SecurityConfig {
      */
 
     @Bean
-    protected CorsConfigurationSource corsConfigurationSource(){ // 추후 CORS 수정 필요
+    protected CorsConfigurationSource corsConfigurationSource() { // 추후 CORS 수정 필요
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOrigin("*");
         config.addAllowedMethod("*");
@@ -118,28 +111,4 @@ public class SecurityConfig {
     }
 
 
-}
-
-/**
- * 인증 실패 시 사용할 클래스
- *
- * <li>code와 message 추가</li>
- */
-class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    @Override
-
-    /**
-     * @param request HttpServletRequest
-     * @param response HttpServletResponse
-     * @param authException AuthenticationException
-     * @throws IOException IOException
-     * @throws ServletException ServletException
-     *
-     * <li>code와 message 추가</li>
-     */
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("{\"code\": \"NP\", \"message\": \"No Permission\"}");
-    }
 }
