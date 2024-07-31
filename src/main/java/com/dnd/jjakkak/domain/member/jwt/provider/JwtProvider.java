@@ -1,9 +1,6 @@
 package com.dnd.jjakkak.domain.member.jwt.provider;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,7 +88,11 @@ public class JwtProvider {
         } catch (ExpiredJwtException e) {
             log.error("JWT 만료", e);
             return null;
-        } catch (Exception e) {
+        } catch (MalformedJwtException e) {
+            log.error("잘못된 토큰", e);
+            return null;
+        }
+        catch (Exception e) {
             log.error("JWT 검증 실패", e);
             return null;
         }
