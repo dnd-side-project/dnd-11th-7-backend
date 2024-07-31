@@ -75,4 +75,12 @@ public class Schedule {
     public void assignMember(Member member) {
         this.member = member;
     }
+
+
+    /**
+     * 일정을 할당하여 isAssigned 를 true 로 변경하는 메서드입니다.
+     */
+    public void scheduleAssign() {
+        this.isAssigned = Boolean.TRUE;
+    }
 }

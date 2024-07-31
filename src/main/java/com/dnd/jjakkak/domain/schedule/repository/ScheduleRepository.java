@@ -11,7 +11,8 @@ import java.util.Optional;
  * @author 정승조
  * @version 2024. 07. 29.
  */
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long>,
+        ScheduleRepositoryCustom {
 
     boolean existsByScheduleUuid(String uuid);
 
