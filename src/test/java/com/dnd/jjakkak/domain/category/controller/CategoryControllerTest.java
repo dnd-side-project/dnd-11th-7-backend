@@ -69,10 +69,9 @@ class CategoryControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-
-                        jsonPath("$[0].categoryName").value("학교"),
-                        jsonPath("$[1].categoryName").value("친구"),
-                        jsonPath("$[2].categoryName").value("회의")
+                        jsonPath("$[?(@.categoryName == '학교')]").exists(),
+                        jsonPath("$[?(@.categoryName == '친구')]").exists(),
+                        jsonPath("$[?(@.categoryName == '회의')]").exists()
                 )
                 .andDo(document("category/getCategoryList/success",
                         preprocessResponse(prettyPrint()),

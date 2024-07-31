@@ -11,6 +11,7 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
+import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,9 @@ class MeetingServiceTest {
     @Mock
     MeetingCategoryRepository meetingCategoryRepository;
 
+    @Mock
+    ScheduleService scheduleService;
+
     @Test
     @DisplayName("모임 생성 테스트 - 성공")
     void testCreateMeeting() {
@@ -72,6 +76,7 @@ class MeetingServiceTest {
         verify(meetingRepository, times(1)).save(any());
         verify(categoryRepository, times(2)).findById(anyLong());
         verify(meetingCategoryRepository, times(2)).save(any());
+        verify(scheduleService, times(6)).createDefaultSchedule(any()); // 인원 수 = 6
 
     }
 
