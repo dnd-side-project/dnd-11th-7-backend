@@ -56,16 +56,21 @@ public class MeetingDummy {
      */
     public static MeetingResponseDto createResponseDto() {
 
-        return new MeetingResponseDto(
-                1L,
-                "세븐일레븐",
-                LocalDate.of(2024, 7, 27),
-                LocalDate.of(2024, 7, 29),
-                6,
-                true,
-                false,
-                LocalDateTime.of(2024, 7, 26, 23, 59, 59)
-        );
+        Meeting meeting = Meeting.builder()
+                .meetingName("세븐일레븐")
+                .meetingStartDate(LocalDate.of(2024, 7, 27))
+                .meetingEndDate(LocalDate.of(2024, 7, 29))
+                .numberOfPeople(6)
+                .isOnline(true)
+                .isAnonymous(false)
+                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
+                .build();
+
+        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
+
+        return MeetingResponseDto.builder()
+                .meeting(meeting)
+                .build();
     }
 
     /**
