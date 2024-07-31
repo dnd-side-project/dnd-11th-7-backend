@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 일정 날짜 서비스 클래스입니다.
  *
@@ -37,5 +39,30 @@ public class DateOfScheduleService {
                 .build();
 
         dateOfScheduleRepository.save(dateOfSchedule);
+    }
+
+    /**
+     * 일정 날짜 리스트를 업데이트하는 메서드입니다. (모든 일정 날짜 삭제 후 새로 생성)
+     *
+     * @param scheduleId 일정 ID
+     * @param requestDto 일정 날짜 생성 요청 DTO 리스트
+     */
+    @Transactional
+    public void updateDateList(Long scheduleId, List<DateOfScheduleCreateRequestDto> requestDto) {
+
+        // scheduleId로 모든 dateOfSchedule 삭제 (QueryDSL)
+        dateOfScheduleRepository.deleteByScheduleId(scheduleId);
+
+        // dateOfSchedule 생성
+        requestDto.forEach(dto -> {
+            DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
+                    .scheduleId(scheduleId)
+                    .dateOfScheduleStart(dto.getDateOfScheduleStart())
+                    .dateOfScheduleEnd(dto.getDateOfScheduleEnd())
+                    .dateOfScheduleRank(dto.getDateOfScheduleRank())
+                    .build();
+
+            dateOfScheduleRepository.save(dateOfSchedule);
+        });
     }
 }

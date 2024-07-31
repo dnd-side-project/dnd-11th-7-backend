@@ -1,6 +1,7 @@
 package com.dnd.jjakkak.domain.schedule.controller;
 
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
+import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -46,6 +47,21 @@ public class ScheduleController {
 
         // 회원 - assignMember
         scheduleService.assignMember(authorization, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 일정을 수정하는 메서드입니다.
+     *
+     * @param scheduleId 일정 ID
+     * @param requestDto 일정 수정 요청 DTO
+     * @return 200 (OK)
+     */
+    @PatchMapping("/{scheduleId}")
+    public ResponseEntity<Void> updateSchedule(@PathVariable("scheduleId") Long scheduleId,
+                                               @Valid @RequestBody ScheduleUpdateRequestDto requestDto) {
+
+        scheduleService.updateSchedule(scheduleId, requestDto);
         return ResponseEntity.ok().build();
     }
 }

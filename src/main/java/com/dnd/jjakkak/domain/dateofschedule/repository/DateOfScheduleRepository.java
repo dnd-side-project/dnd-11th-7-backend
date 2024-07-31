@@ -1,4 +1,4 @@
- package com.dnd.jjakkak.domain.dateofschedule.repository;
+package com.dnd.jjakkak.domain.dateofschedule.repository;
 
 import com.dnd.jjakkak.domain.dateofschedule.entity.DateOfSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @version 2024. 07. 30.
  */
 public interface DateOfScheduleRepository extends JpaRepository<DateOfSchedule, Long> {
+
+    void deleteByScheduleId(Long scheduleId);
+
 }

@@ -10,6 +10,7 @@ import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
+import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleAlreadyAssignedException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
@@ -145,5 +146,22 @@ public class ScheduleService {
 
         // isAssigned -> true
         schedule.scheduleAssign();
+    }
+
+    /**
+     * 일정을 수정하는 메서드입니다.
+     *
+     * @param scheduleId 일정 ID
+     * @param requestDto 일정 수정 요청 DTO
+     */
+    @Transactional
+    public void updateSchedule(Long scheduleId, ScheduleUpdateRequestDto requestDto) {
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(ScheduleNotFoundException::new);
+
+        schedule.updateScheduleNickname(requestDto.getScheduleNickname());
+
+        dateOfScheduleService.updateDateList(scheduleId, requestDto.getDateOfScheduleList());
     }
 }
