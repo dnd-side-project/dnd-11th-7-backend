@@ -84,15 +84,8 @@ public class MeetingService {
         List<Meeting> meetingList = meetingRepository.findAll();
         for (Meeting meeting : meetingList) {
             MeetingResponseDto meetingResponseDto = MeetingResponseDto.builder()
-                    .meetingId(meeting.getMeetingId())
-                    .meetingName(meeting.getMeetingName())
-                    .meetingStartDate(meeting.getMeetingStartDate())
-                    .meetingEndDate(meeting.getMeetingEndDate())
-                    .numberOfPeople(meeting.getNumberOfPeople())
-                    .isOnline(meeting.getIsOnline())
-                    .isAnonymous(meeting.getIsAnonymous())
-                    .voteEndDate(meeting.getVoteEndDate())
-                    .build();
+                        .meeting(meeting)
+                        .build();
 
             meetingResponseDtoList.add(meetingResponseDto);
         }
@@ -113,14 +106,7 @@ public class MeetingService {
                 .orElseThrow(MeetingNotFoundException::new);
 
         return MeetingResponseDto.builder()
-                .meetingId(meeting.getMeetingId())
-                .meetingName(meeting.getMeetingName())
-                .meetingStartDate(meeting.getMeetingStartDate())
-                .meetingEndDate(meeting.getMeetingEndDate())
-                .numberOfPeople(meeting.getNumberOfPeople())
-                .isOnline(meeting.getIsOnline())
-                .isAnonymous(meeting.getIsAnonymous())
-                .voteEndDate(meeting.getVoteEndDate())
+                .meeting(meeting)
                 .build();
     }
 

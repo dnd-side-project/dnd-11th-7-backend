@@ -1,7 +1,6 @@
 package com.dnd.jjakkak.domain.meeting.dto.response;
 
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,8 +14,6 @@ import java.time.LocalDateTime;
  * @version 2024. 07. 30.
  */
 @Getter
-@Builder
-@AllArgsConstructor
 public class MeetingResponseDto {
 
     private final Long meetingId;
