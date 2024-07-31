@@ -21,5 +21,6 @@ public class ScheduleAssignRequestDto {
 
     private String nickName;
 
-    private Long memberId;
+
+    private Long meetingId;
 }
