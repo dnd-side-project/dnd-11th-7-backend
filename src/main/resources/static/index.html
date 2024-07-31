@@ -569,9 +569,12 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 161
+Content-Length: 214
 
 [ {
+  "categoryId" : 1,
+  "categoryName" : "기타"
+}, {
   "categoryId" : 2,
   "categoryName" : "학교"
 }, {
@@ -657,7 +660,7 @@ Content-Length: 51
 
 {
   "categoryId" : 1,
-  "categoryName" : "학교"
+  "categoryName" : "기타"
 }</code></pre>
 </div>
 </div>
@@ -906,13 +909,13 @@ Content-Length: 572
   "code" : "400",
   "message" : "잘못된 요청입니다.",
   "validation" : {
-    "isAnonymous" : "익명 여부는 필수 값입니다.",
     "categoryIds" : "카테고리는 최소 1개 이상 8개 이하로 선택해주세요.",
     "meetingEndDate" : "모임 일정 종료일은 필수 값입니다.",
+    "isAnonymous" : "익명 여부는 필수 값입니다.",
     "meetingName" : "모임명은 필수 값입니다.",
     "numberOfPeople" : "인원수는 필수 값입니다.",
-    "voteEndDate" : "투표 종료일은 필수 값입니다.",
-    "meetingStartDate" : "모임 일정 시작일은 필수 값입니다."
+    "meetingStartDate" : "모임 일정 시작일은 필수 값입니다.",
+    "voteEndDate" : "투표 종료일은 필수 값입니다."
   }
 }</code></pre>
 </div>
@@ -1493,7 +1496,7 @@ Content-Length: 94
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-07-26 01:05:15 +0900
+Last updated 2024-07-29 15:03:40 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

@@ -26,9 +26,11 @@ class BlacklistedTokenRepositoryTest {
     @DisplayName("블랙리스트 토큰 저장 및 조회 테스트")
     void testSaveAndFindBlacklistedToken() {
         // given
-        BlacklistedToken token = new BlacklistedToken();
-        token.setToken("test_token");
-        token.setExpirationDate(LocalDateTime.now().plusDays(1));
+        BlacklistedToken token = BlacklistedToken.builder()
+                .token("test_token")
+                .expirationDate(LocalDateTime.now().plusDays(1))
+                .build();
+
         blacklistedTokenRepository.save(token);
 
         // when
@@ -43,9 +45,10 @@ class BlacklistedTokenRepositoryTest {
     @DisplayName("만료된 블랙리스트 토큰 삭제 테스트")
     void testDeleteExpiredTokens() {
         // given
-        BlacklistedToken token = new BlacklistedToken();
-        token.setToken("expired_token");
-        token.setExpirationDate(LocalDateTime.now().minusDays(1));
+        BlacklistedToken token = BlacklistedToken.builder()
+                .token("expired_token")
+                .expirationDate(LocalDateTime.now().minusDays(1))
+                .build();
         blacklistedTokenRepository.save(token);
 
         // when

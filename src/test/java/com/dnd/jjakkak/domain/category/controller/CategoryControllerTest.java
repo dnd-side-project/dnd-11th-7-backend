@@ -48,19 +48,32 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 전체 목록 조회")
     void testGetCategoryList() throws Exception {
+
         // given
-        Category school = Category.builder().categoryName("학교").build();
-        Category friend = Category.builder().categoryName("친구").build();
-        Category meeting = Category.builder().categoryName("회의").build();
+        Category school = Category.builder()
+                .categoryName("학교")
+                .build();
+
+        Category friend = Category.builder()
+                .categoryName("친구")
+                .build();
+
+        Category meeting = Category.builder()
+                .categoryName("회의")
+                .build();
+
         categoryRepository.saveAll(List.of(school, friend, meeting));
 
         // expected
         mockMvc.perform(get("/api/v1/categories"))
-                .andExpectAll(status().isOk(),
+                .andExpectAll(
+                        status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$[?(@.categoryName == '학교')]").exists(),
-                        jsonPath("$[?(@.categoryName == '친구')]").exists(),
-                        jsonPath("$[?(@.categoryName == '회의')]").exists())
+
+                        jsonPath("$[0].categoryName").value("학교"),
+                        jsonPath("$[1].categoryName").value("친구"),
+                        jsonPath("$[2].categoryName").value("회의")
+                )
                 .andDo(document("category/getCategoryList/success",
                         preprocessResponse(prettyPrint()),
                         responseFields(
@@ -73,15 +86,21 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 단건 조회 - 성공")
     void testGetCategory_Success() throws Exception {
+
         // given
-        Category school = Category.builder().categoryName("기타").build();
+        Category school = Category.builder()
+                .categoryName("학교")
+                .build();
+
         categoryRepository.save(school);
 
         // expected
         mockMvc.perform(get("/api/v1/categories/{id}", school.getCategoryId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.categoryId").value(school.getCategoryId()))
-                .andExpect(jsonPath("$.categoryName").value("기타"))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.categoryId").value(school.getCategoryId()),
+                        jsonPath("$.categoryName").value("학교")
+                )
                 .andDo(document("category/getCategory/success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -97,6 +116,7 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 단건 조회 - 실패 (404)")
     void testGetCategory_Fail() throws Exception {
+
         // expected
         mockMvc.perform(get("/api/v1/categories/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound())
@@ -108,8 +128,9 @@ class CategoryControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("에러 코드"),
                                 fieldWithPath("message").description("에러 메시지"),
-                                fieldWithPath("validation").description("유효성 검사 오류").optional()
+                                fieldWithPath("validation").description("유효성 검사 오류")
                         )
                 ));
     }
+
 }

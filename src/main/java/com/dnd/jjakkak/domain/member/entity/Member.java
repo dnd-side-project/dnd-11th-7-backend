@@ -16,7 +16,7 @@ import java.util.Map;
  * 회원 엔티티입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 27.
+ * @version 2024. 07. 29.
  */
 
 @Entity
@@ -60,15 +60,15 @@ public class Member implements OAuth2User {
     }
 
     /**
-     * <li>로그인 할 때 정보가 바뀌어 있거나, 유저 정보 업데이트 시 사용할 메소드</li>
+     * <li>닉네임 업데이트일 시 사용할 메소드</li>
      */
 
-    public void update(String memberNickname){
+    public void updateNickname(String memberNickname){
         this.memberNickname = memberNickname;
     }
 
     /**
-     * <li>사용하진 않으나 프로필 업테이트일 시 사용할 메소드</li>
+     * <li>프로필 업데이트일 시 사용할 메소드</li>
      */
     public void updateProfile(String memberProfile){
         this.memberProfile = memberProfile;

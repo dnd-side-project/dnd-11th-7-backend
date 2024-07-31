@@ -1,9 +1,10 @@
 package com.dnd.jjakkak.domain.member.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -16,8 +17,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class BlacklistedToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +30,4 @@ public class BlacklistedToken {
 
     @Column(nullable = false, name = "expiration_date")
     private LocalDateTime expirationDate;
-
 }
