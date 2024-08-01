@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.meeting.controller;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 모임 컨트롤러 클래스입니다.
@@ -27,16 +29,25 @@ public class MeetingController {
 
     private final MeetingService meetingService;
 
+
     /**
      * 모임을 생성하는 메서드입니다.
      *
+     * @param token      JWT Token (Bearer Token)
      * @param requestDto 모임 생성 요청 DTO
-     * @return 201 (CREATED)
+     * @return 201 (CREATED), body: 모임 생성 응답 DTO (UUID)
      */
     @PostMapping
-    public ResponseEntity<Void> createGroup(@Valid @RequestBody MeetingCreateRequestDto requestDto) {
-        meetingService.createMeeting(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<MeetingCreateResponseDto> createGroup(@RequestHeader("Authorization") String token,
+                                                                @Valid @RequestBody MeetingCreateRequestDto requestDto) {
+
+        if (Objects.isNull(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(meetingService.createMeeting(token, requestDto));
     }
 
     /**

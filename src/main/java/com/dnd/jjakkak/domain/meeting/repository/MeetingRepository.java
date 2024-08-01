@@ -10,4 +10,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @version 2024. 07. 25.
  */
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
+
+    /**
+     * 모임 uuid로 모임이 존재하는지 확인합니다.
+     *
+     * @param uuid 모임 uuid
+     * @return 모임이 존재하는지 여부
+     */
+    boolean existsByMeetingUuid(String uuid);
 }

@@ -6,6 +6,7 @@ import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
@@ -15,12 +16,17 @@ import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryReposito
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
+import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * 모임 서비스 클래스입니다.
@@ -36,12 +42,24 @@ public class MeetingService {
     private final MeetingCategoryRepository meetingCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final JwtProvider jwtProvider;
+    private final MemberRepository memberRepository;
 
+    /**
+     * 모임을 생성하는 메서드입니다.
+     *
+     * @param token      JWT Token (Bearer Token)
+     * @param requestDto 모임 생성 요청 DTO
+     * @return 모임 생성 응답 DTO (UUID)
+     */
     @Transactional
-    public void createMeeting(MeetingCreateRequestDto requestDto) {
+    public MeetingCreateResponseDto createMeeting(String token, MeetingCreateRequestDto requestDto) {
 
         // checkMeetingDate 메서드를 호출하여 유효성 검사를 진행합니다.
         requestDto.checkMeetingDate();
+
+        Member member = getMemberByToken(token);
+        String uuid = generateUuid();
 
         // 모임 생성 로직
         Meeting meeting = Meeting.builder()
@@ -52,6 +70,8 @@ public class MeetingService {
                 .isOnline(requestDto.getIsOnline())
                 .isAnonymous(requestDto.getIsAnonymous())
                 .voteEndDate(requestDto.getVoteEndDate())
+                .meetingLeaderId(member.getMemberId())
+                .meetingUuid(uuid)
                 .build();
 
         meetingRepository.save(meeting);
@@ -70,6 +90,10 @@ public class MeetingService {
 
             meetingCategoryRepository.save(meetingCategory);
         }
+
+        return MeetingCreateResponseDto.builder()
+                .meetingUuid(uuid)
+                .build();
     }
 
     /**
@@ -84,8 +108,8 @@ public class MeetingService {
         List<Meeting> meetingList = meetingRepository.findAll();
         for (Meeting meeting : meetingList) {
             MeetingResponseDto meetingResponseDto = MeetingResponseDto.builder()
-                        .meeting(meeting)
-                        .build();
+                    .meeting(meeting)
+                    .build();
 
             meetingResponseDtoList.add(meetingResponseDto);
         }
@@ -117,7 +141,7 @@ public class MeetingService {
      * @return List<MemberResponseDto>
      */
     @Transactional(readOnly = true)
-    public List<MemberResponseDto> getMeetingListByMeetingId(Long id){
+    public List<MemberResponseDto> getMeetingListByMeetingId(Long id) {
         List<Member> memberList = meetingMemberRepository.findByMeetingId(id);
         return memberList.stream().map(MemberResponseDto::new).toList();
     }
@@ -190,5 +214,32 @@ public class MeetingService {
         }
 
         meetingRepository.deleteById(id);
+    }
+
+    /**
+     * UUID를 생성하는 메서드입니다.
+     *
+     * @return UUID
+     */
+    private String generateUuid() {
+        String uuid;
+
+        do {
+            uuid = UUID.randomUUID().toString().substring(0, 8);
+        } while (meetingRepository.existsByMeetingUuid(uuid));
+
+        return uuid;
+    }
+
+    /**
+     * 토큰을 통해 회원 정보를 조회하는 메서드입니다.
+     *
+     * @param token AccessToken
+     * @return Member Entity
+     */
+    private Member getMemberByToken(String token) {
+        String kakaoId = Objects.requireNonNull(jwtProvider.validate(token));
+        return memberRepository.findByKakaoId(Long.parseLong(kakaoId))
+                .orElseThrow(MemberNotFoundException::new);
     }
 }
