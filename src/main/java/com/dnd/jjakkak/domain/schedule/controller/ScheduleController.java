@@ -24,7 +24,6 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-
     /**
      * 일정을 할당하는 메서드입니다.
      *
@@ -37,16 +36,15 @@ public class ScheduleController {
     public ResponseEntity<Void> assignSchedule(@RequestParam(value = "uuid", required = false) String uuid,
                                                @Valid @RequestBody ScheduleAssignRequestDto requestDto,
                                                HttpServletRequest request) {
+
         String authorization = request.getHeader("Authorization");
 
-        // 비회원 - assignNonMember
         if (Objects.isNull(authorization)) {
-            scheduleService.assignNonMember(uuid, requestDto);
-            return ResponseEntity.ok().build();
+            scheduleService.assignScheduleToNonMember(uuid, requestDto);
+        } else {
+            scheduleService.assignScheduleToMember(authorization, requestDto);
         }
 
-        // 회원 - assignMember
-        scheduleService.assignMember(authorization, requestDto);
         return ResponseEntity.ok().build();
     }
 

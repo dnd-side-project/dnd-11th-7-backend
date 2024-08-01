@@ -44,18 +44,11 @@ public class ScheduleService {
      */
     @Transactional
     public void createDefaultSchedule(Meeting meeting) {
-        // 일정 생성 로직
 
-        // 1. 6자리 랜덤 문자열 생성
-        String uuid = UUID.randomUUID().toString().substring(0, 6);
+        // 6자리 랜덤 문자열 생성
+        String uuid = generatedUuid();
 
-        // DB에 해당 UUID가 존재하는지 확인 후 없으면 생성
-        // TODO: 개선 방법이 없을까?
-        while (scheduleRepository.existsByScheduleUuid(uuid)) {
-            uuid = UUID.randomUUID().toString().substring(0, 6);
-        }
-
-        // 2. 일정 생성
+        // 일정 생성
         Schedule schedule = Schedule.builder()
                 .meeting(meeting)
                 .scheduleNickname("익명")
@@ -65,7 +58,6 @@ public class ScheduleService {
         scheduleRepository.save(schedule);
     }
 
-
     /**
      * 비회원 일정 할당 메서드입니다.
      *
@@ -73,34 +65,13 @@ public class ScheduleService {
      * @param requestDto   일정 할당 요청 DTO
      */
     @Transactional
-    public void assignNonMember(String scheduleUuid, ScheduleAssignRequestDto requestDto) {
+    public void assignScheduleToNonMember(String scheduleUuid, ScheduleAssignRequestDto requestDto) {
 
         // uuid로 일정을 찾기
         Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        // 이미 할당된 일정인가? (409 Conflict)
-        if (Boolean.TRUE.equals(schedule.getIsAssigned())) {
-            throw new ScheduleAlreadyAssignedException();
-        }
-
-        // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
-        if (meetingRepository.checkMeetingFull(schedule.getMeeting().getMeetingId())) {
-            throw new MeetingFullException();
-        }
-
-        // 익명인 경우에는 닉네임을 변경하지 않음
-        if (!meetingRepository.isAnonymous(schedule.getMeeting().getMeetingId())) {
-            schedule.updateScheduleNickname(requestDto.getNickName());
-        }
-
-        // 일정 날짜 저장
-        for (DateOfScheduleCreateRequestDto dateOfScheduleCreateRequestDto : requestDto.getDateOfScheduleList()) {
-            dateOfScheduleService.createDateOfSchedule(schedule.getScheduleId(), dateOfScheduleCreateRequestDto);
-        }
-
-        // isAssigned -> true
-        schedule.scheduleAssign();
+        validateAndAssignSchedule(requestDto, schedule);
     }
 
     /**
@@ -110,7 +81,7 @@ public class ScheduleService {
      * @param requestDto    일정 할당 요청 DTO
      */
     @Transactional
-    public void assignMember(String authorization, ScheduleAssignRequestDto requestDto) {
+    public void assignScheduleToMember(String authorization, ScheduleAssignRequestDto requestDto) {
 
         // accessToken에서 memberId 추출
         String kakaoId = jwtProvider.validate(authorization);
@@ -119,10 +90,51 @@ public class ScheduleService {
         Member member = memberRepository.findByKakaoId(Long.parseLong(kakaoId))
                 .orElseThrow(MemberNotFoundException::new);
 
-
         // memberId, meetingId로 schedule 조회
         Schedule schedule = scheduleRepository.findByMemberIdAndMeetingId(member.getMemberId(), requestDto.getMeetingId())
                 .orElseThrow(ScheduleNotFoundException::new);
+
+        validateAndAssignSchedule(requestDto, schedule);
+    }
+
+    /**
+     * 일정을 수정하는 메서드입니다.
+     *
+     * @param scheduleId 일정 ID
+     * @param requestDto 일정 수정 요청 DTO
+     */
+    @Transactional
+    public void updateSchedule(Long scheduleId, ScheduleUpdateRequestDto requestDto) {
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(ScheduleNotFoundException::new);
+
+        schedule.updateScheduleNickname(requestDto.getScheduleNickname());
+
+        dateOfScheduleService.updateDateList(scheduleId, requestDto.getDateOfScheduleList());
+    }
+
+    /**
+     * UUID 생성 메서드입니다.
+     *
+     * @return 중복되지 않은 UUID
+     */
+    private String generatedUuid() {
+        String uuid;
+        do {
+            uuid = UUID.randomUUID().toString().substring(0, 6);
+        } while (scheduleRepository.existsByScheduleUuid(uuid));
+
+        return uuid;
+    }
+
+    /**
+     * 일정 유효성 검사 및 할당 메서드입니다.
+     *
+     * @param requestDto 일정 할당 요청 DTO
+     * @param schedule   할당할 일정
+     */
+    private void validateAndAssignSchedule(ScheduleAssignRequestDto requestDto, Schedule schedule) {
 
         // 이미 할당된 일정인가? (409 Conflict)
         if (Boolean.TRUE.equals(schedule.getIsAssigned())) {
@@ -146,22 +158,5 @@ public class ScheduleService {
 
         // isAssigned -> true
         schedule.scheduleAssign();
-    }
-
-    /**
-     * 일정을 수정하는 메서드입니다.
-     *
-     * @param scheduleId 일정 ID
-     * @param requestDto 일정 수정 요청 DTO
-     */
-    @Transactional
-    public void updateSchedule(Long scheduleId, ScheduleUpdateRequestDto requestDto) {
-
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(ScheduleNotFoundException::new);
-
-        schedule.updateScheduleNickname(requestDto.getScheduleNickname());
-
-        dateOfScheduleService.updateDateList(scheduleId, requestDto.getDateOfScheduleList());
     }
 }
