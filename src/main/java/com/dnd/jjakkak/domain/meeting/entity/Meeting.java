@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
  * @version 2024. 07. 23.
  */
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_meeting_uuid", columnList = "meeting_uuid", unique = true)
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
