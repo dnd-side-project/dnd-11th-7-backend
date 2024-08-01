@@ -58,7 +58,8 @@ public class Meeting {
 
     @Builder
     public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
-                   Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous, LocalDateTime voteEndDate) {
+                   Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous,
+                   LocalDateTime voteEndDate, Long meetingLeaderId, String meetingUuid) {
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
@@ -66,6 +67,8 @@ public class Meeting {
         this.isOnline = isOnline;
         this.isAnonymous = isAnonymous;
         this.voteEndDate = voteEndDate;
+        this.meetingLeaderId = meetingLeaderId;
+        this.meetingUuid = meetingUuid;
     }
 
 
