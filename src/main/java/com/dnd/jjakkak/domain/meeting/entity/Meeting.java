@@ -50,6 +50,12 @@ public class Meeting {
     @Column(name = "confirmed_schedule")
     private LocalDateTime confirmedSchedule;
 
+    @Column(nullable = false, name = "meeting_leader_id")
+    private Long meetingLeaderId;
+
+    @Column(nullable = false, name = "meeting_uuid", length = 8)
+    private String meetingUuid;
+
     @Builder
     public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
                    Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous, LocalDateTime voteEndDate) {
