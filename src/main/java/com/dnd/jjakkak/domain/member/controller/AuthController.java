@@ -1,9 +1,9 @@
 package com.dnd.jjakkak.domain.member.controller;
 
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +16,9 @@ import java.util.Collections;
  *
  * @author 류태웅
  * @version 2024. 08. 02.
+ *
  */
-
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -26,8 +27,8 @@ public class AuthController {
     private final JwtProvider jwtProvider;
 
     /**
-     * 로그아웃 시 프론트 측에서 보내는 access_token과 일치한 지 확인 후
-     * 프론트엔드에게 로그인 또는 비로그인 상태의 메세지롤 보냄
+     * 프론트 측에서 보내는 access_token을 확인 후
+     * 프론트엔드에게 로그인 또는 비로그인 상태의 메시지를 보냄
      *
      * @param request        HttpServletRequest
      * @return message ResponseEntity
@@ -35,18 +36,18 @@ public class AuthController {
 
     @GetMapping("/check-auth")
     public ResponseEntity<?> checkAuth(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("access_token")) {
-                    String token = cookie.getValue();
-                    if (!jwtProvider.validate(token).isEmpty()) {
-                        return ResponseEntity.ok().body(Collections.singletonMap("isAuthenticated", true));
-                    }
-                }
+        String authorizationHeader = request.getHeader("Authorization");
+        log.info(authorizationHeader);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            String subject = jwtProvider.validate(token);
+
+            if (subject != null && !subject.isEmpty()) {
+                log.info("isAuthenticated");
+                return ResponseEntity.ok().body(Collections.singletonMap("isAuthenticated", true));
             }
         }
+        log.info("isNotAuthenticated");
         return ResponseEntity.ok().body(Collections.singletonMap("isAuthenticated", false));
     }
 }
-

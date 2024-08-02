@@ -104,7 +104,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 도메인 명시
         config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers"));
+        config.addExposedHeader("Authorization"); //프론트에서 해당 헤더를 읽을 수 있게
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
