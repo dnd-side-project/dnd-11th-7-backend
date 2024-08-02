@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 /**
  * 모임 응답 DTO 클래스입니다.
  *
- * @author 류태웅
+ * @author 정승조, 류태웅
  * @version 2024. 07. 30.
  */
 @Getter
@@ -24,9 +24,12 @@ public class MeetingResponseDto {
     private final Boolean isOnline;
     private final Boolean isAnonymous;
     private final LocalDateTime voteEndDate;
+    private final LocalDateTime confirmedSchedule;
+    private final Long meetingLeaderId;
+    private final String meetingUuid;
 
     @Builder
-    public MeetingResponseDto(Meeting meeting){
+    public MeetingResponseDto(Meeting meeting) {
         this.meetingId = meeting.getMeetingId();
         this.meetingName = meeting.getMeetingName();
         this.meetingStartDate = meeting.getMeetingStartDate();
@@ -35,5 +38,8 @@ public class MeetingResponseDto {
         this.isOnline = meeting.getIsOnline();
         this.isAnonymous = meeting.getIsAnonymous();
         this.voteEndDate = meeting.getVoteEndDate();
+        this.confirmedSchedule = meeting.getConfirmedSchedule();
+        this.meetingLeaderId = meeting.getMeetingLeaderId();
+        this.meetingUuid = meeting.getMeetingUuid();
     }
 }

@@ -31,6 +31,13 @@ public class MeetingMember {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder
+    public MeetingMember(Pk pk, Meeting meeting, Member member) {
+        this.pk = pk;
+        this.meeting = meeting;
+        this.member = member;
+    }
+
     @Embeddable
     @Getter
     @NoArgsConstructor
