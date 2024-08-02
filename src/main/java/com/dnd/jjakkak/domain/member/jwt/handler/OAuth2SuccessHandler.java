@@ -4,6 +4,7 @@ import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -52,9 +53,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
         refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
 
-        // 토큰을 응답 헤더에 추가
-        response.setHeader("Authorization", "Bearer " + token);
-        response.setHeader("RefreshToken", refreshToken);
+        Cookie accessTokenCookie = new Cookie("access_token", token);
+        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge(60*30); // 만료 시간 : 30분
+        accessTokenCookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 (초 단위)
+        response.addCookie(accessTokenCookie);
+
+        Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setMaxAge(60*60*24*7); // 만료 시간 : 1wn
+        refreshTokenCookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정 (초 단위)
+        response.addCookie(refreshTokenCookie);
 
         // 로그인 성공 시 리다이렉트되는 URL은 추후 수정 필요
         response.sendRedirect("http://localhost:8080/auth/oauth-response/");
