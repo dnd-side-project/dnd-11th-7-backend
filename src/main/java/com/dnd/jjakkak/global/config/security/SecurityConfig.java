@@ -1,7 +1,10 @@
 package com.dnd.jjakkak.global.config.security;
 
 import com.dnd.jjakkak.domain.member.jwt.filter.JwtAuthenticationFilter;
+import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2FailureHandler;
+import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2LogoutHandler;
 import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -18,11 +21,13 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 /**
  * Spring Security Configuration Class.
  *
  * @author 류태웅
- * @version 2024. 07. 27.
+ * @version 2024. 08. 02.
  */
 
 @Configurable
@@ -34,6 +39,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final DefaultOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
+    private final OAuth2LogoutHandler oAuth2LogoutHandler;
 
     /**
      * Security Bean 등록.
@@ -69,6 +76,12 @@ public class SecurityConfig {
                         .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
                         .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
+                        .failureHandler(oAuth2FailureHandler)
+                )
+                .logout(logout -> logout
+                        .addLogoutHandler(oAuth2LogoutHandler)
+                        .logoutUrl("/api/v1/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling // 실패 시 해당 메시지 반환
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint())
@@ -81,7 +94,7 @@ public class SecurityConfig {
     /**
      * CORS 설정 용 메소드 추가
      *
-     * <li>추후 수정 필요</li>
+     * <li>credentials를 허용하기 위해 특정 도메인 추가</li>
      *
      * @return CorsConfigurationSource
      */
@@ -89,9 +102,10 @@ public class SecurityConfig {
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() { // 추후 CORS 수정 필요
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 도메인 명시
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -109,6 +123,4 @@ public class SecurityConfig {
         return web -> web.ignoring()
                 .requestMatchers("/favicon");
     }
-
-
 }

@@ -19,7 +19,7 @@ import java.io.IOException;
  * 검증 성공 시 토큰이 저장된 링크로 이동하는 핸들러입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 27.
+ * @version 2024. 08. 02.
  */
 
 @Slf4j
@@ -68,6 +68,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(refreshTokenCookie);
 
         // 로그인 성공 시 리다이렉트되는 URL은 추후 수정 필요
-        response.sendRedirect("http://localhost:8080/auth/oauth-response/");
+        response.sendRedirect("http://localhost:3000/");
     }
 }
