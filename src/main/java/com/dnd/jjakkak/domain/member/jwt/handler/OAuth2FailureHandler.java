@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 검증 실패 시 예외 처리 링크로 이동하는 핸들러입니다.
@@ -31,7 +32,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
             errorMessage="알 수 없는 이유로 로그인이 안되고 있습니다.";
         }
 
-        errorMessage= URLEncoder.encode(errorMessage,"UTF-8");//한글 인코딩 깨지는 문제 방지
+        errorMessage= URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);//한글 인코딩 깨지는 문제 방지
         response.sendRedirect("http://localhost:8080/auth/oauth-response/error="+errorMessage);
     }
 }
