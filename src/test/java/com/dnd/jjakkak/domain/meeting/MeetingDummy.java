@@ -1,7 +1,6 @@
 package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -101,20 +100,6 @@ public class MeetingDummy {
                 .build();
 
         return List.of(meeting, study);
-    }
-
-    public static MeetingUpdateRequestDto updateRequestDto(Long... categoryIds) {
-        MeetingUpdateRequestDto requestDto = new MeetingUpdateRequestDto();
-        ReflectionTestUtils.setField(requestDto, "meetingName", "DND 11기 모임");
-        ReflectionTestUtils.setField(requestDto, "meetingStartDate", LocalDate.of(2024, 8, 11));
-        ReflectionTestUtils.setField(requestDto, "meetingEndDate", LocalDate.of(2024, 8, 12));
-        ReflectionTestUtils.setField(requestDto, "numberOfPeople", 10);
-        ReflectionTestUtils.setField(requestDto, "isOnline", false);
-        ReflectionTestUtils.setField(requestDto, "isAnonymous", false);
-        ReflectionTestUtils.setField(requestDto, "voteEndDate", LocalDateTime.of(2024, 8, 4, 23, 59, 59));
-        ReflectionTestUtils.setField(requestDto, "categoryIds", List.of(categoryIds));
-
-        return requestDto;
     }
 
 }

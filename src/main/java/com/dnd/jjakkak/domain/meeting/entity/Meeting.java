@@ -1,7 +1,6 @@
 package com.dnd.jjakkak.domain.meeting.entity;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
 import com.dnd.jjakkak.domain.meeting.exception.InvalidMeetingDateException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -89,20 +88,5 @@ public class Meeting {
         }
 
         this.confirmedSchedule = requestDto.getConfirmedSchedule();
-    }
-
-    /**
-     * 모임 정보를 수정합니다.
-     *
-     * @param requestDto 수정 요청 DTO
-     */
-    public void updateMeeting(MeetingUpdateRequestDto requestDto) {
-        this.meetingName = requestDto.getMeetingName();
-        this.meetingStartDate = requestDto.getMeetingStartDate();
-        this.meetingEndDate = requestDto.getMeetingEndDate();
-        this.numberOfPeople = requestDto.getNumberOfPeople();
-        this.isOnline = requestDto.getIsOnline();
-        this.isAnonymous = requestDto.getIsAnonymous();
-        this.voteEndDate = requestDto.getVoteEndDate();
     }
 }
