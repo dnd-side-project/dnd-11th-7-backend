@@ -16,7 +16,7 @@ import java.util.Date;
  * JWT를 만들고 검증하는 Provider입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 27.
+ * @version 2024. 08. 02.
  */
 
 @Slf4j
@@ -75,30 +75,14 @@ public class JwtProvider {
      * @return subject
      */
 
-    public String validate(String jwt) {
-        String subject;
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(jwt)
-                    .getBody();
-            subject = claims.getSubject();
-            log.info("subject, {}", subject);
-        } catch (ExpiredJwtException e) {
-            log.error("JWT 만료", e);
-            return null;
-        } catch (MalformedJwtException e) {
-            log.error("잘못된 토큰", e);
-            return null;
-        }
-        catch (Exception e) {
-            log.error("JWT 검증 실패", e);
-            return null;
-        }
-        return subject;
+    public String validate(String jwt) throws ExpiredJwtException, MalformedJwtException, JwtException {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+        return claims.getSubject();
     }
-
     /**
      * RefreshToken에서 subject를 추출하는 메소드
      *
