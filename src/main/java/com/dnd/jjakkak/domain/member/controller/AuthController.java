@@ -1,87 +1,53 @@
 package com.dnd.jjakkak.domain.member.controller;
 
-import com.dnd.jjakkak.domain.member.service.BlacklistService;
-import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
-import com.dnd.jjakkak.global.exception.ErrorResponse;
+import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.util.Collections;
 
 /**
- * 로그아웃 시 사용하는 컨트롤러입니다.
+ * 현재 Member의 로그인 여부를 확인하는 컨트롤러입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 27.
+ * @version 2024. 08. 02.
+ *
  */
-
 @Slf4j
 @RestController
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AuthController {
-    private final RefreshTokenService refreshTokenService;
-    private final BlacklistService blacklistService;
+
+    private final JwtProvider jwtProvider;
 
     /**
-     * 로그아웃을 할 때 사용합니다.
-     * 헤더에 Authorization : Bearer {refresh_token}을 입력한 다음 호출
-     * 그렇게 되면 DB에 refresh_token이 삭제되고 블랙리스트에 추가됨
+     * 프론트 측에서 보내는 access_token을 확인 후
+     * 프론트엔드에게 로그인 또는 비로그인 상태의 메시지를 보냄
      *
-     * @param refreshToken String
-     * @return ResponseEntity<String>
+     * @param request        HttpServletRequest
+     * @return message ResponseEntity
      */
-    @PostMapping("/api/v1/logout")
-    public ResponseEntity<?> logout(@RequestHeader(value = "Authorization", required = false) String refreshToken) {
 
-        // TODO: LoginHandler로 수정해보기
+    @GetMapping("/check-auth")
+    public ResponseEntity<?> checkAuth(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        log.info(authorizationHeader);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            String subject = jwtProvider.validate(token);
 
-        log.info("logout 시작");
-
-        if (refreshToken != null && refreshToken.startsWith("Bearer ")) {
-            refreshToken = refreshToken.substring(7);
-            log.info("logout refreshToken: {}", refreshToken);
-
-            if (refreshTokenService.validateRefreshToken(refreshToken)) {
-                try {
-                    refreshTokenService.deleteRefreshToken(refreshToken);
-                    LocalDateTime expirationDate = LocalDateTime.now().plusWeeks(1); // 토큰의 실제 만료 시간으로 설정
-                    blacklistService.blacklistToken(refreshToken, expirationDate);
-                    log.info("logout 성공");
-                    return ResponseEntity.ok().build();
-                } catch (Exception e) {
-                    log.error("서버 에러", e);
-
-                    ErrorResponse response = ErrorResponse.builder()
-                            .code("500")
-                            .message("Server Error")
-                            .build();
-
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-                }
-            } else {
-                log.error("Refresh Token 인증 오류");
-
-                ErrorResponse response = ErrorResponse.builder()
-                        .code("401")
-                        .message("Invalid Refresh Token")
-                        .build();
-
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            if (subject != null && !subject.isEmpty()) {
+                log.info("isAuthenticated");
+                return ResponseEntity.ok().body(Collections.singletonMap("isAuthenticated", true));
             }
         }
-
-        log.error("헤더 인증 오류");
-
-        ErrorResponse response = ErrorResponse.builder()
-                .code("400")
-                .message("Invalid Header Error")
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        log.info("isNotAuthenticated");
+        return ResponseEntity.ok().body(Collections.singletonMap("isAuthenticated", false));
     }
 }

@@ -1,7 +1,6 @@
 package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -56,16 +55,20 @@ public class MeetingDummy {
      */
     public static MeetingResponseDto createResponseDto() {
 
-        return new MeetingResponseDto(
-                1L,
-                "세븐일레븐",
-                LocalDate.of(2024, 7, 27),
-                LocalDate.of(2024, 7, 29),
-                6,
-                true,
-                false,
-                LocalDateTime.of(2024, 7, 26, 23, 59, 59)
-        );
+        Meeting meeting = Meeting.builder()
+                .meetingName("세븐일레븐")
+                .meetingStartDate(LocalDate.of(2024, 7, 27))
+                .meetingEndDate(LocalDate.of(2024, 7, 29))
+                .numberOfPeople(6)
+                .isAnonymous(false)
+                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
+                .build();
+
+        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
+
+        return MeetingResponseDto.builder()
+                .meeting(meeting)
+                .build();
     }
 
     /**
@@ -80,7 +83,6 @@ public class MeetingDummy {
                 .meetingStartDate(LocalDate.of(2024, 7, 27))
                 .meetingEndDate(LocalDate.of(2024, 7, 29))
                 .numberOfPeople(6)
-                .isOnline(true)
                 .isAnonymous(false)
                 .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
                 .build();
@@ -90,26 +92,11 @@ public class MeetingDummy {
                 .meetingStartDate(LocalDate.of(2024, 8, 1))
                 .meetingEndDate(LocalDate.of(2024, 8, 5))
                 .numberOfPeople(4)
-                .isOnline(true)
                 .isAnonymous(false)
                 .voteEndDate(LocalDateTime.of(2024, 7, 30, 23, 59, 59))
                 .build();
 
         return List.of(meeting, study);
-    }
-
-    public static MeetingUpdateRequestDto updateRequestDto(Long... categoryIds) {
-        MeetingUpdateRequestDto requestDto = new MeetingUpdateRequestDto();
-        ReflectionTestUtils.setField(requestDto, "meetingName", "DND 11기 모임");
-        ReflectionTestUtils.setField(requestDto, "meetingStartDate", LocalDate.of(2024, 8, 11));
-        ReflectionTestUtils.setField(requestDto, "meetingEndDate", LocalDate.of(2024, 8, 12));
-        ReflectionTestUtils.setField(requestDto, "numberOfPeople", 10);
-        ReflectionTestUtils.setField(requestDto, "isOnline", false);
-        ReflectionTestUtils.setField(requestDto, "isAnonymous", false);
-        ReflectionTestUtils.setField(requestDto, "voteEndDate", LocalDateTime.of(2024, 8, 4, 23, 59, 59));
-        ReflectionTestUtils.setField(requestDto, "categoryIds", List.of(categoryIds));
-
-        return requestDto;
     }
 
 }

@@ -44,7 +44,7 @@ public class Member implements OAuth2User {
     private String memberProfile;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name="role")
+    @Column(nullable = false, name="role", columnDefinition = "varchar(20)")
     private Role role;
 
     /**

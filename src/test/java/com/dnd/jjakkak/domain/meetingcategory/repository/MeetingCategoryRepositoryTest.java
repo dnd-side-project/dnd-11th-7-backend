@@ -45,9 +45,10 @@ class MeetingCategoryRepositoryTest {
                 .meetingStartDate(LocalDate.of(2024, 7, 27))
                 .meetingEndDate(LocalDate.of(2024, 7, 29))
                 .numberOfPeople(6)
-                .isOnline(true)
                 .isAnonymous(false)
                 .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
+                .meetingLeaderId(1L)
+                .meetingUuid("12345678")
                 .build();
 
         entityManager.persist(meeting);

@@ -26,11 +26,11 @@ import java.util.List;
 @ToString
 public class MeetingCreateRequestDto {
 
-    @Size(min = 1, max = 8, message = "카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
+    @Size(min = 1, max = 3, message = "카테고리는 최소 1개 이상 3개 이하로 선택해주세요.")
     private final List<Long> categoryIds = new ArrayList<>();
 
     @NotBlank(message = "모임명은 필수 값입니다.")
-    @Size(max = 30, message = "모임명을 30자 이내로 입력해주세요.")
+    @Size(max = 20, message = "모임명을 20자 이내로 입력해주세요.")
     private String meetingName;
 
     @NotNull(message = "모임 일정 시작일은 필수 값입니다.")
@@ -42,8 +42,6 @@ public class MeetingCreateRequestDto {
     @NotNull(message = "인원수는 필수 값입니다.")
     @Max(value = 10, message = "인원수는 10명 이하로 입력해주세요.")
     private Integer numberOfPeople;
-
-    private Boolean isOnline;
 
     @NotNull(message = "익명 여부는 필수 값입니다.")
     private Boolean isAnonymous;

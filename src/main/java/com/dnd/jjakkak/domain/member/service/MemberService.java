@@ -1,5 +1,8 @@
 package com.dnd.jjakkak.domain.member.service;
 
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
@@ -9,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Member의 CRUD Service입니다.
@@ -21,6 +26,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final MeetingMemberRepository meetingMemberRepository;
+
+    /**
+     * 해당 회원이 속한 모임 출력
+     *
+     * @param id MemberId
+     * @return List<MeetingResponseDto>
+     */
+    @Transactional(readOnly = true)
+    public List<MeetingResponseDto> getMeetingListByMemberId(Long id){
+        List<Meeting> meetingList = meetingMemberRepository.findByMemberId(id);
+        return meetingList.stream().map(MeetingResponseDto::new).toList();
+    }
 
     /**
      * 닉네임 수정
@@ -66,4 +84,6 @@ public class MemberService {
     public void deletedMemberAllDeleted(){
         memberRepository.deleteAllByIsDeleteTrue();
     }
+
+
 }
