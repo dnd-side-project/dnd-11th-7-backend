@@ -21,7 +21,6 @@ public class MeetingResponseDto {
     private final LocalDate meetingStartDate;
     private final LocalDate meetingEndDate;
     private final Integer numberOfPeople;
-    private final Boolean isOnline;
     private final Boolean isAnonymous;
     private final LocalDateTime voteEndDate;
     private final LocalDateTime confirmedSchedule;
@@ -35,7 +34,6 @@ public class MeetingResponseDto {
         this.meetingStartDate = meeting.getMeetingStartDate();
         this.meetingEndDate = meeting.getMeetingEndDate();
         this.numberOfPeople = meeting.getNumberOfPeople();
-        this.isOnline = meeting.getIsOnline();
         this.isAnonymous = meeting.getIsAnonymous();
         this.voteEndDate = meeting.getVoteEndDate();
         this.confirmedSchedule = meeting.getConfirmedSchedule();

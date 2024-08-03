@@ -60,7 +60,6 @@ public class MeetingDummy {
                 .meetingStartDate(LocalDate.of(2024, 7, 27))
                 .meetingEndDate(LocalDate.of(2024, 7, 29))
                 .numberOfPeople(6)
-                .isOnline(true)
                 .isAnonymous(false)
                 .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
                 .build();
@@ -84,7 +83,6 @@ public class MeetingDummy {
                 .meetingStartDate(LocalDate.of(2024, 7, 27))
                 .meetingEndDate(LocalDate.of(2024, 7, 29))
                 .numberOfPeople(6)
-                .isOnline(true)
                 .isAnonymous(false)
                 .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
                 .build();
@@ -94,7 +92,6 @@ public class MeetingDummy {
                 .meetingStartDate(LocalDate.of(2024, 8, 1))
                 .meetingEndDate(LocalDate.of(2024, 8, 5))
                 .numberOfPeople(4)
-                .isOnline(true)
                 .isAnonymous(false)
                 .voteEndDate(LocalDateTime.of(2024, 7, 30, 23, 59, 59))
                 .build();

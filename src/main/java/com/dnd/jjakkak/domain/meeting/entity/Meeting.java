@@ -40,9 +40,6 @@ public class Meeting {
     @Column(nullable = false, name = "number_of_people")
     private Integer numberOfPeople;
 
-    @Column(name = "is_online")
-    private Boolean isOnline;
-
     @Column(name = "is_anonymous")
     private Boolean isAnonymous;
 
@@ -60,13 +57,12 @@ public class Meeting {
 
     @Builder
     public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
-                   Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous,
+                   Integer numberOfPeople, Boolean isAnonymous,
                    LocalDateTime voteEndDate, Long meetingLeaderId, String meetingUuid) {
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
         this.numberOfPeople = numberOfPeople;
-        this.isOnline = isOnline;
         this.isAnonymous = isAnonymous;
         this.voteEndDate = voteEndDate;
         this.meetingLeaderId = meetingLeaderId;
