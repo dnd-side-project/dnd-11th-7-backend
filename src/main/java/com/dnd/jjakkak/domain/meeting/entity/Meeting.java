@@ -1,7 +1,6 @@
 package com.dnd.jjakkak.domain.meeting.entity;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingUpdateRequestDto;
 import com.dnd.jjakkak.domain.meeting.exception.InvalidMeetingDateException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,6 +15,9 @@ import java.time.LocalDateTime;
  * @version 2024. 07. 23.
  */
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_meeting_uuid", columnList = "meeting_uuid", unique = true)
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
@@ -38,9 +40,6 @@ public class Meeting {
     @Column(nullable = false, name = "number_of_people")
     private Integer numberOfPeople;
 
-    @Column(name = "is_online")
-    private Boolean isOnline;
-
     @Column(name = "is_anonymous")
     private Boolean isAnonymous;
 
@@ -50,16 +49,24 @@ public class Meeting {
     @Column(name = "confirmed_schedule")
     private LocalDateTime confirmedSchedule;
 
+    @Column(nullable = false, name = "meeting_leader_id")
+    private Long meetingLeaderId;
+
+    @Column(nullable = false, name = "meeting_uuid", length = 8)
+    private String meetingUuid;
+
     @Builder
     public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
-                   Integer numberOfPeople, Boolean isOnline, Boolean isAnonymous, LocalDateTime voteEndDate) {
+                   Integer numberOfPeople, Boolean isAnonymous,
+                   LocalDateTime voteEndDate, Long meetingLeaderId, String meetingUuid) {
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
         this.numberOfPeople = numberOfPeople;
-        this.isOnline = isOnline;
         this.isAnonymous = isAnonymous;
         this.voteEndDate = voteEndDate;
+        this.meetingLeaderId = meetingLeaderId;
+        this.meetingUuid = meetingUuid;
     }
 
 
@@ -77,20 +84,5 @@ public class Meeting {
         }
 
         this.confirmedSchedule = requestDto.getConfirmedSchedule();
-    }
-
-    /**
-     * 모임 정보를 수정합니다.
-     *
-     * @param requestDto 수정 요청 DTO
-     */
-    public void updateMeeting(MeetingUpdateRequestDto requestDto) {
-        this.meetingName = requestDto.getMeetingName();
-        this.meetingStartDate = requestDto.getMeetingStartDate();
-        this.meetingEndDate = requestDto.getMeetingEndDate();
-        this.numberOfPeople = requestDto.getNumberOfPeople();
-        this.isOnline = requestDto.getIsOnline();
-        this.isAnonymous = requestDto.getIsAnonymous();
-        this.voteEndDate = requestDto.getVoteEndDate();
     }
 }
