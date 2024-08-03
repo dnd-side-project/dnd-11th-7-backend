@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 
 /**
  * 로그아웃 시 토큰에 빈 값을 넣어 전송 하는 방식으로 토큰을 삭제하는 핸들러입니다.
- *
+ * @author 류태웅
+ * @version 2024. 08. 03.
  */
 @Slf4j
 @Component
@@ -49,15 +50,6 @@ public class OAuth2LogoutHandler implements LogoutHandler {
                     LocalDateTime expirationDate = LocalDateTime.now().plusWeeks(1);
                     blacklistService.blacklistToken(refreshToken, expirationDate);
                     log.info("logout 성공");
-
-                    Cookie refreshTokenCookie = new Cookie("refresh_token", null);
-                    refreshTokenCookie.setPath("/");
-                    refreshTokenCookie.setHttpOnly(true);
-                    refreshTokenCookie.setSecure(true);
-                    refreshTokenCookie.setMaxAge(0);
-
-                    response.addCookie(refreshTokenCookie);
-
                     response.setStatus(HttpServletResponse.SC_OK);
                 } catch (Exception e) {
                     log.error("서버 에러", e);

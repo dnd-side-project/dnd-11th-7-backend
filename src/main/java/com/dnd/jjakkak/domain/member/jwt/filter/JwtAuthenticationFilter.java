@@ -3,6 +3,8 @@ package com.dnd.jjakkak.domain.member.jwt.filter;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.entity.Role;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
+import com.dnd.jjakkak.domain.member.jwt.exception.AccessTokenExpiredException;
+import com.dnd.jjakkak.domain.member.jwt.exception.MalformedTokenException;
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -31,7 +33,7 @@ import java.util.List;
 /**
  * 검증을 실행하는 필터입니다.
  * @author 류태웅
- * @version 2024. 08. 02.
+ * @version 2024. 08. 03.
  */
 
 @Slf4j
@@ -55,18 +57,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("검증된 카카오 ID: {}", kakaoId);
         } catch (ExpiredJwtException e) {
             log.error("엑세스 토큰이 만료됨", e);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Token expired\"}");
-            response.getWriter().flush();
-            return;
+            throw new AccessTokenExpiredException();
         } catch (MalformedJwtException e) {
             log.error("손상된 토큰", e);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Malformed Token\"}");
-            response.getWriter().flush();
-            return;
+            throw new MalformedTokenException();
         }
 
         if (kakaoId == null) {

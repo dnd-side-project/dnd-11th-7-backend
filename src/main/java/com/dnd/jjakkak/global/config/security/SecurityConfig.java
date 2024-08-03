@@ -27,7 +27,7 @@ import java.util.Arrays;
  * Spring Security Configuration Class.
  *
  * @author 류태웅
- * @version 2024. 08. 02.
+ * @version 2024. 08. 03.
  */
 
 @Configurable
@@ -81,6 +81,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .addLogoutHandler(oAuth2LogoutHandler)
                         .logoutUrl("/api/v1/logout")
+                        .deleteCookies("refresh_token")
                         .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling // 실패 시 해당 메시지 반환

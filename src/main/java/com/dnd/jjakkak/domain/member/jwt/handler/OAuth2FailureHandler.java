@@ -25,7 +25,7 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         String errorMessage;
-        if (e instanceof UsernameNotFoundException){
+        if(e instanceof UsernameNotFoundException){
             errorMessage="존재하지 않는 아이디 입니다.";
         }
         else{
