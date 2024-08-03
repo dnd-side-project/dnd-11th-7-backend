@@ -98,8 +98,8 @@ public class MeetingService {
     /**
      * 모임에 속한 회원 조회
      *
-     * @param id MeetingId
-     * @return List<MemberResponseDto>
+     * @param id 조회할 모임 ID
+     * @return 회원 응답 DTO
      */
     @Transactional(readOnly = true)
     public List<MemberResponseDto> getMeetingListByMeetingId(Long id) {
@@ -187,6 +187,7 @@ public class MeetingService {
      */
     private Member getMemberByToken(String token) {
         String kakaoId = Objects.requireNonNull(jwtProvider.validate(token));
+
         return memberRepository.findByKakaoId(Long.parseLong(kakaoId))
                 .orElseThrow(MemberNotFoundException::new);
     }

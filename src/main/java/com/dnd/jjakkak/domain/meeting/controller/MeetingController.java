@@ -6,7 +6,6 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
-import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ public class MeetingController {
 
     private final MeetingService meetingService;
 
-
     /**
      * 모임을 생성하는 메서드입니다.
      *
@@ -38,7 +36,7 @@ public class MeetingController {
      * @return 201 (CREATED), body: 모임 생성 응답 DTO (UUID)
      */
     @PostMapping
-    public ResponseEntity<MeetingCreateResponseDto> createGroup(@CookieValue("access_token") Cookie accessToken,
+    public ResponseEntity<MeetingCreateResponseDto> createGroup(@RequestHeader("Authorization") String accessToken,
                                                                 @Valid @RequestBody MeetingCreateRequestDto requestDto) {
 
         if (Objects.isNull(accessToken)) {
@@ -47,7 +45,7 @@ public class MeetingController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(meetingService.createMeeting(accessToken.getValue(), requestDto));
+                .body(meetingService.createMeeting(accessToken, requestDto));
     }
 
     /**
@@ -89,14 +87,19 @@ public class MeetingController {
     /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param id 삭제할 모임 ID
+     * @param accessToken JWT Token (Access Token)
+     * @param id          삭제할 모임 ID
      * @return 200 (OK)
      */
     @DeleteMapping("/{meetingId}")
-    public ResponseEntity<Void> deleteMeeting(@CookieValue("access_token") Cookie accessToken,
+    public ResponseEntity<Void> deleteMeeting(@RequestHeader("Authorization") String accessToken,
                                               @PathVariable("meetingId") Long id) {
 
-        meetingService.deleteMeeting(accessToken.getValue(), id);
+        if (Objects.isNull(accessToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        meetingService.deleteMeeting(accessToken, id);
         return ResponseEntity.ok().build();
     }
 }

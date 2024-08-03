@@ -24,7 +24,7 @@ import java.util.List;
 @ToString
 public class MeetingCreateRequestDto {
 
-    @Size(min = 1, max = 8, message = "카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
+    @Size(min = 1, max = 3, message = "카테고리는 최소 1개 이상 3개 이하로 선택해주세요.")
     private final List<Long> categoryIds = new ArrayList<>();
 
     @NotBlank(message = "모임명은 필수 값입니다.")
