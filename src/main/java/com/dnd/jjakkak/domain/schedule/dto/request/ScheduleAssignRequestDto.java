@@ -21,5 +21,6 @@ public class ScheduleAssignRequestDto {
 
     private String nickName;
 
+    @NotNull(message = "모임 ID를 입력해주세요.")
     private Long meetingId;
 }
