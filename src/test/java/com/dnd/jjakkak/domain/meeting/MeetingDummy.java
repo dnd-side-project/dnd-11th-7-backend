@@ -31,7 +31,6 @@ public class MeetingDummy {
         ReflectionTestUtils.setField(requestDto, "meetingStartDate", LocalDate.of(2024, 7, 27));
         ReflectionTestUtils.setField(requestDto, "meetingEndDate", LocalDate.of(2024, 7, 29));
         ReflectionTestUtils.setField(requestDto, "numberOfPeople", 6);
-        ReflectionTestUtils.setField(requestDto, "isOnline", true);
         ReflectionTestUtils.setField(requestDto, "isAnonymous", false);
         ReflectionTestUtils.setField(requestDto, "voteEndDate", LocalDateTime.of(2024, 7, 26, 23, 59, 59));
         ReflectionTestUtils.setField(requestDto, "categoryIds", categoryIds);

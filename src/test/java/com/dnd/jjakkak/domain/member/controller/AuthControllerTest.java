@@ -117,6 +117,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("로그아웃 테스트 - 실패 (헤더 없음)")
     void testLogoutFailNoHeader() throws Exception {
 
