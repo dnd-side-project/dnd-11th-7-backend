@@ -16,7 +16,6 @@ import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryReposito
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -126,18 +124,18 @@ public class MeetingService {
     /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param token JWT Token
-     * @param id    모임 ID
+     * @param memberId 회원 ID
+     * @param id       모임 ID
      */
     @Transactional
-    public void deleteMeeting(String token, Long id) {
+    public void deleteMeeting(Long memberId, Long id) {
 
-        Member member = getMemberByToken(token);
 
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(MeetingNotFoundException::new);
 
-        if (!meeting.getMeetingLeaderId().equals(member.getMemberId())) {
+        // 요청한 회원이 모임의 리더가 아닌 경우 예외 처리
+        if (!meeting.getMeetingLeaderId().equals(memberId)) {
             throw new MeetingUnauthorizedException();
         }
 
@@ -176,18 +174,4 @@ public class MeetingService {
 
         return uuid;
     }
-
-    /**
-     * 토큰을 통해 회원 정보를 조회하는 메서드입니다.
-     *
-     * @param token AccessToken
-     * @return Member Entity
-     */
-    private Member getMemberByToken(String token) {
-        String kakaoId = Objects.requireNonNull(jwtProvider.validate(token));
-
-        return memberRepository.findByKakaoId(Long.parseLong(kakaoId))
-                .orElseThrow(MemberNotFoundException::new);
-    }
-
 }

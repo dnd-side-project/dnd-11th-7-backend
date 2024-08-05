@@ -15,7 +15,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 모임 컨트롤러 클래스입니다.
@@ -84,22 +83,19 @@ public class MeetingController {
         return ResponseEntity.ok().build();
     }
 
+
     /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param accessToken JWT Token (Access Token)
-     * @param id          삭제할 모임 ID
+     * @param member 로그인한 회원 정보
+     * @param id     삭제할 모임 ID
      * @return 200 (OK)
      */
     @DeleteMapping("/{meetingId}")
-    public ResponseEntity<Void> deleteMeeting(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal Member member,
                                               @PathVariable("meetingId") Long id) {
 
-        if (Objects.isNull(accessToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        meetingService.deleteMeeting(accessToken, id);
+        meetingService.deleteMeeting(member.getMemberId(), id);
         return ResponseEntity.ok().build();
     }
 }
