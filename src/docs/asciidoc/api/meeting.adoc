@@ -3,24 +3,24 @@
 === 모임 생성 - 성공
 
 .HTTP Request
-include::{snippets}/meeting/create/success/http-request.adoc[]
+include::{snippets}/meeting-controller-test/create_success/http-request.adoc[]
 
 .Request Fields
-include::{snippets}/meeting/create/success/request-fields.adoc[]
+include::{snippets}/meeting-controller-test/create_success/request-fields.adoc[]
 
 .HTTP Response
-include::{snippets}/meeting/create/success/http-response.adoc[]
+include::{snippets}/meeting-controller-test/create_success/http-response.adoc[]
 
 === 모임 생성 - 실패
 
 .HTTP Request
-include::{snippets}/meeting/create/fail/http-request.adoc[]
+include::{snippets}/meeting-controller-test/create_fail_invalid/http-request.adoc[]
 
 .HTTP Response
-include::{snippets}/meeting/create/fail/http-response.adoc[]
+include::{snippets}/meeting-controller-test/create_fail_invalid/http-response.adoc[]
 
 .Error Response
-include::{snippets}/meeting/create/fail/response-fields.adoc[]
+include::{snippets}/meeting-controller-test/create_fail_invalid/response-fields.adoc[]
 
 === 모임 전체 조회
 
