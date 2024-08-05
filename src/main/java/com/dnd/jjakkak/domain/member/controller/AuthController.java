@@ -15,7 +15,7 @@ import java.util.Collections;
  * 현재 Member의 로그인 여부를 확인하는 컨트롤러입니다.
  *
  * @author 류태웅
- * @version 2024. 08. 02.
+ * @version 2024. 08. 05.
  *
  */
 @Slf4j
