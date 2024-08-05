@@ -6,10 +6,12 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
+import com.dnd.jjakkak.domain.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,21 +33,19 @@ public class MeetingController {
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param accessToken JWT Token (Access Token)
-     * @param requestDto  모임 생성 요청 DTO
+     * @param member     로그인한 회원 정보
+     * @param requestDto 모임 생성 요청 DTO
      * @return 201 (CREATED), body: 모임 생성 응답 DTO (UUID)
      */
     @PostMapping
-    public ResponseEntity<MeetingCreateResponseDto> createGroup(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<MeetingCreateResponseDto> createGroup(@AuthenticationPrincipal Member member,
                                                                 @Valid @RequestBody MeetingCreateRequestDto requestDto) {
 
-        if (Objects.isNull(accessToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        MeetingCreateResponseDto response = meetingService.createMeeting(member.getMemberId(), requestDto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(meetingService.createMeeting(accessToken, requestDto));
+                .body(response);
     }
 
     /**

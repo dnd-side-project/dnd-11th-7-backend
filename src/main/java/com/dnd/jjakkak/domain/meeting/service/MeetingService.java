@@ -47,17 +47,16 @@ public class MeetingService {
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param token      JWT Token
+     * @param memberId   모임을 생성하는 회원 ID (리더 ID)
      * @param requestDto 모임 생성 요청 DTO
      * @return 모임 생성 응답 DTO (UUID)
      */
     @Transactional
-    public MeetingCreateResponseDto createMeeting(String token, MeetingCreateRequestDto requestDto) {
+    public MeetingCreateResponseDto createMeeting(Long memberId, MeetingCreateRequestDto requestDto) {
 
         // checkMeetingDate 메서드를 호출하여 유효성 검사를 진행합니다.
         requestDto.checkMeetingDate();
 
-        Member member = getMemberByToken(token);
         String uuid = generateUuid();
 
         // 모임 생성 로직
@@ -68,7 +67,7 @@ public class MeetingService {
                 .numberOfPeople(requestDto.getNumberOfPeople())
                 .isAnonymous(requestDto.getIsAnonymous())
                 .voteEndDate(requestDto.getVoteEndDate())
-                .meetingLeaderId(member.getMemberId())
+                .meetingLeaderId(memberId)
                 .meetingUuid(uuid)
                 .build();
 
