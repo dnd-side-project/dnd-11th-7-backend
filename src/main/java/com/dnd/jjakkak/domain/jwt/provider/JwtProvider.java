@@ -1,4 +1,4 @@
-package com.dnd.jjakkak.domain.member.jwt.provider;
+package com.dnd.jjakkak.domain.jwt.provider;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

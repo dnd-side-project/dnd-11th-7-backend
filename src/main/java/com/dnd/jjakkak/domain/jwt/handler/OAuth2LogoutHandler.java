@@ -1,4 +1,4 @@
-package com.dnd.jjakkak.domain.member.jwt.handler;
+package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.domain.member.service.BlacklistService;
 import com.dnd.jjakkak.domain.member.service.RefreshTokenService;

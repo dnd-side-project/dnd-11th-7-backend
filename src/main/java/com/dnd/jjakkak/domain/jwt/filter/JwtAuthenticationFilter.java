@@ -1,11 +1,11 @@
-package com.dnd.jjakkak.domain.member.jwt.filter;
+package com.dnd.jjakkak.domain.jwt.filter;
 
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.entity.Role;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
-import com.dnd.jjakkak.domain.member.jwt.exception.AccessTokenExpiredException;
-import com.dnd.jjakkak.domain.member.jwt.exception.MalformedTokenException;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.jwt.exception.AccessTokenExpiredException;
+import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
+import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

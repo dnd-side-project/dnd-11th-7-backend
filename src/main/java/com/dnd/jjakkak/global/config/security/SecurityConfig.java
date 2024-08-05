@@ -1,9 +1,9 @@
 package com.dnd.jjakkak.global.config.security;
 
-import com.dnd.jjakkak.domain.member.jwt.filter.JwtAuthenticationFilter;
-import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2FailureHandler;
-import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2LogoutHandler;
-import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2SuccessHandler;
+import com.dnd.jjakkak.domain.jwt.filter.JwtAuthenticationFilter;
+import com.dnd.jjakkak.domain.jwt.handler.OAuth2FailureHandler;
+import com.dnd.jjakkak.domain.jwt.handler.OAuth2LogoutHandler;
+import com.dnd.jjakkak.domain.jwt.handler.OAuth2SuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Configurable;
