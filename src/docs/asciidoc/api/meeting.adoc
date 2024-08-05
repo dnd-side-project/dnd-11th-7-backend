@@ -22,76 +22,33 @@ include::{snippets}/meeting-controller-test/create_fail_invalid/http-response.ad
 .Error Response
 include::{snippets}/meeting-controller-test/create_fail_invalid/response-fields.adoc[]
 
-=== 모임 전체 조회
+=== 모임 조회 (UUID)
 
-.Response Fields
-include::{snippets}/meeting/getList/success/response-fields.adoc[]
+include::{snippets}/meeting-controller-test/get_by-uuid/path-parameters.adoc[]
 
 .HTTP Request
-include::{snippets}/meeting/getList/success/http-request.adoc[]
+include::{snippets}/meeting-controller-test/get_by-uuid/http-request.adoc[]
 
 .HTTP Response
-include::{snippets}/meeting/getList/success/http-response.adoc[]
+include::{snippets}/meeting-controller-test/get_by-uuid/http-response.adoc[]
 
-=== 모임 개별 조회 - 성공
+include::{snippets}/meeting-controller-test/get_by-uuid/response-fields.adoc[]
 
-include::{snippets}/meeting/get/success/path-parameters.adoc[]
+=== 모임 확정 일정 수정
 
 .HTTP Request
-include::{snippets}/meeting/get/success/http-request.adoc[]
+include::{snippets}/meeting-controller-test/update_confirmed-schedule/http-request.adoc[]
 
+include::{snippets}/meeting-controller-test/update_confirmed-schedule/request-fields.adoc[]
 
 .HTTP Response
-include::{snippets}/meeting/get/success/http-response.adoc[]
+include::{snippets}/meeting-controller-test/update_confirmed-schedule/http-response.adoc[]
 
-=== 모임 개별 조회 - 실패
-
-include::{snippets}/meeting/get/fail/path-parameters.adoc[]
+=== 모임 삭제
 
 .HTTP Request
-include::{snippets}/meeting/get/fail/http-request.adoc[]
-
-include::{snippets}/meeting/get/fail/http-response.adoc[]
-
-=== 모임 수정 - 성공
-
-include::{snippets}/meeting/update/success/path-parameters.adoc[]
-
-.HTTP Request
-include::{snippets}/meeting/update/success/http-request.adoc[]
-
-
-.Request Fields
-include::{snippets}/meeting/update/success/request-fields.adoc[]
-
-
+include::{snippets}/meeting-controller-test/delete_success/path-parameters.adoc[]
+include::{snippets}/meeting-controller-test/delete_success/http-request.adoc[]
 
 .HTTP Response
-include::{snippets}/meeting/update/success/http-response.adoc[]
-
-=== 모임 수정 - 실패
-
-.HTTP Request
-include::{snippets}/meeting/update/fail/http-request.adoc[]
-
-.HTTP Response
-include::{snippets}/meeting/update/fail/http-response.adoc[]
-
-=== 모임 삭제 - 성공
-
-include::{snippets}/meeting/delete/success/path-parameters.adoc[]
-.HTTP Request
-include::{snippets}/meeting/delete/success/http-request.adoc[]
-
-.HTTP Response
-include::{snippets}/meeting/delete/success/http-response.adoc[]
-
-=== 모임 삭제 - 실패
-
-include::{snippets}/meeting/delete/fail/path-parameters.adoc[]
-
-.HTTP Request
-include::{snippets}/meeting/delete/fail/http-request.adoc[]
-
-.HTTP Response
-include::{snippets}/meeting/delete/fail/http-response.adoc[]
+include::{snippets}/meeting-controller-test/delete_success/http-response.adoc[]

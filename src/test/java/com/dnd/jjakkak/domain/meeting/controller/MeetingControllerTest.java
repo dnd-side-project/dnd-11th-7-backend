@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.meeting.controller;
 import com.dnd.jjakkak.config.AbstractRestDocsTest;
 import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
+import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
@@ -16,12 +17,19 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -109,5 +117,88 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("validation.categoryIds").description("카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
                         )));
 
+    }
+
+    @Test
+    @DisplayName("모임 조회 테스트")
+    @JjakkakMockUser
+    void get_byUuid() throws Exception {
+
+        // given
+        String uuid = "1234ABCD";
+        when(meetingService.getMeetingByUuid(anyString())).thenReturn(MeetingDummy.createResponseDto());
+
+        // expected
+
+        mockMvc.perform(get("/api/v1/meeting/{meetingUuid}", uuid)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.meetingId").value(1L),
+                        jsonPath("$.meetingName").value("세븐일레븐"),
+                        jsonPath("$.meetingStartDate").value("2024-07-27"),
+                        jsonPath("$.meetingEndDate").value("2024-07-29"),
+                        jsonPath("$.numberOfPeople").value(6),
+                        jsonPath("$.isAnonymous").value(false),
+                        jsonPath("$.voteEndDate").value("2024-07-26T23:59:59"),
+                        jsonPath("$.confirmedSchedule").doesNotExist(), // null
+                        jsonPath("$.meetingLeaderId").value(1L),
+                        jsonPath("$.meetingUuid").value("1234ABCD")
+                )
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("meetingUuid").description("모임 UUID")),
+                        responseFields(
+                                fieldWithPath("meetingId").description("모임 ID"),
+                                fieldWithPath("meetingName").description("모임 이름"),
+                                fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
+                                fieldWithPath("numberOfPeople").description("모임 인원"),
+                                fieldWithPath("isAnonymous").description("익명 여부"),
+                                fieldWithPath("voteEndDate").description("투표 종료 날짜"),
+                                fieldWithPath("confirmedSchedule").description("확정된 일정"),
+                                fieldWithPath("meetingLeaderId").description("모임 리더 ID"),
+                                fieldWithPath("meetingUuid").description("모임 UUID")
+                        )));
+    }
+
+    @Test
+    @JjakkakMockUser
+    @DisplayName("모임 확정 일정 수정 테스트")
+    void update_confirmedSchedule() throws Exception {
+
+        // given
+        MeetingConfirmRequestDto requestDto = new MeetingConfirmRequestDto();
+        ReflectionTestUtils.setField(requestDto, "confirmedSchedule", LocalDateTime.of(2024, 7, 28, 12, 30));
+
+        String json = objectMapper.writeValueAsString(requestDto);
+
+        // expected
+        mockMvc.perform(patch("/api/v1/meeting/{meetingId}/confirm", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("meetingId").description("모임 ID")),
+                        requestFields(
+                                fieldWithPath("confirmedSchedule").description("확정된 일정")
+                                        .attributes(key("constraint").value("확정된 일정은 시작일과 종료일 사이의 날짜여야 합니다.")))
+                ));
+    }
+
+    @Test
+    @DisplayName("모임 삭제 테스트")
+    @JjakkakMockUser
+    void delete_success() throws Exception {
+
+        // expected
+        mockMvc.perform(delete("/api/v1/meeting/{meetingId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("meetingId").description("모임 ID"))
+                ));
     }
 }
