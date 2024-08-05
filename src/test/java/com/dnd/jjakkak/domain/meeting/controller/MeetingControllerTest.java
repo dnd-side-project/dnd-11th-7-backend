@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.domain.meeting.controller;
 
+import com.dnd.jjakkak.config.AbstractRestDocsTest;
 import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
@@ -7,7 +8,7 @@ import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,30 +16,23 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * {class name}.
+ * 모임 컨트롤러 테스트입니다.
  *
  * @author 정승조
  * @version 2024. 08. 05.
  */
-@AutoConfigureRestDocs
 @WebMvcTest(MeetingController.class)
-class MeetingControllerTest {
-
-    @Autowired
-    MockMvc mockMvc;
+@AutoConfigureRestDocs(uriHost = "43.202.65.170.nip.io", uriPort = 80)
+class MeetingControllerTest extends AbstractRestDocsTest {
 
     @MockBean
     MeetingService meetingService;
@@ -50,35 +44,70 @@ class MeetingControllerTest {
     MemberRepository memberRepository;
 
     @Autowired
-    ObjectMapper objectMapper;
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-    @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext) {
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .apply(springSecurity())
-                .defaultRequest(post("/**").with(csrf()))
-                .build();
-
-    }
 
     @Test
     @DisplayName("모임 생성 테스트 - 성공")
     @JjakkakMockUser
-    void 모임생성_성공() throws Exception {
+    void create_success() throws Exception {
 
         MeetingCreateRequestDto requestDto = MeetingDummy.createRequestDto(List.of(1L, 2L));
-
-        objectMapper.writeValueAsString(requestDto);
+        String json = objectMapper.writeValueAsString(requestDto);
 
         String token = "Bearer access_token";
 
         mockMvc.perform(post("/api/v1/meeting")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpectAll(status().isCreated())
-                .andDo(print());
+                        .content(json))
+                .andExpect(status().isCreated())
+                .andDo(restDocs.document(
+                        requestFields(
+                                fieldWithPath("meetingName").description("모임 이름")
+                                        .attributes(key("constraint").value("모임 이름은 1자 이상 10자 이하로 입력해주세요.")),
+                                fieldWithPath("meetingStartDate").description("모임 시작 날짜")
+                                        .attributes(key("constraint").value("모임 시작일은 종료일 이전이어야 합니다.")),
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜")
+                                        .attributes(key("constraint").value("모임 종료일은 시작일 이후이어야 합니다.")),
+                                fieldWithPath("numberOfPeople").description("모임 인원")
+                                        .attributes(key("constraint").value("모임 인원은 2명 이상 10명 이하로 설정해주세요.")),
+                                fieldWithPath("isAnonymous").description("익명 여부")
+                                        .attributes(key("constraint").value("default = false (실명)")),
+                                fieldWithPath("voteEndDate").description("투표 종료 날짜")
+                                        .attributes(key("constraint").value("투표 종료일은 모임 시작일 이전이어야 합니다.")),
+                                fieldWithPath("categoryIds").description("카테고리 아이디 목록")
+                                        .attributes(key("constraint").value("1개 이상의 카테고리를 선택해주세요."))
+                        )));
     }
 
+    @Test
+    @DisplayName("모임 생성 테스트 - 실패 (Invalid)")
+    @JjakkakMockUser
+    void create_fail_invalid() throws Exception {
+        MeetingCreateRequestDto requestDto = MeetingDummy.createInvalidRequestDto();
+        String json = objectMapper.writeValueAsString(requestDto);
+
+        String token = "Bearer access_token";
+
+        mockMvc.perform(post("/api/v1/meeting")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(restDocs.document(
+                        responseFields(
+                                fieldWithPath("code").description("상태 코드"),
+                                fieldWithPath("message").description("에러 메시지"),
+                                fieldWithPath("validation").description("유효성 검사 오류 목록"),
+                                fieldWithPath("validation.meetingName").description("모임명은 필수 값입니다."),
+                                fieldWithPath("validation.meetingStartDate").description("모임 일정 시작일은 필수 값입니다."),
+                                fieldWithPath("validation.meetingEndDate").description("모임 일정 종료일은 필수 값입니다."),
+                                fieldWithPath("validation.numberOfPeople").description("인원수는 필수 값입니다."),
+                                fieldWithPath("validation.isAnonymous").description("익명 여부는 필수 값입니다."),
+                                fieldWithPath("validation.voteEndDate").description("투표 종료일은 필수 값입니다."),
+                                fieldWithPath("validation.categoryIds").description("카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
+                        )));
+
+    }
 }
