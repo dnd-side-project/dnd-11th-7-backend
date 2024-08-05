@@ -19,7 +19,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 /**
- * {class name}.
+ * REST Docs 설정을 적용한 테스트 클래스입니다. (REST Docs 최상위 클래스)
  *
  * @author 정승조
  * @version 2024. 08. 05.

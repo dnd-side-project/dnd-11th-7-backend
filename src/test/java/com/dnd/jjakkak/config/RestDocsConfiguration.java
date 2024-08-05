@@ -7,7 +7,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 
 /**
- * {class name}.
+ * REST Docs 설정 클래스입니다.
  *
  * @author 정승조
  * @version 2024. 08. 05.
