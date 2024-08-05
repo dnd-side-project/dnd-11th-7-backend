@@ -72,32 +72,4 @@ public class MeetingDummy {
                 .build();
     }
 
-    /**
-     * Meeting 엔티티를 생성하여 반환합니다.
-     *
-     * @return Meeting 엔티티 리스트
-     */
-    public static List<Meeting> createMeetingList() {
-
-        Meeting meeting = Meeting.builder()
-                .meetingName("DND 7조 회의")
-                .meetingStartDate(LocalDate.of(2024, 7, 27))
-                .meetingEndDate(LocalDate.of(2024, 7, 29))
-                .numberOfPeople(6)
-                .isAnonymous(false)
-                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
-                .build();
-
-        Meeting study = Meeting.builder()
-                .meetingName("Java 스터디")
-                .meetingStartDate(LocalDate.of(2024, 8, 1))
-                .meetingEndDate(LocalDate.of(2024, 8, 5))
-                .numberOfPeople(4)
-                .isAnonymous(false)
-                .voteEndDate(LocalDateTime.of(2024, 7, 30, 23, 59, 59))
-                .build();
-
-        return List.of(meeting, study);
-    }
-
 }
