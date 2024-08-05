@@ -16,8 +16,6 @@ import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryReposito
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
-import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +37,6 @@ public class MeetingService {
     private final MeetingCategoryRepository meetingCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final MeetingMemberRepository meetingMemberRepository;
-    private final JwtProvider jwtProvider;
-    private final MemberRepository memberRepository;
 
     /**
      * 모임을 생성하는 메서드입니다.
