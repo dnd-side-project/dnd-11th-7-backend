@@ -1,6 +1,6 @@
 package com.dnd.jjakkak.config;
 
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

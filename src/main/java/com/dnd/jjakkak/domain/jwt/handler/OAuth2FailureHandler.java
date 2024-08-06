@@ -1,4 +1,4 @@
-package com.dnd.jjakkak.domain.member.jwt.handler;
+package com.dnd.jjakkak.domain.jwt.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

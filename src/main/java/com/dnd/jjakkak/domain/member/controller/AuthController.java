@@ -1,6 +1,6 @@
 package com.dnd.jjakkak.domain.member.controller;
 
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
