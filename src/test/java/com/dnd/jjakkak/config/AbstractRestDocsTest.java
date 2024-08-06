@@ -35,10 +35,10 @@ public abstract class AbstractRestDocsTest {
      * jwtAuthentication Filter 내부에서 사용하는 Bean 등록
      */
     @MockBean
-    JwtProvider jwtProvider;
+    protected JwtProvider jwtProvider;
 
     @MockBean
-    MemberRepository memberRepository;
+    protected MemberRepository memberRepository;
 
 
     @Autowired
