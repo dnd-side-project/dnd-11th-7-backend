@@ -1,141 +1,99 @@
 package com.dnd.jjakkak.domain.member.controller;
 
-import com.dnd.jjakkak.domain.member.entity.RefreshToken;
-import com.dnd.jjakkak.domain.member.repository.BlacklistedTokenRepository;
-import com.dnd.jjakkak.domain.member.repository.RefreshTokenRepository;
-import com.dnd.jjakkak.domain.member.service.BlacklistService;
-import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
-import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
+import com.dnd.jjakkak.domain.member.jwt.filter.JwtAuthenticationFilter;
+import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * AuthController 테스트 클래스입니다.
  *
  * @author 류태웅
- * @version 2024. 07. 27.
+ * @version 2024. 08. 06
  */
 @ActiveProfiles("test")
-@SpringBootTest
+@WebMvcTest(AuthController.class)
 @AutoConfigureRestDocs(uriHost = "43.202.65.170.nip.io", uriPort = 80)
 @AutoConfigureMockMvc
 class AuthControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    @Autowired
-    RefreshTokenService refreshTokenService;
+    @MockBean
+    private JwtProvider jwtProvider;
 
-    @Autowired
-    BlacklistService blacklistService;
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    EntityManager entityManager;
+    @MockBean
+    private MemberRepository memberRepository;
 
-    @Autowired
-    RefreshTokenRepository refreshTokenRepository;
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext) {
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(springSecurity())
+                .defaultRequest(get("/**").with(csrf()))
+                .build();
 
-    @Autowired
-    BlacklistedTokenRepository blacklistedTokenRepository;
-
-    @AfterEach
-    void clear() {
-        refreshTokenRepository.deleteAll();
-        blacklistedTokenRepository.deleteAll();
     }
 
     @Test
-    @Disabled
-    @DisplayName("로그아웃 테스트 - 성공")
-    void testLogoutSuccess() throws Exception {
+    @DisplayName("로그인 상태 확인 - 확인됨")
+    //@JjakkakMockUser
+    public void testCheckAuthAuthenticated() throws Exception {
+        // JwtProvider의 validate 메소드가 "user"를 반환하도록 설정
+        when(jwtProvider.validate(anyString())).thenReturn("user");
 
-        // given
-        RefreshToken token = new RefreshToken("valid_refresh_token", 1L);
-        refreshTokenRepository.save(token);
-
-        String refreshToken = "Bearer valid_refresh_token";
-
-        // expected
-        mockMvc.perform(post("/api/v1/logout")
-                        .header("Authorization", refreshToken))
-                .andExpectAll(
-                        status().isOk(),
-                        content().string("Logout successful")
-                )
-                .andDo(document("auth/logout/success",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("status").description("상태 코드"),
-                                fieldWithPath("message").description("응답 메시지")
-                        )
-                ));
+        mockMvc.perform(get("/check-auth")
+                .header("Authorization", "Bearer valid-token")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isAuthenticated").value(true));
     }
 
     @Test
-    @Disabled
-    @DisplayName("로그아웃 테스트 - 실패 (유효하지 않은 토큰)")
-    void testLogoutFailInvalidToken() throws Exception {
+    @DisplayName("로그인 상태 확인 - 토큰이 인증되질 않음")
+    //@JjakkakMockUser
+    public void testCheckAuthNotAuthenticated() throws Exception {
+        // JwtProvider의 validate 메소드가 null을 반환하도록 설정
+        when(jwtProvider.validate(anyString())).thenReturn(null);
 
-        // given
-        String refreshToken = "Bearer invalid_refresh_token";
-
-        // expected
-        mockMvc.perform(post("/api/v1/logout")
-                        .header("Authorization", refreshToken))
-                .andExpectAll(
-                        status().isUnauthorized(),
-                        jsonPath("$.code").value(401),
-                        jsonPath("$.message").value("Invalid Refresh Token")
-                )
-                .andDo(document("auth/logout/fail-invalid-token",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("code").description("상태 코드"),
-                                fieldWithPath("message").description("응답 메시지"),
-                                fieldWithPath("validation").description("유효성 검사")
-                        )
-                ));
+        mockMvc.perform(get("/check-auth")
+                        .header("Authorization", "Bearer invalid-token")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isAuthenticated").value(false));
     }
 
     @Test
-    @DisplayName("로그아웃 테스트 - 실패 (헤더 없음)")
-    void testLogoutFailNoHeader() throws Exception {
-
-        // expected
-        mockMvc.perform(post("/api/v1/logout")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpectAll(
-                        status().isBadRequest(),
-                        jsonPath("$.code").value(400),
-                        jsonPath("$.message").value("Invalid Header Error")
-                )
-                .andDo(document("auth/logout/fail-no-header",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("code").description("상태 코드"),
-                                fieldWithPath("message").description("응답 메시지"),
-                                fieldWithPath("validation").description("유효성 검사")
-                        )
-                ));
+    @DisplayName("로그인 상태 확인 - 토큰 없음")
+    //@JjakkakMockUser
+    public void testCheckAuthNoToken() throws Exception {
+        mockMvc.perform(get("/check-auth")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isAuthenticated").value(false));
     }
 }

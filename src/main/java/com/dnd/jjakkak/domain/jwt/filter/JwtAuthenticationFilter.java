@@ -7,6 +7,7 @@ import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.entity.Role;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
+import com.dnd.jjakkak.global.config.security.SecurityConfig;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -46,6 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI();
+        if(PatternMatchUtils.simpleMatch(SecurityConfig.WHITE_LIST, path)){
+            log.info("path: {} -> passed token filter", path);
+            filterChain.doFilter(request, response);
+        }
         String token = parseBearerToken(request);
         log.info("도착한 토큰: {}", token);
         if (token == null) { // Bearer 인증 방식이 아니거나 빈 값일 경우 진행하지 말고 다음 필터로 바로 넘김
