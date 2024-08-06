@@ -22,4 +22,12 @@ public interface ScheduleRepositoryCustom {
      * @return 일정
      */
     Optional<Schedule> findByMemberIdAndMeetingId(Long memberId, Long meetingId);
+
+    /**
+     * 모임 ID로 할당되지 않은 일정을 조회합니다.
+     *
+     * @param meetingId 모임 ID
+     * @return 일정
+     */
+    Optional<Schedule> findNotAssignedScheduleByMeetingId(Long meetingId);
 }

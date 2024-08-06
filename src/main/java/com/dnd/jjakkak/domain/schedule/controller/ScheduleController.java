@@ -2,9 +2,11 @@ package com.dnd.jjakkak.domain.schedule.controller;
 
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
+import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleAssignResponseDto;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,21 +27,19 @@ public class ScheduleController {
      * 일정을 할당하는 메서드입니다.
      *
      * @param authorization JWT Token
-     * @param uuid          비회원 UUID
      * @param requestDto    일정 할당 요청 DTO
      * @return 200 (OK)
      */
     @PatchMapping("/assign")
-    public ResponseEntity<Void> assignSchedule(@RequestHeader(value = "Authorization", required = false) String authorization,
-                                               @RequestParam(value = "uuid", required = false) String uuid,
-                                               @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
+    public ResponseEntity<ScheduleAssignResponseDto> assignSchedule(@RequestHeader(value = "Authorization", required = false) String authorization,
+                                                                    @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
 
         if (authorization == null) {
-            scheduleService.assignScheduleToNonMember(uuid, requestDto);
-        } else {
-            scheduleService.assignScheduleToMember(authorization, requestDto);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(scheduleService.assignScheduleToNonMember(requestDto));
         }
 
+        scheduleService.assignScheduleToMember(authorization, requestDto);
         return ResponseEntity.ok().build();
     }
 

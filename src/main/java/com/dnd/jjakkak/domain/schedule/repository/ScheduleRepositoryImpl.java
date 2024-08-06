@@ -32,4 +32,19 @@ public class ScheduleRepositoryImpl extends QuerydslRepositorySupport implements
                         .select(schedule)
                         .fetchOne());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Schedule> findNotAssignedScheduleByMeetingId(Long meetingId) {
+        QSchedule schedule = QSchedule.schedule;
+
+        return Optional.ofNullable(
+                from(schedule)
+                        .where(schedule.meeting.meetingId.eq(meetingId)
+                                .and(schedule.isAssigned.eq(false)))
+                        .select(schedule)
+                        .fetchOne());
+    }
 }

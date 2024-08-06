@@ -11,6 +11,7 @@ import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
+import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleAssignResponseDto;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleAlreadyAssignedException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
@@ -61,17 +62,20 @@ public class ScheduleService {
     /**
      * 비회원 일정 할당 메서드입니다.
      *
-     * @param scheduleUuid 일정 UUID
-     * @param requestDto   일정 할당 요청 DTO
+     * @param requestDto 일정 할당 요청 DTO
      */
     @Transactional
-    public void assignScheduleToNonMember(String scheduleUuid, ScheduleAssignRequestDto requestDto) {
+    public ScheduleAssignResponseDto assignScheduleToNonMember(ScheduleAssignRequestDto requestDto) {
 
-        // uuid로 일정을 찾기
-        Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
+        // meetingId로 할당되지 않은 schedule 조회
+        Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
                 .orElseThrow(ScheduleNotFoundException::new);
 
         validateAndAssignSchedule(requestDto, schedule);
+
+        return ScheduleAssignResponseDto.builder()
+                .scheduleUuid(schedule.getScheduleUuid())
+                .build();
     }
 
     /**
@@ -90,10 +94,11 @@ public class ScheduleService {
         Member member = memberRepository.findByKakaoId(Long.parseLong(kakaoId))
                 .orElseThrow(MemberNotFoundException::new);
 
-        // memberId, meetingId로 schedule 조회
-        Schedule schedule = scheduleRepository.findByMemberIdAndMeetingId(member.getMemberId(), requestDto.getMeetingId())
+        // meetingId로 할당되지 않은 schedule 조회
+        Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
                 .orElseThrow(ScheduleNotFoundException::new);
 
+        schedule.assignMember(member);
         validateAndAssignSchedule(requestDto, schedule);
     }
 
