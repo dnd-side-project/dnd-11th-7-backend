@@ -1,28 +1,25 @@
 package com.dnd.jjakkak.domain.category.controller;
 
-import com.dnd.jjakkak.domain.category.entity.Category;
-import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
+import com.dnd.jjakkak.config.AbstractRestDocsTest;
+import com.dnd.jjakkak.config.JjakkakMockUser;
+import com.dnd.jjakkak.domain.category.CategoryDummy;
+import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.service.CategoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.List;
-
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * 카테고리 컨트롤러 테스트 클래스입니다.
@@ -30,79 +27,60 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author 정승조
  * @version 2024. 07. 24.
  */
-@ActiveProfiles("test")
-@SpringBootTest
+@WebMvcTest(CategoryController.class)
 @AutoConfigureRestDocs(uriHost = "43.202.65.170.nip.io", uriPort = 80)
-@AutoConfigureMockMvc
-class CategoryControllerTest {
+class CategoryControllerTest extends AbstractRestDocsTest {
 
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
+    @MockBean
     CategoryService categoryService;
-
-    @Autowired
-    CategoryRepository categoryRepository;
 
     @Test
     @DisplayName("카테고리 전체 목록 조회")
-    void testGetCategoryList() throws Exception {
+    @JjakkakMockUser
+    void get_list() throws Exception {
 
         // given
-        Category school = Category.builder()
-                .categoryName("학교")
-                .build();
-
-        Category friend = Category.builder()
-                .categoryName("친구")
-                .build();
-
-        Category meeting = Category.builder()
-                .categoryName("회의")
-                .build();
-
-        categoryRepository.saveAll(List.of(school, friend, meeting));
+        when(categoryService.getCategoryList()).thenReturn(CategoryDummy.getCategoryResponseDtoList());
 
         // expected
         mockMvc.perform(get("/api/v1/categories"))
                 .andExpectAll(
                         status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
+
                         jsonPath("$[?(@.categoryName == '학교')]").exists(),
                         jsonPath("$[?(@.categoryName == '친구')]").exists(),
-                        jsonPath("$[?(@.categoryName == '회의')]").exists()
+                        jsonPath("$[?(@.categoryName == '팀플')]").exists(),
+                        jsonPath("$[?(@.categoryName == '회의')]").exists(),
+                        jsonPath("$[?(@.categoryName == '스터디')]").exists(),
+                        jsonPath("$[?(@.categoryName == '취미')]").exists(),
+                        jsonPath("$[?(@.categoryName == '봉사')]").exists(),
+                        jsonPath("$[?(@.categoryName == '기타')]").exists()
                 )
-                .andDo(document("category/getCategoryList/success",
-                        preprocessResponse(prettyPrint()),
+                .andDo(restDocs.document(
                         responseFields(
                                 fieldWithPath("[].categoryId").description("카테고리 아이디"),
                                 fieldWithPath("[].categoryName").description("카테고리 이름")
-                        )
-                ));
+                        ))
+                );
     }
 
     @Test
     @DisplayName("카테고리 단건 조회 - 성공")
-    void testGetCategory_Success() throws Exception {
+    @JjakkakMockUser
+    void get_success() throws Exception {
 
-        // given
-        Category school = Category.builder()
-                .categoryName("학교")
-                .build();
+        // given (1L, "학교")
+        when(categoryService.getCategory(anyLong())).thenReturn(CategoryDummy.getCategoryResponseDto());
 
-        categoryRepository.save(school);
 
         // expected
-        mockMvc.perform(get("/api/v1/categories/{id}", school.getCategoryId()))
+        mockMvc.perform(get("/api/v1/categories/{id}", 1L))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.categoryId").value(school.getCategoryId()),
+                        jsonPath("$.categoryId").value(1),
                         jsonPath("$.categoryName").value("학교")
                 )
-                .andDo(document("category/getCategory/success",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
+                .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("id").description("카테고리 아이디")),
                         responseFields(
@@ -114,14 +92,17 @@ class CategoryControllerTest {
 
     @Test
     @DisplayName("카테고리 단건 조회 - 실패 (404)")
-    void testGetCategory_Fail() throws Exception {
+    @JjakkakMockUser
+    void get_fail() throws Exception {
+
+        // given
+        when(categoryService.getCategory(anyLong()))
+                .thenThrow(new CategoryNotFoundException());
 
         // expected
-        mockMvc.perform(get("/api/v1/categories/{id}", Long.MAX_VALUE))
+        mockMvc.perform(get("/api/v1/categories/{id}", 100L))
                 .andExpect(status().isNotFound())
-                .andDo(document("category/getCategory/fail-404",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
+                .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("id").description("카테고리 아이디")),
                         responseFields(

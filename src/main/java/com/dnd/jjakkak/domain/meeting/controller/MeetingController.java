@@ -6,14 +6,15 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
+import com.dnd.jjakkak.domain.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 모임 컨트롤러 클래스입니다.
@@ -31,21 +32,19 @@ public class MeetingController {
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param accessToken JWT Token (Access Token)
-     * @param requestDto  모임 생성 요청 DTO
+     * @param member     로그인한 회원 정보
+     * @param requestDto 모임 생성 요청 DTO
      * @return 201 (CREATED), body: 모임 생성 응답 DTO (UUID)
      */
     @PostMapping
-    public ResponseEntity<MeetingCreateResponseDto> createGroup(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<MeetingCreateResponseDto> createGroup(@AuthenticationPrincipal Member member,
                                                                 @Valid @RequestBody MeetingCreateRequestDto requestDto) {
 
-        if (Objects.isNull(accessToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        MeetingCreateResponseDto response = meetingService.createMeeting(member.getMemberId(), requestDto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(meetingService.createMeeting(accessToken, requestDto));
+                .body(response);
     }
 
     /**
@@ -84,22 +83,19 @@ public class MeetingController {
         return ResponseEntity.ok().build();
     }
 
+
     /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param accessToken JWT Token (Access Token)
-     * @param id          삭제할 모임 ID
+     * @param member 로그인한 회원 정보
+     * @param id     삭제할 모임 ID
      * @return 200 (OK)
      */
     @DeleteMapping("/{meetingId}")
-    public ResponseEntity<Void> deleteMeeting(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal Member member,
                                               @PathVariable("meetingId") Long id) {
 
-        if (Objects.isNull(accessToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        meetingService.deleteMeeting(accessToken, id);
+        meetingService.deleteMeeting(member.getMemberId(), id);
         return ResponseEntity.ok().build();
     }
 }

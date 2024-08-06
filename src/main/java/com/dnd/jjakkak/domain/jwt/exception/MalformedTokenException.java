@@ -1,4 +1,4 @@
-package com.dnd.jjakkak.domain.member.jwt.exception;
+package com.dnd.jjakkak.domain.jwt.exception;
 
 import com.dnd.jjakkak.global.exception.GeneralException;
 

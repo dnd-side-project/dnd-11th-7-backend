@@ -9,9 +9,6 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
-import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
-import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -53,12 +49,6 @@ class MeetingServiceTest {
     @Mock
     ScheduleService scheduleService;
 
-    @Mock
-    JwtProvider jwtProvider;
-
-    @Mock
-    MemberRepository memberRepository;
-
     @Test
     @DisplayName("모임 생성 테스트 - 성공")
     void testCreateMeeting() {
@@ -73,18 +63,11 @@ class MeetingServiceTest {
                 .categoryName("회의")
                 .build();
 
-        Member member = Member.builder()
-                .kakaoId(1L)
-                .memberNickname("seungjo")
-                .build();
-
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(teamProject));
         when(categoryRepository.findById(2L)).thenReturn(Optional.of(meeting));
-        when(jwtProvider.validate(anyString())).thenReturn("1");
-        when(memberRepository.findByKakaoId(anyLong())).thenReturn(Optional.of(member));
 
         // when
-        meetingService.createMeeting("access_token", actual);
+        meetingService.createMeeting(1L, actual);
 
         // then
         verify(meetingRepository, times(1)).save(any());
@@ -154,19 +137,10 @@ class MeetingServiceTest {
                 .meetingLeaderId(1L)
                 .build();
 
-        Member member = Member.builder()
-                .kakaoId(1L)
-                .memberNickname("seungjo")
-                .build();
-
-        ReflectionTestUtils.setField(member, "memberId", 1L);
-
-        when(jwtProvider.validate(anyString())).thenReturn("1");
-        when(memberRepository.findByKakaoId(anyLong())).thenReturn(Optional.of(member));
         when(meetingRepository.findById(anyLong())).thenReturn(Optional.of(meeting));
 
         // when
-        meetingService.deleteMeeting("access_token", 1L);
+        meetingService.deleteMeeting(1L, 1L);
 
         // then
         verify(meetingRepository, times(1)).deleteById(1L);
@@ -176,18 +150,9 @@ class MeetingServiceTest {
     @Test
     @DisplayName("모임 삭제 테스트 - 실패 (존재하지 않는 모임)")
     void testDeleteMeeting_Fail() {
-        // given
-        Member member = Member.builder()
-                .kakaoId(1L)
-                .memberNickname("seungjo")
-                .build();
-
-
-        when(jwtProvider.validate(anyString())).thenReturn("1");
-        when(memberRepository.findByKakaoId(anyLong())).thenReturn(Optional.of(member));
 
         // expected
         assertThrows(MeetingNotFoundException.class,
-                () -> meetingService.deleteMeeting("invalid_token", 1L));
+                () -> meetingService.deleteMeeting(1L, 1L));
     }
 }

@@ -1,9 +1,9 @@
 package com.dnd.jjakkak.global.config.security;
 
-import com.dnd.jjakkak.domain.member.jwt.filter.JwtAuthenticationFilter;
-import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2FailureHandler;
-import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2LogoutHandler;
-import com.dnd.jjakkak.domain.member.jwt.handler.OAuth2SuccessHandler;
+import com.dnd.jjakkak.domain.jwt.filter.JwtAuthenticationFilter;
+import com.dnd.jjakkak.domain.jwt.handler.OAuth2FailureHandler;
+import com.dnd.jjakkak.domain.jwt.handler.OAuth2LogoutHandler;
+import com.dnd.jjakkak.domain.jwt.handler.OAuth2SuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -42,13 +42,28 @@ public class SecurityConfig {
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
 
+    public static final String[] WHITE_LIST = {
+        "/api/v1/auth/oauth/**",
+        "/api/v1/check-auth",
+        "/api/v1/meeting"
+    };
+
+    public static final String[] USER_LIST = {
+        "/api/v1/categories",
+        "/api/v1/member/**"
+    };
+
+    public static final String[] ADMIN_LIST = {
+
+    };
+
     /**
      * Security Bean 등록.
      *
      * <li>CSRF 비활성화</li>
      * <li>CORS 비활성화 -> corsConfigurationSource()로 설정</li>
      * <li>Form Login 비활성화</li>
-     * <li>모든 요청 허용 -> 추후에 변경 필요 -> USER와 ADMIN에 따라 결정해야 할 듯? (류태웅)</li>
+     * <li>비회원도 접근 가능한 whiteList, 회원만 접근 가능한 userList, 관리자만 접근 가능한 adminList</li>
      *
      * <li>httpBasic 비활성화</li>
      * <li>세션 비활성화</li>
@@ -66,7 +81,10 @@ public class SecurityConfig {
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
+                        .requestMatchers(WHITE_LIST).permitAll()
+                        .requestMatchers(USER_LIST).hasRole("USER")
+                        .requestMatchers(ADMIN_LIST).hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
