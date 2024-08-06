@@ -10,7 +10,7 @@ import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
