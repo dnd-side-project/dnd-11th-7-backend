@@ -5,9 +5,8 @@ import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
+import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
-import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.DisplayName;
@@ -44,12 +43,6 @@ class MeetingControllerTest extends AbstractRestDocsTest {
 
     @MockBean
     MeetingService meetingService;
-
-    @MockBean
-    JwtProvider jwtProvider;
-
-    @MockBean
-    MemberRepository memberRepository;
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -159,6 +152,33 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("confirmedSchedule").description("확정된 일정"),
                                 fieldWithPath("meetingLeaderId").description("모임 리더 ID"),
                                 fieldWithPath("meetingUuid").description("모임 UUID")
+                        )));
+    }
+
+    @Test
+    @DisplayName("모임 조회 테스트 - 실패")
+    @JjakkakMockUser
+    void get_byUuid_fail() throws Exception {
+
+        // given
+        when(meetingService.getMeetingByUuid(anyString()))
+                .thenThrow(new MeetingNotFoundException());
+
+        // expected
+        mockMvc.perform(get("/api/v1/meeting/{meetingUuid}", "ABCD1234")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpectAll(
+                        status().isNotFound(),
+                        jsonPath("$.code").value(404),
+                        jsonPath("$.message").value("모임을 찾을 수 없습니다.")
+                )
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("meetingUuid").description("모임 UUID")),
+                        responseFields(
+                                fieldWithPath("code").description("에러 코드"),
+                                fieldWithPath("message").description("에러 메시지"),
+                                fieldWithPath("validation").description("유효성 검사 오류 목록")
                         )));
     }
 
