@@ -31,17 +31,21 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class AbstractRestDocsTest {
 
-    @Autowired
-    protected RestDocumentationResultHandler restDocs;
-    @Autowired
-    protected MockMvc mockMvc;
     /**
      * jwtAuthentication Filter 내부에서 사용하는 Bean 등록
      */
     @MockBean
     JwtProvider jwtProvider;
+
     @MockBean
     MemberRepository memberRepository;
+
+
+    @Autowired
+    protected RestDocumentationResultHandler restDocs;
+
+    @Autowired
+    protected MockMvc mockMvc;
 
     @BeforeEach
     void setUp(WebApplicationContext context, RestDocumentationContextProvider restDocumentation) {
