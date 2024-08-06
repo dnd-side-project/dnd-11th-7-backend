@@ -6,8 +6,6 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
-import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleAssignResponseDto;
@@ -34,10 +32,8 @@ import java.util.UUID;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final MemberRepository memberRepository;
     private final MeetingRepository meetingRepository;
     private final DateOfScheduleService dateOfScheduleService;
-    private final JwtProvider jwtProvider;
 
     /**
      * 기본 일정을 생성하는 메서드입니다.
