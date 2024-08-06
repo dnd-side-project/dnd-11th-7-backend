@@ -6,17 +6,18 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleAssignResponseDto;
+import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleAlreadyAssignedException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
 import com.dnd.jjakkak.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +66,7 @@ public class ScheduleService {
      * @param requestDto 일정 할당 요청 DTO
      */
     @Transactional
-    public ScheduleAssignResponseDto assignScheduleToNonMember(ScheduleAssignRequestDto requestDto) {
+    public ScheduleAssignResponseDto assignScheduleToGuest(ScheduleAssignRequestDto requestDto) {
 
         // meetingId로 할당되지 않은 schedule 조회
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
@@ -81,24 +82,17 @@ public class ScheduleService {
     /**
      * 회원 일정 할당 메서드입니다.
      *
-     * @param authorization Header AccessToken 값
-     * @param requestDto    일정 할당 요청 DTO
+     * @param user       인증된 회원 정보 (Member - OAuth2User)
+     * @param requestDto 일정 할당 요청 DTO
      */
     @Transactional
-    public void assignScheduleToMember(String authorization, ScheduleAssignRequestDto requestDto) {
-
-        // accessToken에서 memberId 추출
-        String kakaoId = jwtProvider.validate(authorization);
-
-        // kakaoId로 회원 조회
-        Member member = memberRepository.findByKakaoId(Long.parseLong(kakaoId))
-                .orElseThrow(MemberNotFoundException::new);
+    public void assignScheduleToMember(OAuth2User user, ScheduleAssignRequestDto requestDto) {
 
         // meetingId로 할당되지 않은 schedule 조회
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        schedule.assignMember(member);
+        schedule.assignMember((Member) user);
         validateAndAssignSchedule(requestDto, schedule);
     }
 
@@ -117,6 +111,45 @@ public class ScheduleService {
         schedule.updateScheduleNickname(requestDto.getScheduleNickname());
 
         dateOfScheduleService.updateDateList(scheduleId, requestDto.getDateOfScheduleList());
+    }
+
+    /**
+     * 비회원 일정 조회 메서드입니다.
+     *
+     * @param meetingId 모임 ID
+     * @param uuid      일정 UUID
+     * @return 일정 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public ScheduleResponseDto getGuestSchedule(Long meetingId, String uuid) {
+
+        Schedule schedule = scheduleRepository.findByScheduleUuid(uuid)
+                .orElseThrow(ScheduleNotFoundException::new);
+
+        if (!schedule.getMeeting().getMeetingId().equals(meetingId)) {
+            throw new ScheduleNotFoundException();
+        }
+
+        return new ScheduleResponseDto(schedule);
+    }
+
+
+    /**
+     * 회원 일정 조회 메서드입니다.
+     *
+     * @param meetingId 모임 ID
+     * @param user      인증된 회원 정보 (Member - OAuth2User)
+     * @return 일정 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public ScheduleResponseDto getMemberSchedule(Long meetingId, OAuth2User user) {
+
+        Member member = (Member) user;
+
+        Schedule schedule = scheduleRepository.findByMemberIdAndMeetingId(member.getMemberId(), meetingId)
+                .orElseThrow(ScheduleNotFoundException::new);
+
+        return new ScheduleResponseDto(schedule);
     }
 
     /**
