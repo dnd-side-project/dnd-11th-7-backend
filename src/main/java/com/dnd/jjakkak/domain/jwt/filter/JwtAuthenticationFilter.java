@@ -1,11 +1,11 @@
 package com.dnd.jjakkak.domain.jwt.filter;
 
-import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.entity.Role;
-import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.jwt.exception.AccessTokenExpiredException;
 import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.entity.Role;
+import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.global.config.security.SecurityConfig;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         authorities.add(new SimpleGrantedAuthority(role.toString()));
 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(kakaoId, null, authorities);
+        AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member, null, authorities);
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         securityContext.setAuthentication(authenticationToken);

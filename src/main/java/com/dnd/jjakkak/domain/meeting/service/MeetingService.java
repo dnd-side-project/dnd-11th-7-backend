@@ -16,15 +16,11 @@ import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryReposito
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
-import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
-import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -41,23 +37,20 @@ public class MeetingService {
     private final MeetingCategoryRepository meetingCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final MeetingMemberRepository meetingMemberRepository;
-    private final JwtProvider jwtProvider;
-    private final MemberRepository memberRepository;
 
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param token      JWT Token
+     * @param memberId   모임을 생성하는 회원 ID (리더 ID)
      * @param requestDto 모임 생성 요청 DTO
      * @return 모임 생성 응답 DTO (UUID)
      */
     @Transactional
-    public MeetingCreateResponseDto createMeeting(String token, MeetingCreateRequestDto requestDto) {
+    public MeetingCreateResponseDto createMeeting(Long memberId, MeetingCreateRequestDto requestDto) {
 
         // checkMeetingDate 메서드를 호출하여 유효성 검사를 진행합니다.
         requestDto.checkMeetingDate();
 
-        Member member = getMemberByToken(token);
         String uuid = generateUuid();
 
         // 모임 생성 로직
@@ -68,7 +61,7 @@ public class MeetingService {
                 .numberOfPeople(requestDto.getNumberOfPeople())
                 .isAnonymous(requestDto.getIsAnonymous())
                 .voteEndDate(requestDto.getVoteEndDate())
-                .meetingLeaderId(member.getMemberId())
+                .meetingLeaderId(memberId)
                 .meetingUuid(uuid)
                 .build();
 
@@ -127,18 +120,18 @@ public class MeetingService {
     /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param token JWT Token
-     * @param id    모임 ID
+     * @param memberId 회원 ID
+     * @param id       모임 ID
      */
     @Transactional
-    public void deleteMeeting(String token, Long id) {
+    public void deleteMeeting(Long memberId, Long id) {
 
-        Member member = getMemberByToken(token);
 
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(MeetingNotFoundException::new);
 
-        if (!meeting.getMeetingLeaderId().equals(member.getMemberId())) {
+        // 요청한 회원이 모임의 리더가 아닌 경우 예외 처리
+        if (!meeting.getMeetingLeaderId().equals(memberId)) {
             throw new MeetingUnauthorizedException();
         }
 
@@ -177,18 +170,4 @@ public class MeetingService {
 
         return uuid;
     }
-
-    /**
-     * 토큰을 통해 회원 정보를 조회하는 메서드입니다.
-     *
-     * @param token AccessToken
-     * @return Member Entity
-     */
-    private Member getMemberByToken(String token) {
-        String kakaoId = Objects.requireNonNull(jwtProvider.validate(token));
-
-        return memberRepository.findByKakaoId(Long.parseLong(kakaoId))
-                .orElseThrow(MemberNotFoundException::new);
-    }
-
 }

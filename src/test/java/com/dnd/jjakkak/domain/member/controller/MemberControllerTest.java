@@ -1,11 +1,11 @@
 package com.dnd.jjakkak.domain.member.controller;
 
+import com.dnd.jjakkak.domain.jwt.filter.JwtAuthenticationFilter;
+import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
-import com.dnd.jjakkak.domain.member.jwt.filter.JwtAuthenticationFilter;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
