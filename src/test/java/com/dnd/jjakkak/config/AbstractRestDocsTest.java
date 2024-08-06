@@ -1,8 +1,11 @@
 package com.dnd.jjakkak.config;
 
+import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -27,6 +30,16 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @Import(RestDocsConfiguration.class)
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class AbstractRestDocsTest {
+
+    /**
+     * jwtAuthentication Filter 내부에서 사용하는 Bean 등록
+     */
+    @MockBean
+    JwtProvider jwtProvider;
+
+    @MockBean
+    MemberRepository memberRepository;
+
 
     @Autowired
     protected RestDocumentationResultHandler restDocs;

@@ -6,8 +6,6 @@ import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
-import com.dnd.jjakkak.domain.member.jwt.provider.JwtProvider;
-import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.DisplayName;
@@ -44,12 +42,6 @@ class MeetingControllerTest extends AbstractRestDocsTest {
 
     @MockBean
     MeetingService meetingService;
-
-    @MockBean
-    JwtProvider jwtProvider;
-
-    @MockBean
-    MemberRepository memberRepository;
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
