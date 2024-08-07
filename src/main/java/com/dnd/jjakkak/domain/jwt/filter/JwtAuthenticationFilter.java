@@ -49,10 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if(PatternMatchUtils.simpleMatch(SecurityConfig.WHITE_LIST, path)){
+        if (PatternMatchUtils.simpleMatch(SecurityConfig.WHITE_LIST, path)) {
             log.debug("path: {} -> passed token filter", path);
             filterChain.doFilter(request, response);
+            return;
         }
+
         String token = parseBearerToken(request);
         log.debug("도착한 토큰: {}", token);
         if (token == null) { // Bearer 인증 방식이 아니거나 빈 값일 경우 진행하지 말고 다음 필터로 바로 넘김
