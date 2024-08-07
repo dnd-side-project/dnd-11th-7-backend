@@ -37,17 +37,17 @@ public class AuthController {
     @GetMapping("/check-auth")
     public ResponseEntity<?> checkAuth(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
-        log.info(authorizationHeader);
+        log.debug(authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             String subject = jwtProvider.validate(token);
 
             if (subject != null && !subject.isEmpty()) {
-                log.info("isAuthenticated");
+                log.debug("isAuthenticated");
                 return ResponseEntity.ok().body(Collections.singletonMap("isAuthenticated", true));
             }
         }
-        log.info("isNotAuthenticated");
+        log.debug("isNotAuthenticated");
         return ResponseEntity.ok().body(Collections.singletonMap("isAuthenticated", false));
     }
 }

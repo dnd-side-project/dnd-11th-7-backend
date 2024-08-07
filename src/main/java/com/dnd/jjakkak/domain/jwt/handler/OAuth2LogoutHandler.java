@@ -39,17 +39,17 @@ public class OAuth2LogoutHandler implements LogoutHandler {
             }
         }
 
-        log.info("logout 시작");
+        log.debug("logout 시작");
 
         if (refreshToken != null) {
-            log.info("logout refreshToken: {}", refreshToken);
+            log.debug("logout refreshToken: {}", refreshToken);
 
             if (refreshTokenService.validateRefreshToken(refreshToken)) {
                 try {
                     refreshTokenService.deleteRefreshToken(refreshToken);
                     LocalDateTime expirationDate = LocalDateTime.now().plusWeeks(1);
                     blacklistService.blacklistToken(refreshToken, expirationDate);
-                    log.info("logout 성공");
+                    log.debug("logout 성공");
                     response.setStatus(HttpServletResponse.SC_OK);
                 } catch (Exception e) {
                     log.error("서버 에러", e);

@@ -1,7 +1,7 @@
 package com.dnd.jjakkak.domain.jwt.handler;
 
-import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -40,8 +40,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
         refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
 
-        log.info("access token: " + accessToken);
-        log.info("refresh token: " + refreshToken);
+        log.debug("access token: " + accessToken);
+        log.debug("refresh token: " + refreshToken);
 
         // Refresh Token 쿠키 설정
         Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);

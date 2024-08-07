@@ -50,11 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
         if(PatternMatchUtils.simpleMatch(SecurityConfig.WHITE_LIST, path)){
-            log.info("path: {} -> passed token filter", path);
+            log.debug("path: {} -> passed token filter", path);
             filterChain.doFilter(request, response);
         }
         String token = parseBearerToken(request);
-        log.info("도착한 토큰: {}", token);
+        log.debug("도착한 토큰: {}", token);
         if (token == null) { // Bearer 인증 방식이 아니거나 빈 값일 경우 진행하지 말고 다음 필터로 바로 넘김
             filterChain.doFilter(request, response);
             return;
@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String kakaoId;
         try {
             kakaoId = jwtProvider.validate(token);
-            log.info("검증된 카카오 ID: {}", kakaoId);
+            log.debug("검증된 카카오 ID: {}", kakaoId);
         } catch (ExpiredJwtException e) {
             log.error("엑세스 토큰이 만료됨", e);
             throw new AccessTokenExpiredException();
