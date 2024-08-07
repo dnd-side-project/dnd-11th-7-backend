@@ -9,12 +9,14 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
+import com.dnd.jjakkak.domain.member.entity.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -62,8 +64,14 @@ class MeetingServiceTest {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(teamProject));
         when(categoryRepository.findById(2L)).thenReturn(Optional.of(meeting));
 
+        Member member = Member.builder()
+                .memberNickname("킹갓승조")
+                .build();
+
+        ReflectionTestUtils.setField(member, "memberId", 1L);
+
         // when
-        meetingService.createMeeting(1L, actual);
+        meetingService.createMeeting(member, actual);
 
         // then
         verify(meetingRepository, times(1)).save(any());
@@ -126,7 +134,13 @@ class MeetingServiceTest {
     @Test
     @DisplayName("모임 삭제 테스트 - 성공")
     void testDeleteMeeting_Success() {
+
         // given
+        Member member = Member.builder()
+                .memberNickname("킹갓승조")
+                .build();
+
+        ReflectionTestUtils.setField(member, "memberId", 1L);
 
         Meeting meeting = Meeting.builder()
                 .meetingLeaderId(1L)
@@ -135,7 +149,7 @@ class MeetingServiceTest {
         when(meetingRepository.findById(anyLong())).thenReturn(Optional.of(meeting));
 
         // when
-        meetingService.deleteMeeting(1L, 1L);
+        meetingService.deleteMeeting(member, 1L);
 
         // then
         verify(meetingRepository, times(1)).deleteById(1L);
@@ -146,8 +160,14 @@ class MeetingServiceTest {
     @DisplayName("모임 삭제 테스트 - 실패 (존재하지 않는 모임)")
     void testDeleteMeeting_Fail() {
 
+        Member member = Member.builder()
+                .memberNickname("킹갓승조")
+                .build();
+
+        ReflectionTestUtils.setField(member, "memberId", 1L);
+
         // expected
         assertThrows(MeetingNotFoundException.class,
-                () -> meetingService.deleteMeeting(1L, 1L));
+                () -> meetingService.deleteMeeting(member, 1L));
     }
 }
