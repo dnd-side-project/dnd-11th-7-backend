@@ -4,9 +4,11 @@ import com.dnd.jjakkak.domain.jwt.filter.JwtAuthenticationFilter;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2FailureHandler;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2LogoutHandler;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2SuccessHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,7 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Spring Security Configuration Class.
@@ -41,17 +43,16 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
-
     public static final String[] WHITE_LIST = {
-        "/api/v1/auth/oauth/**",
-        "/api/v1/check-auth",
-        "/api/v1/meeting"
+            "/api/v1/auth/oauth/**",
+            "/api/v1/check-auth",
+            "/api/v1/meeting"
     };
-
     public static final String[] USER_LIST = {
-        "/api/v1/categories",
-        "/api/v1/member/**"
+            "/api/v1/categories",
+            "/api/v1/member/**"
     };
+    private final ObjectMapper objectMapper;
 
     public static final String[] ADMIN_LIST = {
 
@@ -103,7 +104,7 @@ public class SecurityConfig {
                         .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling // 실패 시 해당 메시지 반환
-                        .authenticationEntryPoint(new FailedAuthenticationEntryPoint())
+                        .authenticationEntryPoint(new FailedAuthenticationEntryPoint(objectMapper))
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -121,9 +122,9 @@ public class SecurityConfig {
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() { // 추후 CORS 수정 필요
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // 허용할 도메인 명시
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // 허용할 도메인 명시
         config.addAllowedMethod("*");
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers"));
         config.addExposedHeader("Authorization"); //프론트에서 해당 헤더를 읽을 수 있게
         config.setAllowCredentials(true);
 
@@ -140,7 +141,9 @@ public class SecurityConfig {
      */
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
+
         return web -> web.ignoring()
-                .requestMatchers("/favicon");
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .requestMatchers("/index.html");
     }
 }
