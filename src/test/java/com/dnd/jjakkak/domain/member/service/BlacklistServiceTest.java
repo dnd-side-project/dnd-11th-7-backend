@@ -39,7 +39,6 @@ class BlacklistServiceTest {
         BlacklistedToken blacklistedToken = BlacklistedToken.builder()
                 .token(token)
                 .build();
-
         Mockito.when(blacklistedTokenRepository.findByToken(token))
                 .thenReturn(Optional.of(blacklistedToken));
 

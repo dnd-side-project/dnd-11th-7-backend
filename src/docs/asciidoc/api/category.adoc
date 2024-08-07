@@ -3,33 +3,30 @@
 === 카테고리 목록 조회
 
 .HTTP Request
-include::{snippets}/category/getCategoryList/success/http-request.adoc[]
+include::{snippets}/category-controller-test/get_list/http-request.adoc[]
 
 .HTTP Response
-include::{snippets}/category/getCategoryList/success/http-response.adoc[]
+include::{snippets}/category-controller-test/get_list/http-response.adoc[]
 
 .Response Fields
-include::{snippets}/category/getCategoryList/success/response-fields.adoc[]
+include::{snippets}/category-controller-test/get_list/response-fields.adoc[]
 
 === 카테고리 개별 조회 - 성공
 
-include::{snippets}/category/getCategory/success/path-parameters.adoc[]
+include::{snippets}/category-controller-test/get_success/path-parameters.adoc[]
 
 .HTTP Request
-include::{snippets}/category/getCategory/success/http-request.adoc[]
+include::{snippets}/category-controller-test/get_success/http-request.adoc[]
 
 
 .HTTP Response
-include::{snippets}/category/getCategory/success/http-response.adoc[]
-include::{snippets}/category/getCategory/success/response-fields.adoc[]
+include::{snippets}/category-controller-test/get_success/http-response.adoc[]
 
 === 카테고리 개별 조회 - 실패
 
 .HTTP Request
-include::{snippets}/category/getCategory/fail-404/http-request.adoc[]
+include::{snippets}/category-controller-test/get_fail/http-request.adoc[]
 
 .HTTP Response
-include::{snippets}/category/getCategory/fail-404/http-response.adoc[]
+include::{snippets}/category-controller-test/get_fail/http-response.adoc[]
 
-.Error Response
-include::{snippets}/category/getCategory/fail-404/response-fields.adoc[]

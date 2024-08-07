@@ -30,7 +30,6 @@ class BlacklistedTokenRepositoryTest {
                 .token("test_token")
                 .expirationDate(LocalDateTime.now().plusDays(1))
                 .build();
-
         blacklistedTokenRepository.save(token);
 
         // when
