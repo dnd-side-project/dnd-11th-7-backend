@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 모임 응답 DTO 클래스입니다.
@@ -23,12 +24,12 @@ public class MeetingResponseDto {
     private final Integer numberOfPeople;
     private final Boolean isAnonymous;
     private final LocalDateTime voteEndDate;
-    private final LocalDateTime confirmedSchedule;
     private final Long meetingLeaderId;
     private final String meetingUuid;
+    private final BestTime bestTime;
 
     @Builder
-    public MeetingResponseDto(Meeting meeting) {
+    public MeetingResponseDto(Meeting meeting, BestTime bestTime) {
         this.meetingId = meeting.getMeetingId();
         this.meetingName = meeting.getMeetingName();
         this.meetingStartDate = meeting.getMeetingStartDate();
@@ -36,8 +37,24 @@ public class MeetingResponseDto {
         this.numberOfPeople = meeting.getNumberOfPeople();
         this.isAnonymous = meeting.getIsAnonymous();
         this.voteEndDate = meeting.getVoteEndDate();
-        this.confirmedSchedule = meeting.getConfirmedSchedule();
         this.meetingLeaderId = meeting.getMeetingLeaderId();
         this.meetingUuid = meeting.getMeetingUuid();
+        this.bestTime = bestTime;
+
+    }
+
+    @Getter
+    public static class BestTime {
+
+        private final LocalDateTime startTime;
+        private final LocalDateTime endTIme;
+        private final List<String> memberNickname;
+
+        @Builder
+        public BestTime(LocalDateTime startTime, LocalDateTime endTIme, List<String> memberNickname) {
+            this.startTime = startTime;
+            this.endTIme = endTIme;
+            this.memberNickname = memberNickname;
+        }
     }
 }

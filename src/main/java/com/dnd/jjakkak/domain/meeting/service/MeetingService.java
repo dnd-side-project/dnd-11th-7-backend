@@ -146,8 +146,12 @@ public class MeetingService {
         Meeting meeting = meetingRepository.findByMeetingUuid(uuid)
                 .orElseThrow(MeetingNotFoundException::new);
 
+        MeetingResponseDto.BestTime bestTime
+                = meetingRepository.findBestTimeByMeetingId(meeting.getMeetingId());
+
         return MeetingResponseDto.builder()
                 .meeting(meeting)
+                .bestTime(bestTime)
                 .build();
     }
 

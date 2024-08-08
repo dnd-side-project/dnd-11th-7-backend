@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author 정승조
  * @version 2024. 07. 25.
  */
-public interface MeetingRepository extends JpaRepository<Meeting, Long> {
+public interface MeetingRepository extends JpaRepository<Meeting, Long>, MeetingRepositoryCustom {
 
     /**
      * 모임 uuid로 모임이 존재하는지 확인합니다.
