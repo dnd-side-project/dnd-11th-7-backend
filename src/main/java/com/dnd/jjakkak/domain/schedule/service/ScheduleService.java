@@ -5,6 +5,8 @@ import com.dnd.jjakkak.domain.dateofschedule.service.DateOfScheduleService;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
+import com.dnd.jjakkak.domain.meetingmember.entity.MeetingMember;
+import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
@@ -34,6 +36,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MeetingRepository meetingRepository;
     private final DateOfScheduleService dateOfScheduleService;
+    private final MeetingMemberRepository meetingMemberRepository;
 
     /**
      * 기본 일정을 생성하는 메서드입니다.
@@ -85,11 +88,22 @@ public class ScheduleService {
     public void assignScheduleToMember(OAuth2User user, ScheduleAssignRequestDto requestDto) {
 
         // meetingId로 할당되지 않은 schedule 조회
+
+        Member member = (Member) user;
+
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        schedule.assignMember((Member) user);
+        schedule.assignMember(member);
         validateAndAssignSchedule(requestDto, schedule);
+
+        // TODO : MeetingMember 객체를 만들어서 DB에 저장
+        MeetingMember meetingMember = MeetingMember.builder()
+                .member(member)
+                .meeting(schedule.getMeeting())
+                .build();
+
+        meetingMemberRepository.save(meetingMember);
     }
 
     /**
