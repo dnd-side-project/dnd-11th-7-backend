@@ -1,6 +1,5 @@
 package com.dnd.jjakkak.domain.meeting.controller;
 
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
@@ -68,21 +67,6 @@ public class MeetingController {
     public ResponseEntity<List<MemberResponseDto>> getMemberListByMemberId(@PathVariable("meetingId") Long id) {
         return ResponseEntity.ok(meetingService.getMeetingListByMeetingId(id));
     }
-
-    /**
-     * 모임의 확정된 일자를 수정하는 메서드입니다.
-     *
-     * @param id         모임 ID
-     * @param requestDto 확정된 일자 수정 요청 DTO
-     * @return 200 (OK)
-     */
-    @PatchMapping("/{meetingId}/confirm")
-    public ResponseEntity<Void> confirmMeeting(@PathVariable("meetingId") Long id,
-                                               @Valid @RequestBody MeetingConfirmRequestDto requestDto) {
-        meetingService.confirmMeeting(id, requestDto);
-        return ResponseEntity.ok().build();
-    }
-
 
     /**
      * 모임을 삭제하는 메서드입니다.

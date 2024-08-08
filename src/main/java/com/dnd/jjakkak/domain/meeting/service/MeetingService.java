@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.meeting.service;
 import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
@@ -107,22 +106,6 @@ public class MeetingService {
                 .map(MemberResponseDto::new)
                 .toList();
     }
-
-    /**
-     * 모임의 확정된 일자를 설정하는 메서드입니다.
-     *
-     * @param id         모임 ID
-     * @param requestDto 모임 확정 요청 DTO
-     */
-    @Transactional
-    public void confirmMeeting(Long id, MeetingConfirmRequestDto requestDto) {
-
-        Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(MeetingNotFoundException::new);
-
-        meeting.updateConfirmedSchedule(requestDto);
-    }
-
 
     /**
      * 모임을 삭제하는 메서드입니다.
