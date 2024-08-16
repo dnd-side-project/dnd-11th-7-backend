@@ -34,22 +34,15 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Member oauth2User = (Member) authentication.getPrincipal();
         String kakaoId = Long.toString(oauth2User.getKakaoId());
 
-        // Access Token 생성
-        String accessToken = jwtProvider.createAccessToken(kakaoId);
-
         // Refresh Token 생성 및 저장
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
         refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
 
-        log.debug("access token: " + accessToken);
         log.debug("refresh token: " + refreshToken);
 
         // Refresh Token 쿠키 설정
         Cookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
-        Cookie accessCookie = createCookie("access_token", accessToken, 60);
-
         response.addCookie(refreshCookie);
-        response.addCookie(accessCookie);
     }
 
     /**
