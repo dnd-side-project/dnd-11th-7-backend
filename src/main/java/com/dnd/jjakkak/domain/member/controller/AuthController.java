@@ -1,6 +1,7 @@
 package com.dnd.jjakkak.domain.member.controller;
 
 import com.dnd.jjakkak.domain.member.service.AuthService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -32,7 +33,7 @@ public class AuthController {
      * @param authorization Authorization Header (Bearer Token)
      * @return (로그인 여부)
      */
-    @GetMapping("/check-auth")
+    @GetMapping("/check")
     public ResponseEntity<Map<String, Boolean>> checkAuth(@RequestHeader(value = "Authorization", required = false) String authorization) {
 
         Map<String, Boolean> response = new ConcurrentHashMap<>();
@@ -56,14 +57,23 @@ public class AuthController {
      */
     @GetMapping("/reissue")
     public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken,
+                                             @CookieValue(value = "access_token", required = false) String accessToken,
                                              HttpServletResponse response) {
 
         if (Strings.isEmpty(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String accessToken = authService.reissueToken(refreshToken);
-        response.setHeader("Authorization", accessToken);
+        // 만약 accessToken 이 존재한다면, 해당 쿠키를 지움.
+        if (Strings.isNotEmpty(accessToken)) {
+            Cookie cookie = new Cookie("access_token", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        }
+
+        String newAccessToken = authService.reissueToken(refreshToken);
+        response.setHeader("Authorization", newAccessToken);
 
         return ResponseEntity.ok().build();
     }
