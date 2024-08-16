@@ -16,8 +16,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * 검증 성공 시 토큰이 저장된 링크로 이동하는 핸들러입니다.
- * @author 류태웅
+ * OAuth 로그인 성공시 JWT 토큰(AT, RT)을 생성하고 쿠키에 저장합니다.
+ *
+ * @author 류태웅, 정승조
  * @version 2024. 08. 02.
  */
 @Slf4j
@@ -44,17 +45,29 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.debug("refresh token: " + refreshToken);
 
         // Refresh Token 쿠키 설정
-        Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 1주일
+        Cookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
+        Cookie accessCookie = createCookie("access_token", accessToken, 60);
 
-        // 쿠키 추가
-        response.addCookie(refreshTokenCookie);
-        // Access Token을 헤더에 추가
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        // 리다이렉트할 URL 설정 (프론트엔드 페이지로 리다이렉트)
-        response.sendRedirect("http://localhost:3000/");
+        response.addCookie(refreshCookie);
+        response.addCookie(accessCookie);
     }
+
+    /**
+     * 쿠키를 생성하는 메서드입니다.
+     *
+     * @param name   쿠키 이름
+     * @param value  쿠키 값
+     * @param maxAge 쿠키 만료 시간
+     * @return 생성된 쿠키
+     */
+    private Cookie createCookie(String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+
+        return cookie;
+    }
+
 }
