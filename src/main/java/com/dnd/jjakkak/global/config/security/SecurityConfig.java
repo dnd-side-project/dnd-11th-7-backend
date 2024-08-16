@@ -25,6 +25,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static com.dnd.jjakkak.global.config.security.SecurityEndpointPaths.*;
+
 /**
  * Spring Security Configuration Class.
  *
@@ -43,20 +45,7 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
-    public static final String[] WHITE_LIST = {
-            "/api/v1/auth/oauth/**",
-            "/api/v1/check-auth",
-            "/api/v1/meeting/**"
-    };
-    public static final String[] USER_LIST = {
-            "/api/v1/categories",
-            "/api/v1/member/**"
-    };
     private final ObjectMapper objectMapper;
-
-    public static final String[] ADMIN_LIST = {
-
-    };
 
     /**
      * Security Bean 등록.
@@ -69,7 +58,7 @@ public class SecurityConfig {
      * <li>httpBasic 비활성화</li>
      * <li>세션 비활성화</li>
      * <li>OAuth2 로그인 설정 : 로그인 url, 리다이렉트 url, 유저 서비스, 성공 시 핸들러</li>
-     * <li>로그인 uri : http://localhost:8080/api/v1/auth/oauth2/kakao</li>
+     * <li>로그인 uri : <a href="http://localhost:8080/api/v1/auth/oauth2/kakao">/api/v1/auth/oauth2/kakao</a></li>
      * <li>인증 실패 시 메시지 임시 설정 -> 추후 변경 필요</li>
      * <li>필터 체인에 JWT Authentication Filter 추가</li>
      */
@@ -112,13 +101,12 @@ public class SecurityConfig {
     }
 
     /**
-     * CORS 설정 용 메소드 추가
+     * CORS 설정 빈 등록.
      *
      * <li>credentials를 허용하기 위해 특정 도메인 추가</li>
      *
-     * @return CorsConfigurationSource
+     * @return CORS 설정 객체
      */
-
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() { // 추후 CORS 수정 필요
         CorsConfiguration config = new CorsConfiguration();
@@ -136,8 +124,7 @@ public class SecurityConfig {
     /**
      * Security ignore 설정 빈 등록.
      *
-     * <li>static Resource (favicon, ...)</li>
-     * <p>추후에 제외해야될 파일들 추가</p>
+     * <li>static Resource (favicon.ico, index.html)</li>
      */
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
