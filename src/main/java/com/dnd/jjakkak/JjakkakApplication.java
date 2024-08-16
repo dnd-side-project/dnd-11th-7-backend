@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling // 스케줄링 설정
+@EnableScheduling
 public class JjakkakApplication {
 
     public static void main(String[] args) {

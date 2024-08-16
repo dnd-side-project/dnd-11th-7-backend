@@ -33,7 +33,6 @@ import static com.dnd.jjakkak.global.config.security.SecurityEndpointPaths.*;
  * @author 류태웅
  * @version 2024. 08. 03.
  */
-
 @Configurable
 @Configuration
 @RequiredArgsConstructor

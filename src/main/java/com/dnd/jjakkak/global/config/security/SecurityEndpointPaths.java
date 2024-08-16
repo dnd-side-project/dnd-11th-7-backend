@@ -8,6 +8,10 @@ package com.dnd.jjakkak.global.config.security;
  */
 public class SecurityEndpointPaths {
 
+    private SecurityEndpointPaths() {
+        // 인스턴스 생성 방지
+    }
+
     public static final String[] WHITE_LIST = {
             "/api/v1/auth/oauth/**",
             "/api/v1/auth/**",
@@ -21,8 +25,4 @@ public class SecurityEndpointPaths {
     public static final String[] ADMIN_LIST = {
 
     };
-
-    private SecurityEndpointPaths() {
-        // 인스턴스 생성 방지
-    }
 }
