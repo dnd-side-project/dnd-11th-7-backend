@@ -37,13 +37,11 @@ public class AuthController {
 
         Map<String, Boolean> response = new ConcurrentHashMap<>();
 
-        if (Strings.isEmpty(authorization) || !authorization.startsWith("Bearer ")) {
-            response.put("isAuthenticated", false);
-            return ResponseEntity.ok(response);
-        }
+        boolean isAuthenticated = Strings.isNotBlank(authorization) &&
+                authorization.startsWith("Bearer ") &&
+                authService.checkAuth(authorization);
 
-        authService.checkAuth(authorization);
-        response.put("isAuthenticated", true);
+        response.put("isAuthenticated", isAuthenticated);
         return ResponseEntity.ok(response);
     }
 
