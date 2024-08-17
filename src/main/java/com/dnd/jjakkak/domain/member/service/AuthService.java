@@ -36,14 +36,11 @@ public class AuthService {
      *
      * @param authorization Authorization Header (Bearer Token)
      */
-    public void checkAuth(String authorization) {
+    public boolean checkAuth(String authorization) {
 
         String accessToken = authorization.substring(7);
-
         String validate = jwtProvider.validate(accessToken);
 
-        if (Strings.isBlank(validate)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
-        }
+        return Strings.isNotBlank(validate);
     }
 }
