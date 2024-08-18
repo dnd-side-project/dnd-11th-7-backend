@@ -2,7 +2,6 @@ package com.dnd.jjakkak.domain.member.service;
 
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
-import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
@@ -14,53 +13,40 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Member의 CRUD Service입니다.
+ * Member Service 입니다.
  *
  * @author 류태웅
  * @version 2024. 07. 29.
  */
-
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
-    private final MeetingRepository meetingRepository;
 
     /**
      * 해당 회원이 속한 모임 출력
      *
      * @param id 회원 ID
-     * @return 모임 응답 DTO (모임 정보와 해당 모임의 최적 시간)
+     * @return 모임 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
     public List<MeetingResponseDto> getMeetingListByMemberId(Long id) {
-        List<MeetingResponseDto> responseList = new ArrayList<>();
         List<Meeting> meetingList = meetingMemberRepository.findByMemberId(id);
-
-        for (Meeting meeting : meetingList) {
-            MeetingResponseDto.BestTime bestTime = meetingRepository.findBestTimeByMeetingId(meeting.getMeetingId());
-
-            MeetingResponseDto meetingResponse = MeetingResponseDto.builder()
-                    .meeting(meeting)
-                    .bestTime(bestTime)
-                    .build();
-
-            responseList.add(meetingResponse);
-        }
-
-        return responseList;
+        return meetingList.stream()
+                .map(MeetingResponseDto::new)
+                .toList();
     }
 
     /**
-     * 닉네임 수정
+     * 회원의 닉네임을 수정합니다.
      *
-     * @param id  Long
-     * @param dto MemberUpdateNicknameRequestDto
+     * @param id  회원 ID
+     * @param dto 닉네임 수정 요청 DTO
      */
     @Transactional
     public void updateNickname(Long id, MemberUpdateNicknameRequestDto dto) {
@@ -70,10 +56,10 @@ public class MemberService {
     }
 
     /**
-     * 프로필 수정
+     * 회원의 프로필을 수정합니다.
      *
-     * @param id  Long
-     * @param dto MemberUpdateProfileRequestDto
+     * @param id  회원 ID
+     * @param dto 프로필 수정 요청 DTO
      */
     @Transactional
     public void updateProfile(Long id, MemberUpdateProfileRequestDto dto) {
@@ -83,9 +69,9 @@ public class MemberService {
     }
 
     /**
-     * 회원 탈퇴
+     * 회원 탈퇴를 처리합니다. (Soft Delete)
      *
-     * @param id Long
+     * @param id 회원 ID
      */
     @Transactional
     public void deleteMember(Long id) {
@@ -95,10 +81,9 @@ public class MemberService {
     /**
      * 매주 월요일 자정에 탈퇴 처리된 이용자 하드 삭제
      */
-    @Scheduled(cron = "0 0 0 ? * MON") //매주 월요일 자정
+    @Scheduled(cron = "0 0 0 ? * MON")
     public void deletedMemberAllDeleted() {
         memberRepository.deleteAllByIsDeleteTrue();
     }
-
 
 }

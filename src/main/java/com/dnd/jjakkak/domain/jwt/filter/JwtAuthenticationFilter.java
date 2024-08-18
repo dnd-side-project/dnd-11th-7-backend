@@ -4,10 +4,9 @@ import com.dnd.jjakkak.domain.jwt.exception.AccessTokenExpiredException;
 import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.entity.Role;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
-import com.dnd.jjakkak.global.config.security.SecurityConfig;
+import com.dnd.jjakkak.global.config.security.SecurityEndpointPaths;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -16,90 +15,125 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 검증을 실행하는 필터입니다.
+ * JWT 인증 필터입니다. (모든 요청에 1회 실행)
  *
  * @author 류태웅
  * @version 2024. 08. 03.
  */
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         String path = request.getRequestURI();
-        if (PatternMatchUtils.simpleMatch(SecurityConfig.WHITE_LIST, path)) {
-            log.debug("path: {} -> passed token filter", path);
+
+        if (isPathInWhiteList(path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = parseBearerToken(request);
-        log.debug("도착한 토큰: {}", token);
-        if (token == null) { // Bearer 인증 방식이 아니거나 빈 값일 경우 진행하지 말고 다음 필터로 바로 넘김
-            filterChain.doFilter(request, response);
-            return;
-        }
-        String kakaoId;
-        try {
-            kakaoId = jwtProvider.validate(token);
-            log.debug("검증된 카카오 ID: {}", kakaoId);
-        } catch (ExpiredJwtException e) {
-            log.error("엑세스 토큰이 만료됨", e);
-            throw new AccessTokenExpiredException();
-        } catch (MalformedJwtException e) {
-            log.error("손상된 토큰", e);
-            throw new MalformedTokenException();
-        }
-
-        if (kakaoId == null) {
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Member member = memberRepository.findByKakaoId(Long.parseLong(kakaoId))
-                .orElseThrow(MemberNotFoundException::new);
-        Role role = member.getRole();
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role.toString()));
+        String kakaoId = validateToken(token);
+        if (Strings.isEmpty(kakaoId)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member, null, authorities);
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        securityContext.setAuthentication(authenticationToken);
-        SecurityContextHolder.setContext(securityContext);
-
+        authenticateUser(kakaoId, request);
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * 요청 URI가 화이트 리스트에 포함되어 있는지 확인합니다.
+     *
+     * @param path 요청 URI
+     * @return 화이트 리스트에 포함되어 있으면 true, 아니면 false
+     */
+    private boolean isPathInWhiteList(String path) {
+        return PatternMatchUtils.simpleMatch(SecurityEndpointPaths.WHITE_LIST, path);
+    }
+
+    /**
+     * 토큰을 통해 사용자 정보(kakaoId) 조회
+     *
+     * @param token Access Token
+     * @return kakaoId
+     */
+    private String validateToken(String token) {
+        try {
+            return jwtProvider.validate(token);
+        } catch (ExpiredJwtException e) {
+            throw new AccessTokenExpiredException();
+        } catch (MalformedJwtException e) {
+            throw new MalformedTokenException();
+        }
+    }
+
+
+    /**
+     * Authorization 헤더에서 Bearer Token을 추출합니다.
+     *
+     * @param request HTTP 요청 객체 (HttpServletRequest)
+     * @return Bearer Token
+     */
     private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
-        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
+        if (Strings.isNotBlank(authorization) && authorization.startsWith("Bearer ")) {
             return authorization.substring(7);
         }
+
         return null;
+    }
+
+    /**
+     * 사용자 인증을 수행합니다. (SecurityContext - 사용자 정보 저장)
+     *
+     * @param kakaoId 사용자의 카카오 ID
+     * @param request HTTP 요청 객체 (HttpServletRequest)
+     */
+    private void authenticateUser(String kakaoId, HttpServletRequest request) {
+
+        Member member = memberRepository.findByKakaoId(Long.parseLong(kakaoId))
+                .orElseThrow(MemberNotFoundException::new);
+
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(member.getRole().name()));
+
+        AbstractAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(member, null, authorities);
+        WebAuthenticationDetails authDetails = new WebAuthenticationDetailsSource().buildDetails(request);
+
+        authToken.setDetails(authDetails);
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authToken);
+        SecurityContextHolder.setContext(securityContext);
     }
 }
