@@ -4,7 +4,7 @@ name: jjakkak server deploy
 on:
   push:
     branches:
-      - main
+      - develop
 
 # job 설정
 jobs:
