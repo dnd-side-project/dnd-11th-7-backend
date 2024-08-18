@@ -45,6 +45,7 @@ public class ScheduleRepositoryImpl extends QuerydslRepositorySupport implements
                         .where(schedule.meeting.meetingId.eq(meetingId)
                                 .and(schedule.isAssigned.eq(false)))
                         .select(schedule)
+                        .limit(1L)
                         .fetchOne());
     }
 }

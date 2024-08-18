@@ -56,13 +56,13 @@ public class MeetingResponseDto {
     public static class BestTime {
 
         private final LocalDateTime startTime;
-        private final LocalDateTime endTIme;
+        private final LocalDateTime endTime;
         private final List<String> memberNickname;
 
         @Builder
         public BestTime(LocalDateTime startTime, LocalDateTime endTIme) {
             this.startTime = startTime;
-            this.endTIme = endTIme;
+            this.endTime = endTIme;
             this.memberNickname = new ArrayList<>();
         }
     }

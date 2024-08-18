@@ -87,20 +87,6 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         log.info("responseDto: {}", responseDto);
 
         // 2. 모임의 일정과 일정 날짜에서 우선순위가 가장 높은 2개를 조회한다.
-        /**
-         * SELECT
-         *     ds.date_of_schedule_start,
-         *     ds.date_of_schedule_end,
-         *     AVG(ds.date_of_schedule_rank) AS avg_rank
-         * FROM `DateOfSchedule` ds
-         * JOIN `Schedule` s ON ds.schedule_id = s.schedule_id
-         * JOIN `Meeting` m ON s.meeting_id = m.meeting_id
-         * WHERE m.meeting_uuid = 1234 -- 조회할 모임 UUID
-         * GROUP BY ds.date_of_schedule_start, ds.date_of_schedule_end
-         * ORDER BY avg_rank ASC -- 우선순위가 낮을수록 높은 우선순위로 간주
-         * LIMIT 2;
-         */
-
         List<MeetingResponseDto.BestTime> bestTimeList = from(dateOfSchedule)
                 .join(dateOfSchedule.schedule, schedule)
                 .join(schedule.meeting, meeting)
@@ -117,11 +103,12 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
 
         // 3. 각 시간대에 해당하는 닉네임 리스트를 조회하여 BestTime 객체에 추가한다.
         for (MeetingResponseDto.BestTime bestTime : bestTimeList) {
-            List<String> nicknames = from(schedule)
+            List<String> nicknames = from(dateOfSchedule)
                     .join(dateOfSchedule.schedule, schedule)
-                    .where(schedule.meeting.meetingUuid.eq(uuid)
+                    .join(schedule.meeting, meeting)
+                    .where(meeting.meetingUuid.eq(uuid)
                             .and(dateOfSchedule.dateOfScheduleStart.eq(bestTime.getStartTime()))
-                            .and(dateOfSchedule.dateOfScheduleEnd.eq(bestTime.getEndTIme())))
+                            .and(dateOfSchedule.dateOfScheduleEnd.eq(bestTime.getEndTime())))
                     .select(schedule.scheduleNickname)
                     .fetch();
 

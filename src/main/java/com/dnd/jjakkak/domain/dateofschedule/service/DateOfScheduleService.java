@@ -40,9 +40,9 @@ public class DateOfScheduleService {
         // 일정 날짜 생성 로직
         DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
                 .schedule(schedule)
-                .dateOfScheduleStart(requestDto.getDateOfScheduleStart())
-                .dateOfScheduleEnd(requestDto.getDateOfScheduleEnd())
-                .dateOfScheduleRank(requestDto.getDateOfScheduleRank())
+                .dateOfScheduleStart(requestDto.getStartTime())
+                .dateOfScheduleEnd(requestDto.getEndTime())
+                .dateOfScheduleRank(requestDto.getRank())
                 .build();
 
         dateOfScheduleRepository.save(dateOfSchedule);
@@ -66,9 +66,9 @@ public class DateOfScheduleService {
         requestDto.forEach(dto -> {
             DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
                     .schedule(schedule)
-                    .dateOfScheduleStart(dto.getDateOfScheduleStart())
-                    .dateOfScheduleEnd(dto.getDateOfScheduleEnd())
-                    .dateOfScheduleRank(dto.getDateOfScheduleRank())
+                    .dateOfScheduleStart(dto.getStartTime())
+                    .dateOfScheduleEnd(dto.getEndTime())
+                    .dateOfScheduleRank(dto.getRank())
                     .build();
 
             dateOfScheduleRepository.save(dateOfSchedule);
