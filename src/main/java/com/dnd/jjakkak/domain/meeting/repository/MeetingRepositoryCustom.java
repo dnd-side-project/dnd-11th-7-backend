@@ -29,10 +29,10 @@ public interface MeetingRepositoryCustom {
     boolean isAnonymous(Long meetingId);
 
     /**
-     * 모임 응답을 반환합니다.
+     * 모임의 UUID로 모임을 조회합니다.
      *
-     * @param meetingUuid 모임 UUID
+     * @param uuid 모임 UUID
      * @return 모임 응답 DTO
      */
-    MeetingResponseDto getMeetingResponse(String meetingUuid);
+    MeetingResponseDto findByMeetingUuidWithBestTime(String uuid);
 }

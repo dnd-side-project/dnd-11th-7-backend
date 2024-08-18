@@ -140,14 +140,13 @@ public class MeetingService {
      */
     @Transactional(readOnly = true)
     public MeetingResponseDto getMeetingByUuid(String uuid) {
+        if (!meetingRepository.existsByMeetingUuid(uuid)) {
+            throw new MeetingNotFoundException();
+        }
 
-        Meeting meeting = meetingRepository.findByMeetingUuid(uuid)
-                .orElseThrow(MeetingNotFoundException::new);
-
-        return MeetingResponseDto.builder()
-                .meeting(meeting)
-                .build();
+        return meetingRepository.findByMeetingUuidWithBestTime(uuid);
     }
+
 
     /**
      * UUID를 생성하는 메서드입니다.

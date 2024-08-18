@@ -1,7 +1,5 @@
 package com.dnd.jjakkak.domain.member.service;
 
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
-import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
@@ -12,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Member Service 입니다.
@@ -28,19 +24,25 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MeetingMemberRepository meetingMemberRepository;
 
-    /**
-     * 해당 회원이 속한 모임 출력
-     *
-     * @param id 회원 ID
-     * @return 모임 응답 DTO 리스트
-     */
-    @Transactional(readOnly = true)
-    public List<MeetingResponseDto> getMeetingListByMemberId(Long id) {
-        List<Meeting> meetingList = meetingMemberRepository.findByMemberId(id);
-        return meetingList.stream()
-                .map(MeetingResponseDto::new)
-                .toList();
-    }
+//    /**
+//     * 해당 회원이 속한 모임 출력
+//     *
+//     * @param id 회원 ID
+//     * @return 모임 응답 DTO 리스트
+//     */
+//    @Transactional(readOnly = true)
+//    public List<MeetingResponseDto> getMeetingListByMemberId(Long id) {
+//        List<Meeting> meetingList = meetingMemberRepository.findByMemberId(id);
+//
+//
+//
+//
+//        return meetingList.stream()
+//                .map(meeting -> MeetingResponseDto.builder()
+//                        .meeting(meeting)
+//                        .build())
+//                .toList();
+//    }
 
     /**
      * 회원의 닉네임을 수정합니다.

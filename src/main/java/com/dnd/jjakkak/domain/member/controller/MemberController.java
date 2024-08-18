@@ -1,6 +1,5 @@
 package com.dnd.jjakkak.domain.member.controller;
 
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.service.MemberService;
@@ -8,8 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Member의 CRUD에 사용하는 컨트롤러입니다.
@@ -24,16 +21,16 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
-    /**
-     * 회원이 속한 모임 조회
-     *
-     * @param id 조회할 멤버 ID
-     * @return 200 (OK), body: 모임 응답 DTO
-     */
-    @GetMapping("/{memberId}/meetingList")
-    public ResponseEntity<List<MeetingResponseDto>> getMemberListByMemberId(@PathVariable("memberId") Long id) {
-        return ResponseEntity.ok(memberService.getMeetingListByMemberId(id));
-    }
+//    /**
+//     * 회원이 속한 모임 조회
+//     *
+//     * @param id 조회할 멤버 ID
+//     * @return 200 (OK), body: 모임 응답 DTO
+//     */
+//    @GetMapping("/{memberId}/meetingList")
+//    public ResponseEntity<List<MeetingResponseDto>> getMemberListByMemberId(@PathVariable("memberId") Long id) {
+//        return ResponseEntity.ok(memberService.getMeetingListByMemberId(id));
+//    }
 
     @PatchMapping("/{memberId}/nickname")
     public ResponseEntity<Void> updateNickname(

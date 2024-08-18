@@ -1,8 +1,8 @@
 package com.dnd.jjakkak.domain.meeting.dto.response;
 
-import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +15,7 @@ import java.util.List;
  * @author 정승조, 류태웅
  * @version 2024. 07. 30.
  */
+@ToString
 @Getter
 public class MeetingResponseDto {
 
@@ -30,23 +31,31 @@ public class MeetingResponseDto {
     private final List<BestTime> bestTime = new ArrayList<>();
 
     @Builder
-    public MeetingResponseDto(Meeting meeting) {
-        this.meetingId = meeting.getMeetingId();
-        this.meetingName = meeting.getMeetingName();
-        this.meetingStartDate = meeting.getMeetingStartDate();
-        this.meetingEndDate = meeting.getMeetingEndDate();
-        this.numberOfPeople = meeting.getNumberOfPeople();
-        this.isAnonymous = meeting.getIsAnonymous();
-        this.voteEndDate = meeting.getVoteEndDate();
-        this.meetingLeaderId = meeting.getMeetingLeaderId();
-        this.meetingUuid = meeting.getMeetingUuid();
+    public MeetingResponseDto(Long meetingId, String meetingName,
+                              LocalDate meetingStartDate, LocalDate meetingEndDate,
+                              Integer numberOfPeople, Boolean isAnonymous,
+                              LocalDateTime voteEndDate, Long meetingLeaderId, String meetingUuid) {
+        this.meetingId = meetingId;
+        this.meetingName = meetingName;
+        this.meetingStartDate = meetingStartDate;
+        this.meetingEndDate = meetingEndDate;
+        this.numberOfPeople = numberOfPeople;
+        this.isAnonymous = isAnonymous;
+        this.voteEndDate = voteEndDate;
+        this.meetingLeaderId = meetingLeaderId;
+        this.meetingUuid = meetingUuid;
     }
 
     public void addBestTime(BestTime bestTime) {
         this.bestTime.add(bestTime);
     }
 
+    public void addBestTimeList(List<BestTime> bestTimeList) {
+        this.bestTime.addAll(bestTimeList);
+    }
 
+
+    @ToString
     @Getter
     public static class BestTime {
 
@@ -55,10 +64,10 @@ public class MeetingResponseDto {
         private final List<String> memberNickname;
 
         @Builder
-        public BestTime(LocalDateTime startTime, LocalDateTime endTIme, List<String> memberNickname) {
+        public BestTime(LocalDateTime startTime, LocalDateTime endTIme) {
             this.startTime = startTime;
             this.endTIme = endTIme;
-            this.memberNickname = memberNickname;
+            this.memberNickname = new ArrayList<>();
         }
     }
 }
