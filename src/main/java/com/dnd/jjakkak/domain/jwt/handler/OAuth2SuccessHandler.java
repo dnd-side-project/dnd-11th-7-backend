@@ -5,11 +5,12 @@ import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -40,12 +41,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
         refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
 
-        log.debug("refresh token: " + refreshToken);
-
         // Refresh Token 쿠키 설정
-        Cookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
-        response.addCookie(refreshCookie);
-
+        ResponseCookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
         response.sendRedirect(jjakkakProperties.getFrontUrl());
     }
 
@@ -57,14 +55,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      * @param maxAge 쿠키 만료 시간
      * @return 생성된 쿠키
      */
-    private Cookie createCookie(String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
-
-        return cookie;
+    private ResponseCookie createCookie(String name, String value, int maxAge) {
+        return ResponseCookie.from(name, value)
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(maxAge)
+                .build();
     }
 
 }
