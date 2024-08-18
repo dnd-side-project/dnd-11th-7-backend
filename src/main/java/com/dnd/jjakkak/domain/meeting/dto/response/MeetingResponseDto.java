@@ -50,10 +50,6 @@ public class MeetingResponseDto {
         this.bestTime.add(bestTime);
     }
 
-    public void addBestTimeList(List<BestTime> bestTimeList) {
-        this.bestTime.addAll(bestTimeList);
-    }
-
 
     @ToString
     @Getter
