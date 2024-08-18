@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.jwt.handler;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
+import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private final JjakkakProperties jjakkakProperties;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
@@ -43,6 +45,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // Refresh Token 쿠키 설정
         Cookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
         response.addCookie(refreshCookie);
+
+        response.sendRedirect(jjakkakProperties.getFrontUrl());
     }
 
     /**
