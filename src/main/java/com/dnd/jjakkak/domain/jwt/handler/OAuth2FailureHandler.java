@@ -24,15 +24,16 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+
+        // TODO : 로그인 실패 로직 수정 필요해보임
         String errorMessage;
-        if(e instanceof UsernameNotFoundException){
-            errorMessage="존재하지 않는 아이디 입니다.";
-        }
-        else{
-            errorMessage="알 수 없는 이유로 로그인이 안되고 있습니다.";
+        if (e instanceof UsernameNotFoundException) {
+            errorMessage = "존재하지 않는 아이디 입니다.";
+        } else {
+            errorMessage = "알 수 없는 이유로 로그인이 안되고 있습니다.";
         }
 
-        errorMessage= URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);//한글 인코딩 깨지는 문제 방지
-        response.sendRedirect("http://localhost:8080/auth/oauth-response/error="+errorMessage);
+        errorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);//한글 인코딩 깨지는 문제 방지
+        response.sendRedirect("http://localhost:8080/auth/oauth-response/error=" + errorMessage);
     }
 }
