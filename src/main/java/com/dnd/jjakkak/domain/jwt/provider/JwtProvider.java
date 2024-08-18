@@ -1,9 +1,9 @@
 package com.dnd.jjakkak.domain.jwt.provider;
 
+import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -22,10 +22,12 @@ import java.util.Date;
 @Slf4j
 @Component
 public class JwtProvider {
+
     private final Key key;
 
-    public JwtProvider(@Value("${secret.key}") String secretKey) {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    public JwtProvider(JjakkakProperties jjakkakProperties) {
+        String jwtSecret = jjakkakProperties.getJwtSecret();
+        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -38,7 +40,6 @@ public class JwtProvider {
      * @param kakaoId String
      * @return JWT
      */
-
     public String createAccessToken(String kakaoId) {
         Date expiredDate = Date.from(Instant.now().plus(30, ChronoUnit.MINUTES));
         return Jwts.builder()
@@ -57,7 +58,6 @@ public class JwtProvider {
      *
      * @return JWT
      */
-
     public String createRefreshToken(String kakaoId) {
         Date expiredDate = Date.from(Instant.now().plus(7, ChronoUnit.DAYS));
         return Jwts.builder()
@@ -74,7 +74,6 @@ public class JwtProvider {
      * @param jwt String
      * @return subject
      */
-
     public String validate(String jwt) throws ExpiredJwtException, MalformedJwtException, JwtException {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -83,6 +82,7 @@ public class JwtProvider {
                 .getBody();
         return claims.getSubject();
     }
+
     /**
      * RefreshToken에서 subject를 추출하는 메소드
      *
