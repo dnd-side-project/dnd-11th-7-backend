@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.meeting.controller;
 import com.dnd.jjakkak.config.AbstractRestDocsTest;
 import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
@@ -16,9 +15,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -122,7 +119,6 @@ class MeetingControllerTest extends AbstractRestDocsTest {
         when(meetingService.getMeetingByUuid(anyString())).thenReturn(MeetingDummy.createResponseDto());
 
         // expected
-
         mockMvc.perform(get("/api/v1/meeting/{meetingUuid}", uuid)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(
@@ -149,9 +145,9 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("numberOfPeople").description("모임 인원"),
                                 fieldWithPath("isAnonymous").description("익명 여부"),
                                 fieldWithPath("voteEndDate").description("투표 종료 날짜"),
-                                fieldWithPath("confirmedSchedule").description("확정된 일정"),
                                 fieldWithPath("meetingLeaderId").description("모임 리더 ID"),
-                                fieldWithPath("meetingUuid").description("모임 UUID")
+                                fieldWithPath("meetingUuid").description("모임 UUID"),
+                                fieldWithPath("bestTime").description("최적 시간 목록")
                         )));
     }
 
@@ -180,31 +176,6 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("message").description("에러 메시지"),
                                 fieldWithPath("validation").description("유효성 검사 오류 목록")
                         )));
-    }
-
-    @Test
-    @JjakkakMockUser
-    @DisplayName("모임 확정 일정 수정 테스트")
-    void update_confirmedSchedule() throws Exception {
-
-        // given
-        MeetingConfirmRequestDto requestDto = new MeetingConfirmRequestDto();
-        ReflectionTestUtils.setField(requestDto, "confirmedSchedule", LocalDateTime.of(2024, 7, 28, 12, 30));
-
-        String json = objectMapper.writeValueAsString(requestDto);
-
-        // expected
-        mockMvc.perform(patch("/api/v1/meeting/{meetingId}/confirm", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("meetingId").description("모임 ID")),
-                        requestFields(
-                                fieldWithPath("confirmedSchedule").description("확정된 일정")
-                                        .attributes(key("constraint").value("확정된 일정은 시작일과 종료일 사이의 날짜여야 합니다.")))
-                ));
     }
 
     @Test

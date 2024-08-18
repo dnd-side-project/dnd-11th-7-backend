@@ -36,14 +36,12 @@ public class MeetingController {
      * @return 201 (CREATED), body: 모임 생성 응답 DTO (UUID)
      */
     @PostMapping
-    public ResponseEntity<MeetingCreateResponseDto> createGroup(@AuthenticationPrincipal OAuth2User user,
-                                                                @Valid @RequestBody MeetingCreateRequestDto requestDto) {
+    public ResponseEntity<MeetingCreateResponseDto> createMeeting(@AuthenticationPrincipal OAuth2User user,
+                                                                  @Valid @RequestBody MeetingCreateRequestDto requestDto) {
 
         MeetingCreateResponseDto response = meetingService.createMeeting(user, requestDto);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**

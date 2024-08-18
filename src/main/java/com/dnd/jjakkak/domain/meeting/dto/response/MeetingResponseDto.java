@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,10 +27,10 @@ public class MeetingResponseDto {
     private final LocalDateTime voteEndDate;
     private final Long meetingLeaderId;
     private final String meetingUuid;
-    private final BestTime bestTime;
+    private final List<BestTime> bestTime = new ArrayList<>();
 
     @Builder
-    public MeetingResponseDto(Meeting meeting, BestTime bestTime) {
+    public MeetingResponseDto(Meeting meeting) {
         this.meetingId = meeting.getMeetingId();
         this.meetingName = meeting.getMeetingName();
         this.meetingStartDate = meeting.getMeetingStartDate();
@@ -39,9 +40,12 @@ public class MeetingResponseDto {
         this.voteEndDate = meeting.getVoteEndDate();
         this.meetingLeaderId = meeting.getMeetingLeaderId();
         this.meetingUuid = meeting.getMeetingUuid();
-        this.bestTime = bestTime;
-
     }
+
+    public void addBestTime(BestTime bestTime) {
+        this.bestTime.add(bestTime);
+    }
+
 
     @Getter
     public static class BestTime {

@@ -1,5 +1,7 @@
 package com.dnd.jjakkak.domain.meeting.repository;
 
+import com.dnd.jjakkak.domain.dateofschedule.entity.QDateOfSchedule;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.entity.QMeeting;
 import com.dnd.jjakkak.domain.schedule.entity.QSchedule;
@@ -51,4 +53,44 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .select(meeting.isAnonymous)
                 .fetchOne());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MeetingResponseDto getMeetingResponse(String meetingUuid) {
+
+        /**
+         * SELECT
+         *     ds.date_of_schedule_start,
+         *     ds.date_of_schedule_end,
+         *     AVG(ds.date_of_schedule_rank) AS avg_rank,
+         *     COUNT(s.schedule_id) AS participants_count
+         * FROM Date_of_Schedule ds
+         * JOIN Schedule s ON ds.schedule_id = s.schedule_id
+         * JOIN Meeting m ON s.meeting_id = m.meeting_id
+         * WHERE m.meeting_id = 1 -- 조회할 모임 ID
+         * GROUP BY ds.date_of_schedule_start, ds.date_of_schedule_end
+         * ORDER BY avg_rank ASC -- 우선순위가 낮을수록 높은 우선순위로 간주
+         * LIMIT 2; -- 상위 2개만 조회
+         */
+
+        QMeeting meeting = QMeeting.meeting;
+        QSchedule schedule = QSchedule.schedule;
+        QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
+
+//        from(dateOfSchedule)
+//                .join(dateOfSchedule.schedule, schedule)
+//                .join(schedule.meeting, meeting)
+//                .where(meeting.meetingUuid.eq(meetingUuid))
+//                .groupBy(dateOfSchedule.dateOfScheduleStart, dateOfSchedule.dateOfScheduleEnd)
+//                .orderBy(dateOfSchedule.dateOfScheduleRank.asc())
+//                .limit(2)
+//                .select(dateOfSchedule.dateOfScheduleStart, dateOfSchedule.dateOfScheduleEnd, dateOfSchedule.dateOfScheduleRank.avg(), schedule.scheduleId.count())
+//                .fetch();
+
+        return null;
+    }
+
+
 }

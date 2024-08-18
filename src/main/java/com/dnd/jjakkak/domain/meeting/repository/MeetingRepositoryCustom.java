@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.domain.meeting.repository;
 
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import org.springframework.data.repository.NoRepositoryBean;
 
 /**
@@ -26,4 +27,12 @@ public interface MeetingRepositoryCustom {
      * @return 모임이 익명인지 여부
      */
     boolean isAnonymous(Long meetingId);
+
+    /**
+     * 모임 응답을 반환합니다.
+     *
+     * @param meetingUuid 모임 UUID
+     * @return 모임 응답 DTO
+     */
+    MeetingResponseDto getMeetingResponse(String meetingUuid);
 }

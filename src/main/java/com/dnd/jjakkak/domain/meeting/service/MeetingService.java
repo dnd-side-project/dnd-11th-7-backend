@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.meeting.service;
 import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
@@ -18,6 +17,7 @@ import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,12 +43,14 @@ public class MeetingService {
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param memberId   모임을 생성하는 회원 ID (리더 ID)
+     * @param user       로그인한 회원 정보 (SecurityContextHolder)
      * @param requestDto 모임 생성 요청 DTO
      * @return 모임 생성 응답 DTO (UUID)
      */
     @Transactional
-    public MeetingCreateResponseDto createMeeting(Long memberId, MeetingCreateRequestDto requestDto) {
+    public MeetingCreateResponseDto createMeeting(OAuth2User user, MeetingCreateRequestDto requestDto) {
+
+        Member member = (Member) user;
 
         // checkMeetingDate 메서드를 호출하여 유효성 검사를 진행합니다.
         requestDto.checkMeetingDate();
@@ -63,7 +65,7 @@ public class MeetingService {
                 .numberOfPeople(requestDto.getNumberOfPeople())
                 .isAnonymous(requestDto.getIsAnonymous())
                 .voteEndDate(requestDto.getVoteEndDate())
-                .meetingLeaderId(memberId)
+                .meetingLeaderId(member.getMemberId())
                 .meetingUuid(uuid)
                 .build();
 
@@ -90,9 +92,7 @@ public class MeetingService {
             scheduleService.createDefaultSchedule(meeting);
         }
 
-        return MeetingCreateResponseDto.builder()
-                .meetingUuid(uuid)
-                .build();
+        return new MeetingCreateResponseDto(uuid);
     }
 
     /**
@@ -110,35 +110,21 @@ public class MeetingService {
     }
 
     /**
-     * 모임의 확정된 일자를 설정하는 메서드입니다.
-     *
-     * @param id         모임 ID
-     * @param requestDto 모임 확정 요청 DTO
-     */
-    @Transactional
-    public void confirmMeeting(Long id, MeetingConfirmRequestDto requestDto) {
-
-        Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(MeetingNotFoundException::new);
-
-        meeting.updateConfirmedSchedule(requestDto);
-    }
-
-    /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param memberId 회원 ID
-     * @param id       모임 ID
+     * @param user 로그인한 회원 정보 (SecurityContextHolder)
+     * @param id   삭제할 모임 ID
      */
     @Transactional
-    public void deleteMeeting(Long memberId, Long id) {
+    public void deleteMeeting(OAuth2User user, Long id) {
 
+        Member member = (Member) user;
 
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(MeetingNotFoundException::new);
 
         // 요청한 회원이 모임의 리더가 아닌 경우 예외 처리
-        if (!meeting.getMeetingLeaderId().equals(memberId)) {
+        if (!meeting.getMeetingLeaderId().equals(member.getMemberId())) {
             throw new MeetingUnauthorizedException();
         }
 

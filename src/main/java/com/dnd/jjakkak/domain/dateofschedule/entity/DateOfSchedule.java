@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.domain.dateofschedule.entity;
 
+import com.dnd.jjakkak.domain.schedule.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,8 +25,9 @@ public class DateOfSchedule {
     @Column(name = "date_of_schedule_id")
     private Long dateOfScheduleId;
 
-    @Column(name = "schedule_id", nullable = false)
-    private Long scheduleId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
 
     @Column(name = "date_of_schedule_start", nullable = false)
     private LocalDateTime dateOfScheduleStart;
@@ -37,8 +39,8 @@ public class DateOfSchedule {
     private Integer dateOfScheduleRank;
 
     @Builder
-    public DateOfSchedule(Long scheduleId, LocalDateTime dateOfScheduleStart, LocalDateTime dateOfScheduleEnd, Integer dateOfScheduleRank) {
-        this.scheduleId = scheduleId;
+    public DateOfSchedule(Schedule schedule, LocalDateTime dateOfScheduleStart, LocalDateTime dateOfScheduleEnd, Integer dateOfScheduleRank) {
+        this.schedule = schedule;
         this.dateOfScheduleStart = dateOfScheduleStart;
         this.dateOfScheduleEnd = dateOfScheduleEnd;
         this.dateOfScheduleRank = dateOfScheduleRank;

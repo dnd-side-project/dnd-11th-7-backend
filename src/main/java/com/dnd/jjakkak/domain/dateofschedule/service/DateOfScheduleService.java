@@ -3,6 +3,9 @@ package com.dnd.jjakkak.domain.dateofschedule.service;
 import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateRequestDto;
 import com.dnd.jjakkak.domain.dateofschedule.entity.DateOfSchedule;
 import com.dnd.jjakkak.domain.dateofschedule.repository.DateOfScheduleRepository;
+import com.dnd.jjakkak.domain.schedule.entity.Schedule;
+import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
+import com.dnd.jjakkak.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import java.util.List;
 public class DateOfScheduleService {
 
     private final DateOfScheduleRepository dateOfScheduleRepository;
+    private final ScheduleRepository scheduleRepository;
 
     /**
      * 일정 날짜를 생성하는 메서드입니다.
@@ -30,9 +34,12 @@ public class DateOfScheduleService {
     @Transactional
     public void createDateOfSchedule(Long scheduleId, DateOfScheduleCreateRequestDto requestDto) {
 
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(ScheduleNotFoundException::new);
+
         // 일정 날짜 생성 로직
         DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
-                .scheduleId(scheduleId)
+                .schedule(schedule)
                 .dateOfScheduleStart(requestDto.getDateOfScheduleStart())
                 .dateOfScheduleEnd(requestDto.getDateOfScheduleEnd())
                 .dateOfScheduleRank(requestDto.getDateOfScheduleRank())
@@ -50,13 +57,15 @@ public class DateOfScheduleService {
     @Transactional
     public void updateDateList(Long scheduleId, List<DateOfScheduleCreateRequestDto> requestDto) {
 
-        // scheduleId로 모든 dateOfSchedule 삭제 (QueryDSL)
-        dateOfScheduleRepository.deleteByScheduleId(scheduleId);
+        dateOfScheduleRepository.deleteAllByScheduleId(scheduleId);
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(ScheduleNotFoundException::new);
 
         // dateOfSchedule 생성
         requestDto.forEach(dto -> {
             DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
-                    .scheduleId(scheduleId)
+                    .schedule(schedule)
                     .dateOfScheduleStart(dto.getDateOfScheduleStart())
                     .dateOfScheduleEnd(dto.getDateOfScheduleEnd())
                     .dateOfScheduleRank(dto.getDateOfScheduleRank())
