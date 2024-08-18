@@ -109,8 +109,8 @@ public class SecurityConfig {
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() { // 추후 CORS 수정 필요
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // 허용할 도메인 명시
-        config.addAllowedMethod("*");
+        config.setAllowedOrigins(List.of("http://localhost:5173")); // 허용할 도메인 명시
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers"));
         config.addExposedHeader("Authorization"); //프론트에서 해당 헤더를 읽을 수 있게
         config.setAllowCredentials(true);
