@@ -39,7 +39,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // Refresh Token 생성 및 저장
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
-        refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
+//        refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
 
         // Refresh Token 쿠키 설정
         ResponseCookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
@@ -57,7 +57,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      */
     private ResponseCookie createCookie(String name, String value, int maxAge) {
         return ResponseCookie.from(name, value)
-//                .secure(true)
+                .secure(true)
                 .sameSite("None")
                 .httpOnly(true)
                 .path("/")
