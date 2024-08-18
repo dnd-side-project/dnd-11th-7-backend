@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,15 +30,15 @@ public class MeetingController {
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param user       로그인한 회원 정보
+     * @param memberId   인증된 회원 ID
      * @param requestDto 모임 생성 요청 DTO
      * @return 201 (CREATED), body: 모임 생성 응답 DTO (UUID)
      */
     @PostMapping
-    public ResponseEntity<MeetingCreateResponseDto> createMeeting(@AuthenticationPrincipal OAuth2User user,
+    public ResponseEntity<MeetingCreateResponseDto> createMeeting(@AuthenticationPrincipal Long memberId,
                                                                   @Valid @RequestBody MeetingCreateRequestDto requestDto) {
 
-        MeetingCreateResponseDto response = meetingService.createMeeting(user, requestDto);
+        MeetingCreateResponseDto response = meetingService.createMeeting(memberId, requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -69,15 +68,15 @@ public class MeetingController {
     /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param user 로그인한 회원 정보
-     * @param id   삭제할 모임 ID
+     * @param memberId 인증된 회원 ID
+     * @param id       삭제할 모임 ID
      * @return 200 (OK)
      */
     @DeleteMapping("/{meetingId}")
-    public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal OAuth2User user,
+    public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal Long memberId,
                                               @PathVariable("meetingId") Long id) {
 
-        meetingService.deleteMeeting(user, id);
+        meetingService.deleteMeeting(memberId, id);
         return ResponseEntity.ok().build();
     }
 }

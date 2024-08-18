@@ -10,6 +10,7 @@ import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
 import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,9 @@ class MeetingServiceTest {
     @Mock
     ScheduleService scheduleService;
 
+    @Mock
+    MemberRepository memberRepository;
+
     @Test
     @DisplayName("모임 생성 테스트 - 성공")
     void testCreateMeeting() {
@@ -65,17 +69,12 @@ class MeetingServiceTest {
                 .categoryName("회의")
                 .build();
 
-        Member member = Member.builder()
-                .memberNickname("seungjo")
-                .build();
-
-        ReflectionTestUtils.setField(member, "memberId", 1L);
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(teamProject));
         when(categoryRepository.findById(2L)).thenReturn(Optional.of(meeting));
 
         // when
-        meetingService.createMeeting(member, actual);
+        meetingService.createMeeting(1L, actual);
 
         // then
         verify(meetingRepository, times(1)).save(any());
@@ -90,7 +89,8 @@ class MeetingServiceTest {
     void testGetMeeting_Success() {
 
         // given
-        Meeting meeting = Meeting.builder()
+        MeetingResponseDto meeting = MeetingResponseDto.builder()
+                .meetingId(1L)
                 .meetingName("DND 7조 회의")
                 .meetingStartDate(LocalDate.of(2024, 7, 27))
                 .meetingEndDate(LocalDate.of(2024, 7, 29))
@@ -101,7 +101,8 @@ class MeetingServiceTest {
                 .meetingUuid("1234abcd")
                 .build();
 
-        when(meetingRepository.findByMeetingUuid(anyString())).thenReturn(Optional.of(meeting));
+        when(meetingRepository.existsByMeetingUuid(anyString())).thenReturn(true);
+        when(meetingRepository.findByMeetingUuidWithBestTime(anyString())).thenReturn(meeting);
 
         // when
         MeetingResponseDto actual = meetingService.getMeetingByUuid("1234abcd");
@@ -119,20 +120,21 @@ class MeetingServiceTest {
                 () -> assertEquals(actual.getMeetingUuid(), meeting.getMeetingUuid())
         );
 
-        verify(meetingRepository, times(1)).findByMeetingUuid(anyString());
+        verify(meetingRepository, times(1)).existsByMeetingUuid(anyString());
+        verify(meetingRepository, times(1)).findByMeetingUuidWithBestTime(anyString());
     }
 
     @Test
     @DisplayName("모임 조회 테스트 - 단건 (실패)")
     void testGetMeeting_Fail() {
         // given
-        when(meetingRepository.findByMeetingUuid(anyString())).thenReturn(Optional.empty());
+        when(meetingRepository.existsByMeetingUuid(anyString())).thenReturn(false);
 
         // expected
         assertThrows(MeetingNotFoundException.class,
                 () -> meetingService.getMeetingByUuid("1234abcd"));
 
-        verify(meetingRepository, times(1)).findByMeetingUuid(anyString());
+        verify(meetingRepository, times(1)).existsByMeetingUuid(anyString());
     }
 
 
@@ -145,18 +147,16 @@ class MeetingServiceTest {
                 .meetingLeaderId(1L)
                 .build();
 
-        when(meetingRepository.findById(anyLong())).thenReturn(Optional.of(meeting));
-
         Member member = Member.builder()
                 .memberNickname("seungjo")
                 .build();
-
         ReflectionTestUtils.setField(member, "memberId", 1L);
 
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(meetingRepository.findById(anyLong())).thenReturn(Optional.of(meeting));
 
         // when
-        meetingService.deleteMeeting(member, 1L);
+        meetingService.deleteMeeting(1L, 1L);
 
         // then
         verify(meetingRepository, times(1)).deleteById(1L);
@@ -173,8 +173,11 @@ class MeetingServiceTest {
 
         ReflectionTestUtils.setField(member, "memberId", 1L);
 
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+        when(meetingRepository.findById(anyLong())).thenReturn(Optional.empty());
+
         // expected
         assertThrows(MeetingNotFoundException.class,
-                () -> meetingService.deleteMeeting(member, 1L));
+                () -> meetingService.deleteMeeting(1L, 1L));
     }
 }

@@ -15,9 +15,10 @@ import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryReposito
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,18 +40,17 @@ public class MeetingService {
     private final MeetingCategoryRepository meetingCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param user       로그인한 회원 정보 (SecurityContextHolder)
+     * @param memberId   인증된 회원 ID
      * @param requestDto 모임 생성 요청 DTO
      * @return 모임 생성 응답 DTO (UUID)
      */
     @Transactional
-    public MeetingCreateResponseDto createMeeting(OAuth2User user, MeetingCreateRequestDto requestDto) {
-
-        Member member = (Member) user;
+    public MeetingCreateResponseDto createMeeting(Long memberId, MeetingCreateRequestDto requestDto) {
 
         // checkMeetingDate 메서드를 호출하여 유효성 검사를 진행합니다.
         requestDto.checkMeetingDate();
@@ -65,7 +65,7 @@ public class MeetingService {
                 .numberOfPeople(requestDto.getNumberOfPeople())
                 .isAnonymous(requestDto.getIsAnonymous())
                 .voteEndDate(requestDto.getVoteEndDate())
-                .meetingLeaderId(member.getMemberId())
+                .meetingLeaderId(memberId)
                 .meetingUuid(uuid)
                 .build();
 
@@ -112,13 +112,14 @@ public class MeetingService {
     /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param user 로그인한 회원 정보 (SecurityContextHolder)
-     * @param id   삭제할 모임 ID
+     * @param memberId 인증된 회원 ID
+     * @param id       삭제할 모임 ID
      */
     @Transactional
-    public void deleteMeeting(OAuth2User user, Long id) {
+    public void deleteMeeting(Long memberId, Long id) {
 
-        Member member = (Member) user;
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
 
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(MeetingNotFoundException::new);

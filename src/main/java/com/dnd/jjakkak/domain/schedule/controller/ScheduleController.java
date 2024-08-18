@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -30,15 +29,15 @@ public class ScheduleController {
     /**
      * 회원의 일정을 할당하는 메서드입니다.
      *
-     * @param user       인증된 회원 정보 (Member - OAuth2User)
+     * @param memberId   인증된 회원 ID
      * @param requestDto 일정 할당 요청 DTO
      * @return 200 (OK)
      */
     @PatchMapping("/member/assign")
-    public ResponseEntity<Void> assignScheduleToMember(@AuthenticationPrincipal OAuth2User user,
+    public ResponseEntity<Void> assignScheduleToMember(@AuthenticationPrincipal Long memberId,
                                                        @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
 
-        scheduleService.assignScheduleToMember(user, requestDto);
+        scheduleService.assignScheduleToMember(memberId, requestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -59,14 +58,14 @@ public class ScheduleController {
      * 회원의 일정을 조회하는 메서드입니다.
      *
      * @param meetingId 모임 ID
-     * @param user      인증된 회원 정보 (Member - OAuth2User)
+     * @param memberId  인증된 회원 ID
      * @return 200 (OK), body: 일정 응답 DTO
      */
     @GetMapping("/member/{meetingId}")
     public ResponseEntity<ScheduleResponseDto> getMemberSchedule(@PathVariable("meetingId") Long meetingId,
-                                                                 @AuthenticationPrincipal OAuth2User user) {
+                                                                 @AuthenticationPrincipal Long memberId) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(scheduleService.getMemberSchedule(meetingId, user));
+                .body(scheduleService.getMemberSchedule(meetingId, memberId));
     }
 
     /**

@@ -38,7 +38,8 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .fetchOne();
 
         Long currentPeople = from(schedule)
-                .where(schedule.meeting.meetingId.eq(meetingId))
+                .where(schedule.meeting.meetingId.eq(meetingId)
+                        .and(schedule.isAssigned.isTrue()))
                 .select(schedule.scheduleId.count())
                 .fetchOne();
 

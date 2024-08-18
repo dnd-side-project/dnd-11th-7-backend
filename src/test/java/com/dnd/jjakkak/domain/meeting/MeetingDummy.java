@@ -2,7 +2,6 @@ package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
-import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -54,7 +53,8 @@ public class MeetingDummy {
      */
     public static MeetingResponseDto createResponseDto() {
 
-        Meeting meeting = Meeting.builder()
+        return MeetingResponseDto.builder()
+                .meetingId(1L)
                 .meetingName("세븐일레븐")
                 .meetingStartDate(LocalDate.of(2024, 7, 27))
                 .meetingEndDate(LocalDate.of(2024, 7, 29))
@@ -63,12 +63,6 @@ public class MeetingDummy {
                 .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
                 .meetingLeaderId(1L)
                 .meetingUuid("1234ABCD")
-                .build();
-
-        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
-
-        return MeetingResponseDto.builder()
-                .meeting(meeting)
                 .build();
     }
 
