@@ -29,6 +29,7 @@ public class MeetingResponseDto {
     private final Long meetingLeaderId;
     private final String meetingUuid;
     private final List<BestTime> bestTime = new ArrayList<>();
+    private ParticipantInfo participantInfo;
 
     @Builder
     public MeetingResponseDto(Long meetingId, String meetingName,
@@ -50,6 +51,10 @@ public class MeetingResponseDto {
         this.bestTime.add(bestTime);
     }
 
+    public void setParticipantInfo(ParticipantInfo participantInfo) {
+        this.participantInfo = participantInfo;
+    }
+
 
     @ToString
     @Getter
@@ -57,13 +62,28 @@ public class MeetingResponseDto {
 
         private final LocalDateTime startTime;
         private final LocalDateTime endTime;
+        private final Double rank;
         private final List<String> memberNickname;
 
         @Builder
-        public BestTime(LocalDateTime startTime, LocalDateTime endTIme) {
+        public BestTime(LocalDateTime startTime, LocalDateTime endTIme, Double rank) {
             this.startTime = startTime;
             this.endTime = endTIme;
+            this.rank = rank;
             this.memberNickname = new ArrayList<>();
+        }
+    }
+
+    @ToString
+    @Getter
+    public static class ParticipantInfo {
+        private final Integer count;
+        private final List<String> memberNickname;
+
+        @Builder
+        public ParticipantInfo(List<String> participants) {
+            this.count = participants.size();
+            this.memberNickname = participants;
         }
     }
 }

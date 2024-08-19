@@ -11,7 +11,8 @@ public class SecurityEndpointPaths {
     public static final String[] WHITE_LIST = {
             "/api/v1/auth/oauth/**",
             "/api/v1/auth/**",
-            "/api/v1/meeting/**",
+            "/api/v1/meetings/**",
+            "/api/v1/schedules/guests/**",
             "/test/login"
     };
     public static final String[] USER_LIST = {

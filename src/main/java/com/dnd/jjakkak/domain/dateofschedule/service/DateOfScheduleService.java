@@ -39,6 +39,8 @@ public class DateOfScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(ScheduleNotFoundException::new);
 
+        // TODO: schedule -> Meeting 의 startDate, endDate와 비교하여 생성할 수 있는지 확인
+
         LocalDateTime startTime = requestDto.getStartTime();
         LocalDateTime endTime = requestDto.getEndTime();
         Integer rank = requestDto.getRank();

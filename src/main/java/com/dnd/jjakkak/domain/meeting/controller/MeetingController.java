@@ -2,7 +2,9 @@ package com.dnd.jjakkak.domain.meeting.controller;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import jakarta.validation.Valid;
@@ -22,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/meeting")
+@RequestMapping("/api/v1/meetings")
 public class MeetingController {
 
     private final MeetingService meetingService;
@@ -44,14 +46,36 @@ public class MeetingController {
     }
 
     /**
-     * 모임의 UUID로 모임을 조회하는 메서드입니다.
+     * 모임의 정보를 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
-     * @return 200 (OK), body: 모임 응답 DTO
+     * @return 200 (OK), body: 모임 정보 응답 DTO
      */
-    @GetMapping("/{meetingUuid}")
-    public ResponseEntity<MeetingResponseDto> getMeetingByUuid(@PathVariable("meetingUuid") String uuid) {
-        return ResponseEntity.ok(meetingService.getMeetingByUuid(uuid));
+    @GetMapping("/{meetingUuid}/info")
+    public ResponseEntity<MeetingInfoResponseDto> getMeetingInfo(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getMeetingInfo(uuid));
+    }
+
+    /**
+     * 모임의 최적 시간을 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 200 (OK), body: 최적 시간 응답 DTO
+     */
+    @GetMapping("/{meetingUuid}/best-times")
+    public ResponseEntity<List<MeetingTimeResponseDto>> getBestTime(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getBestTime(uuid));
+    }
+
+    /**
+     * 모임의 참여자를 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 200 (OK), body: 참여자 응답 DTO
+     */
+    @GetMapping("/{meetingUuid}/participants")
+    public ResponseEntity<MeetingParticipantResponseDto> getParticipant(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getParticipant(uuid));
     }
 
     /**

@@ -5,7 +5,9 @@ import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingUnauthorizedException;
@@ -134,20 +136,52 @@ public class MeetingService {
     }
 
     /**
-     * UUID로 모임을 조회하는 메서드입니다.
+     * 모임의 정보를 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
-     * @return 모임 응답 DTO
+     * @return 모임 정보 응답 DTO
      */
     @Transactional(readOnly = true)
-    public MeetingResponseDto getMeetingByUuid(String uuid) {
+    public MeetingInfoResponseDto getMeetingInfo(String uuid) {
+
         if (!meetingRepository.existsByMeetingUuid(uuid)) {
             throw new MeetingNotFoundException();
         }
 
-        return meetingRepository.findByMeetingUuidWithBestTime(uuid);
+        return meetingRepository.getMeetingInfo(uuid);
     }
 
+    /**
+     * 모임의 최적 시간을 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 최적 시간 응답 DTO (오름차순으로 정렬)
+     */
+    @Transactional(readOnly = true)
+    public List<MeetingTimeResponseDto> getBestTime(String uuid) {
+
+        if (!meetingRepository.existsByMeetingUuid(uuid)) {
+            throw new MeetingNotFoundException();
+        }
+
+        return meetingRepository.getBestTime(uuid);
+    }
+
+    /**
+     * 모임의 참여자를 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 참여자 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public MeetingParticipantResponseDto getParticipant(String uuid) {
+
+        if (!meetingRepository.existsByMeetingUuid(uuid)) {
+            throw new MeetingNotFoundException();
+        }
+
+        return meetingRepository.getParticipant(uuid);
+    }
 
     /**
      * UUID를 생성하는 메서드입니다.
@@ -163,4 +197,5 @@ public class MeetingService {
 
         return uuid;
     }
+
 }

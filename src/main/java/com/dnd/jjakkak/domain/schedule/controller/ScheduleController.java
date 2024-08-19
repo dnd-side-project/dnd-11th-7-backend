@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/schedule")
+@RequestMapping("/api/v1/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -33,7 +33,7 @@ public class ScheduleController {
      * @param requestDto 일정 할당 요청 DTO
      * @return 200 (OK)
      */
-    @PatchMapping("/member/assign")
+    @PatchMapping("/members/assign")
     public ResponseEntity<Void> assignScheduleToMember(@AuthenticationPrincipal Long memberId,
                                                        @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
 
@@ -47,7 +47,7 @@ public class ScheduleController {
      * @param requestDto 일정 할당 요청 DTO
      * @return 200 (OK)
      */
-    @PatchMapping("/guest/assign")
+    @PatchMapping("/guests/assign")
     public ResponseEntity<ScheduleAssignResponseDto> assignScheduleToGuest(@Valid @RequestBody ScheduleAssignRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(scheduleService.assignScheduleToGuest(requestDto));
@@ -61,7 +61,7 @@ public class ScheduleController {
      * @param memberId  인증된 회원 ID
      * @return 200 (OK), body: 일정 응답 DTO
      */
-    @GetMapping("/member/{meetingId}")
+    @GetMapping("/members/{meetingId}")
     public ResponseEntity<ScheduleResponseDto> getMemberSchedule(@PathVariable("meetingId") Long meetingId,
                                                                  @AuthenticationPrincipal Long memberId) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -75,7 +75,7 @@ public class ScheduleController {
      * @param uuid      일정 UUID (비회원)
      * @return 200 (OK), body: 일정 응답 DTO
      */
-    @GetMapping("/guest/{meetingId}")
+    @GetMapping("/guests/{meetingId}")
     public ResponseEntity<ScheduleResponseDto> getGuestSchedule(@PathVariable("meetingId") Long meetingId,
                                                                 @RequestParam("uuid") String uuid) {
         return ResponseEntity.status(HttpStatus.OK)
