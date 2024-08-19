@@ -57,8 +57,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      */
     private ResponseCookie createCookie(String name, String value, int maxAge) {
         return ResponseCookie.from(name, value)
-                .secure(true)
-                .sameSite("None")
+//                .secure(true)
+//                .sameSite("None")
 //                .httpOnly(true)
                 .path("/")
                 .maxAge(maxAge)
