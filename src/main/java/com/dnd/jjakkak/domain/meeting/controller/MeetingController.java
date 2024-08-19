@@ -75,7 +75,7 @@ public class MeetingController {
      */
     @GetMapping("/{meetingUuid}/participants")
     public ResponseEntity<MeetingParticipantResponseDto> getParticipant(@PathVariable("meetingUuid") String uuid) {
-        return ResponseEntity.ok(meetingService.getParticipant(uuid));
+        return ResponseEntity.ok(meetingService.getParticipants(uuid));
     }
 
     /**

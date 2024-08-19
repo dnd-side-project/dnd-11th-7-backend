@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.domain.meeting.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class MeetingTimeResponseDto {
     private final Double rank;
 
 
+    @Builder
     public MeetingTimeResponseDto(LocalDateTime startTime, LocalDateTime endTime, Double rank) {
         this.memberNames = new ArrayList<>();
         this.startTime = startTime;

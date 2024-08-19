@@ -174,7 +174,7 @@ public class MeetingService {
      * @return 참여자 응답 DTO
      */
     @Transactional(readOnly = true)
-    public MeetingParticipantResponseDto getParticipant(String uuid) {
+    public MeetingParticipantResponseDto getParticipants(String uuid) {
 
         if (!meetingRepository.existsByMeetingUuid(uuid)) {
             throw new MeetingNotFoundException();
