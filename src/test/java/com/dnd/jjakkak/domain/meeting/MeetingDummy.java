@@ -1,7 +1,10 @@
 package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -66,4 +69,49 @@ public class MeetingDummy {
                 .build();
     }
 
+    public static MeetingInfoResponseDto createInfoResponse() {
+
+        MeetingInfoResponseDto responseDto = MeetingInfoResponseDto.builder()
+                .meetingId(1L)
+                .meetingName("세븐일레븐")
+                .meetingStartDate(LocalDate.of(2024, 8, 27))
+                .meetingEndDate(LocalDate.of(2024, 8, 29))
+                .build();
+
+        List<String> categories = List.of("팀플", "회의");
+        responseDto.addCategoryName(categories);
+
+        return responseDto;
+    }
+
+    public static List<MeetingTimeResponseDto> createBestTimeResponse() {
+
+        MeetingTimeResponseDto response = MeetingTimeResponseDto.builder()
+                .startTime(LocalDateTime.of(2024, 8, 27, 10, 0))
+                .endTime(LocalDateTime.of(2024, 8, 27, 12, 0))
+                .rank(1.0)
+                .build();
+
+        response.addMemberNames(List.of("고래", "상어"));
+
+        return List.of(response);
+    }
+
+    public static MeetingParticipantResponseDto createParticipants() {
+
+        MeetingParticipantResponseDto response = MeetingParticipantResponseDto.builder()
+                .numberOfPeople(2)
+                .isAnonymous(false)
+                .build();
+
+        MeetingParticipantResponseDto.ParticipantInfo whale
+                = new MeetingParticipantResponseDto.ParticipantInfo("고래", true);
+
+        MeetingParticipantResponseDto.ParticipantInfo shark
+                = new MeetingParticipantResponseDto.ParticipantInfo("상어", true);
+
+        response.addParticipantInfoList(List.of(whale, shark));
+
+        return response;
+    }
 }
