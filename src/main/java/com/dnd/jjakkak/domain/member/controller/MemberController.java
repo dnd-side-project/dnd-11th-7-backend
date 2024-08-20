@@ -38,7 +38,7 @@ public class MemberController {
     @PatchMapping("/{memberId}/nickname")
     public ResponseEntity<Void> updateNickname(
             @PathVariable("memberId") Long id,
-            @Valid @RequestBody MemberUpdateNicknameRequestDto dto){
+            @Valid @RequestBody MemberUpdateNicknameRequestDto dto) {
         memberService.updateNickname(id, dto);
         return ResponseEntity.ok().build();
     }
@@ -46,13 +46,13 @@ public class MemberController {
     @PatchMapping("/{memberId}/profile")
     public ResponseEntity<Void> updateProfile(
             @PathVariable("memberId") Long id,
-            @Valid @RequestBody MemberUpdateProfileRequestDto dto){
+            @Valid @RequestBody MemberUpdateProfileRequestDto dto) {
         memberService.updateProfile(id, dto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("memberId") Long id){
+    public ResponseEntity<Void> deleteMember(@PathVariable("memberId") Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.ok().build();
     }
