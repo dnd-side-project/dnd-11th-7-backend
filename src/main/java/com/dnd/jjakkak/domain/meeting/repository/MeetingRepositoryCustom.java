@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.meeting.repository;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
+import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
@@ -41,12 +42,13 @@ public interface MeetingRepositoryCustom {
     MeetingInfoResponseDto getMeetingInfo(String uuid);
 
     /**
-     * 모임의 UUID로 최적의 시간을 조회합니다.
+     * 모임의 UUID로 시간을 조회합니다.
      *
      * @param uuid 모임 UUID
+     * @param sort 정렬 기준
      * @return 최적의 시간 응답 DTO 리스트
      */
-    List<MeetingTimeResponseDto> getBestTime(String uuid);
+    List<MeetingTimeResponseDto> getMeetingTimes(String uuid, MeetingSort sort);
 
     /**
      * 모임의 UUID로 참가자를 조회합니다.

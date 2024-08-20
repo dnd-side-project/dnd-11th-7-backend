@@ -34,10 +34,13 @@ public class MeetingParticipantResponseDto {
     public static class ParticipantInfo {
         private final String nickname;
         private final boolean isVoted;
+        private final boolean isLeader;
 
-        public ParticipantInfo(String nickname, boolean isVoted) {
+
+        public ParticipantInfo(String nickname, boolean isVoted, boolean isLeader) {
             this.nickname = nickname;
             this.isVoted = isVoted;
+            this.isLeader = isLeader;
         }
     }
 }
