@@ -48,3 +48,5 @@ https://43.203.239.67.nip.io
 include::api/category.adoc[]
 
 include::api/meeting.adoc[]
+
+include::api/member.adoc[]

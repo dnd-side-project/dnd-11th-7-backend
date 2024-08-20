@@ -1,0 +1,14 @@
+== 회원
+
+=== 회원이 속한 모임 조회
+
+.HTTP Request
+include::{snippets}/member-controller-test/test-get-member-list-by-member-id/http-request.adoc[]
+
+include::{snippets}/member-controller-test/test-get-member-list-by-member-id/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/member-controller-test/test-get-member-list-by-member-id/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/member-controller-test/test-get-member-list-by-member-id/response-fields.adoc[]

@@ -2,6 +2,7 @@ package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -92,5 +93,24 @@ public class MeetingDummy {
         response.addParticipantInfoList(List.of(whale, shark));
 
         return response;
+    }
+
+    public static List<MeetingMyPageResponseDto> createMeetingMyPageResponseDto() {
+
+        MeetingMyPageResponseDto responseDto = MeetingMyPageResponseDto.builder()
+                .meetingId(1L)
+                .meetingName("세븐일레븐")
+                .meetingUuid("123ABC")
+                .meetingStartDate(LocalDate.of(2024, 8, 27))
+                .meetingEndDate(LocalDate.of(2024, 8, 29))
+                .voteEndDate(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
+                .numberOfPeople(6)
+                .isAnonymous(false)
+                .leaderName("승조")
+                .build();
+
+        responseDto.addCategoryNames(List.of("팀플", "스터디", "회의"));
+
+        return List.of(responseDto);
     }
 }
