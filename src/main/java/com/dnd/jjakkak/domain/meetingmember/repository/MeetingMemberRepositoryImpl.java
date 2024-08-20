@@ -69,6 +69,7 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
                 .select(Projections.constructor(MeetingMyPageResponseDto.class,
                         meeting.meetingId,
                         meeting.meetingName,
+                        meeting.meetingUuid,
                         meeting.meetingStartDate,
                         meeting.meetingEndDate,
                         meeting.voteEndDate,

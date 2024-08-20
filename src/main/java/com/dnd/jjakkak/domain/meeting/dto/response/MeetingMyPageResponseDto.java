@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.domain.meeting.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class MeetingMyPageResponseDto {
 
     private final List<String> categoryNames;
     private final Long meetingId;
+    private final String meetingUuid;
     private final String meetingName;
     private final LocalDate meetingStartDate;
     private final LocalDate meetingEndDate;
@@ -26,11 +28,15 @@ public class MeetingMyPageResponseDto {
     private final Boolean isAnonymous;
     private final String leaderName;
 
-    public MeetingMyPageResponseDto(Long meetingId, String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
-                                    LocalDateTime voteEndDate, Integer numberOfPeople, Boolean isAnonymous, String leaderName) {
+    @Builder
+    public MeetingMyPageResponseDto(Long meetingId, String meetingName, String meetingUuid,
+                                    LocalDate meetingStartDate, LocalDate meetingEndDate,
+                                    LocalDateTime voteEndDate, Integer numberOfPeople,
+                                    Boolean isAnonymous, String leaderName) {
         this.categoryNames = new ArrayList<>();
         this.meetingId = meetingId;
         this.meetingName = meetingName;
+        this.meetingUuid = meetingUuid;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
         this.voteEndDate = voteEndDate;
