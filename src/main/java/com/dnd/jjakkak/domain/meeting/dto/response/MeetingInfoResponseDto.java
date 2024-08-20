@@ -26,14 +26,14 @@ public class MeetingInfoResponseDto {
 
     @Builder
     public MeetingInfoResponseDto(Long meetingId, String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate) {
-        this.meetingId = meetingId;
         this.categoryNames = new ArrayList<>();
+        this.meetingId = meetingId;
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
     }
 
-    public void addCategoryName(List<String> categoryNames) {
+    public void addCategoryNames(List<String> categoryNames) {
         this.categoryNames.addAll(categoryNames);
     }
 }

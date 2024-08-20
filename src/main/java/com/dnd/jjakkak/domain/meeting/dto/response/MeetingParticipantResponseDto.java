@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {class name}.
+ * 모임의 참가자 정보를 담은 응답 DTO 입니다.
  *
  * @author 정승조
  * @version 2024. 08. 19.

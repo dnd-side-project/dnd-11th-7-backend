@@ -89,7 +89,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .select(category.categoryName)
                 .fetch();
 
-        response.addCategoryName(categoryNames);
+        response.addCategoryNames(categoryNames);
 
         return response;
     }
