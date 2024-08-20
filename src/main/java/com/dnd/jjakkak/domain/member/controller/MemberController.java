@@ -1,6 +1,6 @@
 package com.dnd.jjakkak.domain.member.controller;
 
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.service.MemberService;
@@ -31,14 +31,14 @@ public class MemberController {
      * @return 200 (OK), body: 모임 응답 DTO
      */
     @GetMapping("/{memberId}/meetingList")
-    public ResponseEntity<List<MeetingResponseDto>> getMemberListByMemberId(@PathVariable("memberId") Long id) {
+    public ResponseEntity<List<MeetingMyPageResponseDto>> getMemberListByMemberId(@PathVariable("memberId") Long id) {
         return ResponseEntity.ok(memberService.getMeetingListByMemberId(id));
     }
 
     @PatchMapping("/{memberId}/nickname")
     public ResponseEntity<Void> updateNickname(
             @PathVariable("memberId") Long id,
-            @Valid @RequestBody MemberUpdateNicknameRequestDto dto){
+            @Valid @RequestBody MemberUpdateNicknameRequestDto dto) {
         memberService.updateNickname(id, dto);
         return ResponseEntity.ok().build();
     }
@@ -46,13 +46,13 @@ public class MemberController {
     @PatchMapping("/{memberId}/profile")
     public ResponseEntity<Void> updateProfile(
             @PathVariable("memberId") Long id,
-            @Valid @RequestBody MemberUpdateProfileRequestDto dto){
+            @Valid @RequestBody MemberUpdateProfileRequestDto dto) {
         memberService.updateProfile(id, dto);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("memberId") Long id){
+    public ResponseEntity<Void> deleteMember(@PathVariable("memberId") Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.ok().build();
     }

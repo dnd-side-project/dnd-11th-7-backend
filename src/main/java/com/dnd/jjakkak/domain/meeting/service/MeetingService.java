@@ -3,10 +3,11 @@ package com.dnd.jjakkak.domain.meeting.service;
 import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingUnauthorizedException;
@@ -16,6 +17,8 @@ import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryReposito
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,11 +42,12 @@ public class MeetingService {
     private final MeetingCategoryRepository meetingCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param memberId   모임을 생성하는 회원 ID (리더 ID)
+     * @param memberId   인증된 회원 ID
      * @param requestDto 모임 생성 요청 DTO
      * @return 모임 생성 응답 DTO (UUID)
      */
@@ -90,9 +94,7 @@ public class MeetingService {
             scheduleService.createDefaultSchedule(meeting);
         }
 
-        return MeetingCreateResponseDto.builder()
-                .meetingUuid(uuid)
-                .build();
+        return new MeetingCreateResponseDto(uuid);
     }
 
     /**
@@ -110,35 +112,22 @@ public class MeetingService {
     }
 
     /**
-     * 모임의 확정된 일자를 설정하는 메서드입니다.
-     *
-     * @param id         모임 ID
-     * @param requestDto 모임 확정 요청 DTO
-     */
-    @Transactional
-    public void confirmMeeting(Long id, MeetingConfirmRequestDto requestDto) {
-
-        Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(MeetingNotFoundException::new);
-
-        meeting.updateConfirmedSchedule(requestDto);
-    }
-
-    /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param memberId 회원 ID
-     * @param id       모임 ID
+     * @param memberId 인증된 회원 ID
+     * @param id       삭제할 모임 ID
      */
     @Transactional
     public void deleteMeeting(Long memberId, Long id) {
 
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
 
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(MeetingNotFoundException::new);
 
         // 요청한 회원이 모임의 리더가 아닌 경우 예외 처리
-        if (!meeting.getMeetingLeaderId().equals(memberId)) {
+        if (!meeting.getMeetingLeaderId().equals(member.getMemberId())) {
             throw new MeetingUnauthorizedException();
         }
 
@@ -147,20 +136,51 @@ public class MeetingService {
     }
 
     /**
-     * UUID로 모임을 조회하는 메서드입니다.
+     * 모임의 정보를 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
-     * @return 모임 응답 DTO
+     * @return 모임 정보 응답 DTO
      */
     @Transactional(readOnly = true)
-    public MeetingResponseDto getMeetingByUuid(String uuid) {
+    public MeetingInfoResponseDto getMeetingInfo(String uuid) {
 
-        Meeting meeting = meetingRepository.findByMeetingUuid(uuid)
-                .orElseThrow(MeetingNotFoundException::new);
+        if (!meetingRepository.existsByMeetingUuid(uuid)) {
+            throw new MeetingNotFoundException();
+        }
 
-        return MeetingResponseDto.builder()
-                .meeting(meeting)
-                .build();
+        return meetingRepository.getMeetingInfo(uuid);
+    }
+
+    /**
+     * 모임의 최적 시간을 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 최적 시간 응답 DTO (오름차순으로 정렬)
+     */
+    @Transactional(readOnly = true)
+    public List<MeetingTimeResponseDto> getBestTime(String uuid) {
+
+        if (!meetingRepository.existsByMeetingUuid(uuid)) {
+            throw new MeetingNotFoundException();
+        }
+
+        return meetingRepository.getBestTime(uuid);
+    }
+
+    /**
+     * 모임의 참여자를 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 참여자 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public MeetingParticipantResponseDto getParticipants(String uuid) {
+
+        if (!meetingRepository.existsByMeetingUuid(uuid)) {
+            throw new MeetingNotFoundException();
+        }
+
+        return meetingRepository.getParticipant(uuid);
     }
 
     /**
@@ -177,4 +197,5 @@ public class MeetingService {
 
         return uuid;
     }
+
 }

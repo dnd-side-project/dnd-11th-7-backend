@@ -1,12 +1,12 @@
 package com.dnd.jjakkak.domain.meeting.controller;
 
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
-import com.dnd.jjakkak.domain.member.entity.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/meeting")
+@RequestMapping("/api/v1/meetings")
 public class MeetingController {
 
     private final MeetingService meetingService;
@@ -32,30 +32,50 @@ public class MeetingController {
     /**
      * 모임을 생성하는 메서드입니다.
      *
-     * @param member     로그인한 회원 정보
+     * @param memberId   인증된 회원 ID
      * @param requestDto 모임 생성 요청 DTO
      * @return 201 (CREATED), body: 모임 생성 응답 DTO (UUID)
      */
     @PostMapping
-    public ResponseEntity<MeetingCreateResponseDto> createGroup(@AuthenticationPrincipal Member member,
-                                                                @Valid @RequestBody MeetingCreateRequestDto requestDto) {
+    public ResponseEntity<MeetingCreateResponseDto> createMeeting(@AuthenticationPrincipal Long memberId,
+                                                                  @Valid @RequestBody MeetingCreateRequestDto requestDto) {
 
-        MeetingCreateResponseDto response = meetingService.createMeeting(member.getMemberId(), requestDto);
+        MeetingCreateResponseDto response = meetingService.createMeeting(memberId, requestDto);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
-     * 모임의 UUID로 모임을 조회하는 메서드입니다.
+     * 모임의 정보를 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
-     * @return 200 (OK), body: 모임 응답 DTO
+     * @return 200 (OK), body: 모임 정보 응답 DTO
      */
-    @GetMapping("/{meetingUuid}")
-    public ResponseEntity<MeetingResponseDto> getMeetingByUuid(@PathVariable("meetingUuid") String uuid) {
-        return ResponseEntity.ok(meetingService.getMeetingByUuid(uuid));
+    @GetMapping("/{meetingUuid}/info")
+    public ResponseEntity<MeetingInfoResponseDto> getMeetingInfo(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getMeetingInfo(uuid));
+    }
+
+    /**
+     * 모임의 최적 시간을 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 200 (OK), body: 최적 시간 응답 DTO
+     */
+    @GetMapping("/{meetingUuid}/best-times")
+    public ResponseEntity<List<MeetingTimeResponseDto>> getBestTime(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getBestTime(uuid));
+    }
+
+    /**
+     * 모임의 참여자를 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 200 (OK), body: 참여자 응답 DTO
+     */
+    @GetMapping("/{meetingUuid}/participants")
+    public ResponseEntity<MeetingParticipantResponseDto> getParticipant(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getParticipants(uuid));
     }
 
     /**
@@ -70,32 +90,17 @@ public class MeetingController {
     }
 
     /**
-     * 모임의 확정된 일자를 수정하는 메서드입니다.
-     *
-     * @param id         모임 ID
-     * @param requestDto 확정된 일자 수정 요청 DTO
-     * @return 200 (OK)
-     */
-    @PatchMapping("/{meetingId}/confirm")
-    public ResponseEntity<Void> confirmMeeting(@PathVariable("meetingId") Long id,
-                                               @Valid @RequestBody MeetingConfirmRequestDto requestDto) {
-        meetingService.confirmMeeting(id, requestDto);
-        return ResponseEntity.ok().build();
-    }
-
-
-    /**
      * 모임을 삭제하는 메서드입니다.
      *
-     * @param member 로그인한 회원 정보
-     * @param id     삭제할 모임 ID
+     * @param memberId 인증된 회원 ID
+     * @param id       삭제할 모임 ID
      * @return 200 (OK)
      */
     @DeleteMapping("/{meetingId}")
-    public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal Member member,
+    public ResponseEntity<Void> deleteMeeting(@AuthenticationPrincipal Long memberId,
                                               @PathVariable("meetingId") Long id) {
 
-        meetingService.deleteMeeting(member.getMemberId(), id);
+        meetingService.deleteMeeting(memberId, id);
         return ResponseEntity.ok().build();
     }
 }

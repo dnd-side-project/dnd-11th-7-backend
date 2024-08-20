@@ -22,7 +22,7 @@ public class MeetingCategory {
     private Pk pk;
 
     @MapsId("meetingId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 

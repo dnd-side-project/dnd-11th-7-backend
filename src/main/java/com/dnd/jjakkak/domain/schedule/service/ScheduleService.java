@@ -8,6 +8,8 @@ import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingmember.entity.MeetingMember;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleAssignResponseDto;
@@ -17,7 +19,6 @@ import com.dnd.jjakkak.domain.schedule.exception.ScheduleAlreadyAssignedExceptio
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
 import com.dnd.jjakkak.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ public class ScheduleService {
     private final MeetingRepository meetingRepository;
     private final DateOfScheduleService dateOfScheduleService;
     private final MeetingMemberRepository meetingMemberRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 기본 일정을 생성하는 메서드입니다.
@@ -81,15 +83,16 @@ public class ScheduleService {
     /**
      * 회원 일정 할당 메서드입니다.
      *
-     * @param user       인증된 회원 정보 (Member - OAuth2User)
+     * @param memberId   인증된 회원 ID
      * @param requestDto 일정 할당 요청 DTO
      */
     @Transactional
-    public void assignScheduleToMember(OAuth2User user, ScheduleAssignRequestDto requestDto) {
+    public void assignScheduleToMember(Long memberId, ScheduleAssignRequestDto requestDto) {
 
         // meetingId로 할당되지 않은 schedule 조회
 
-        Member member = (Member) user;
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
 
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
                 .orElseThrow(ScheduleNotFoundException::new);
@@ -97,8 +100,9 @@ public class ScheduleService {
         schedule.assignMember(member);
         validateAndAssignSchedule(requestDto, schedule);
 
-        // TODO : MeetingMember 객체를 만들어서 DB에 저장
+        MeetingMember.Pk pk = new MeetingMember.Pk(requestDto.getMeetingId(), memberId);
         MeetingMember meetingMember = MeetingMember.builder()
+                .pk(pk)
                 .member(member)
                 .meeting(schedule.getMeeting())
                 .build();
@@ -148,13 +152,14 @@ public class ScheduleService {
      * 회원 일정 조회 메서드입니다.
      *
      * @param meetingId 모임 ID
-     * @param user      인증된 회원 정보 (Member - OAuth2User)
+     * @param memberId  인증된 회원 ID
      * @return 일정 응답 DTO
      */
     @Transactional(readOnly = true)
-    public ScheduleResponseDto getMemberSchedule(Long meetingId, OAuth2User user) {
+    public ScheduleResponseDto getMemberSchedule(Long meetingId, Long memberId) {
 
-        Member member = (Member) user;
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
 
         Schedule schedule = scheduleRepository.findByMemberIdAndMeetingId(member.getMemberId(), meetingId)
                 .orElseThrow(ScheduleNotFoundException::new);

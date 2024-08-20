@@ -2,6 +2,7 @@ package com.dnd.jjakkak.domain.dateofschedule.repository;
 
 import com.dnd.jjakkak.domain.dateofschedule.entity.DateOfSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * 일정 날짜 레포지토리 클래스입니다.
@@ -11,6 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface DateOfScheduleRepository extends JpaRepository<DateOfSchedule, Long> {
 
-    void deleteByScheduleId(Long scheduleId);
-
+    @Query("DELETE FROM DateOfSchedule d WHERE d.schedule.scheduleId = :scheduleId")
+    void deleteAllByScheduleId(Long scheduleId);
 }

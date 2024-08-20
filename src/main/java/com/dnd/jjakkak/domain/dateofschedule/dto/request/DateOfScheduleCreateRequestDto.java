@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 public class DateOfScheduleCreateRequestDto {
 
-    private LocalDateTime dateOfScheduleStart;
-    private LocalDateTime dateOfScheduleEnd;
-    private Integer dateOfScheduleRank;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Integer rank;
 }

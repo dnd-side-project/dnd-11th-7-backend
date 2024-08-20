@@ -1,8 +1,10 @@
 package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
-import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -47,29 +49,68 @@ public class MeetingDummy {
         return new MeetingCreateRequestDto();
     }
 
-    /**
-     * MeetingResponseDto 객체를 생성하여 반환합니다.
-     *
-     * @return MeetingResponseDto 객체
-     */
-    public static MeetingResponseDto createResponseDto() {
+    public static MeetingInfoResponseDto createInfoResponse() {
 
-        Meeting meeting = Meeting.builder()
+        MeetingInfoResponseDto responseDto = MeetingInfoResponseDto.builder()
+                .meetingId(1L)
                 .meetingName("세븐일레븐")
-                .meetingStartDate(LocalDate.of(2024, 7, 27))
-                .meetingEndDate(LocalDate.of(2024, 7, 29))
-                .numberOfPeople(6)
-                .isAnonymous(false)
-                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
-                .meetingLeaderId(1L)
-                .meetingUuid("1234ABCD")
+                .meetingStartDate(LocalDate.of(2024, 8, 27))
+                .meetingEndDate(LocalDate.of(2024, 8, 29))
                 .build();
 
-        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
+        List<String> categories = List.of("팀플", "회의");
+        responseDto.addCategoryNames(categories);
 
-        return MeetingResponseDto.builder()
-                .meeting(meeting)
-                .build();
+        return responseDto;
     }
 
+    public static List<MeetingTimeResponseDto> createBestTimeResponse() {
+
+        MeetingTimeResponseDto response = MeetingTimeResponseDto.builder()
+                .startTime(LocalDateTime.of(2024, 8, 27, 10, 0))
+                .endTime(LocalDateTime.of(2024, 8, 27, 12, 0))
+                .rank(1.0)
+                .build();
+
+        response.addMemberNames(List.of("고래", "상어"));
+
+        return List.of(response);
+    }
+
+    public static MeetingParticipantResponseDto createParticipants() {
+
+        MeetingParticipantResponseDto response = MeetingParticipantResponseDto.builder()
+                .numberOfPeople(2)
+                .isAnonymous(false)
+                .build();
+
+        MeetingParticipantResponseDto.ParticipantInfo whale
+                = new MeetingParticipantResponseDto.ParticipantInfo("고래", true);
+
+        MeetingParticipantResponseDto.ParticipantInfo shark
+                = new MeetingParticipantResponseDto.ParticipantInfo("상어", true);
+
+        response.addParticipantInfoList(List.of(whale, shark));
+
+        return response;
+    }
+
+    public static List<MeetingMyPageResponseDto> createMeetingMyPageResponseDto() {
+
+        MeetingMyPageResponseDto responseDto = MeetingMyPageResponseDto.builder()
+                .meetingId(1L)
+                .meetingName("세븐일레븐")
+                .meetingUuid("123ABC")
+                .meetingStartDate(LocalDate.of(2024, 8, 27))
+                .meetingEndDate(LocalDate.of(2024, 8, 29))
+                .voteEndDate(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
+                .numberOfPeople(6)
+                .isAnonymous(false)
+                .leaderName("승조")
+                .build();
+
+        responseDto.addCategoryNames(List.of("팀플", "스터디", "회의"));
+
+        return List.of(responseDto);
+    }
 }

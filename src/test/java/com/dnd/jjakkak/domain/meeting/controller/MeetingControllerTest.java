@@ -3,9 +3,7 @@ package com.dnd.jjakkak.domain.meeting.controller;
 import com.dnd.jjakkak.config.AbstractRestDocsTest;
 import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
-import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -16,9 +14,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @version 2024. 08. 05.
  */
 @WebMvcTest(MeetingController.class)
-@AutoConfigureRestDocs(uriHost = "43.202.65.170.nip.io", uriPort = 80)
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "43.203.239.67.nip.io", uriPort = 443)
 class MeetingControllerTest extends AbstractRestDocsTest {
 
     @MockBean
@@ -58,7 +54,7 @@ class MeetingControllerTest extends AbstractRestDocsTest {
 
         String token = "Bearer access_token";
 
-        mockMvc.perform(post("/api/v1/meeting")
+        mockMvc.perform(post("/api/v1/meetings")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -91,7 +87,7 @@ class MeetingControllerTest extends AbstractRestDocsTest {
 
         String token = "Bearer access_token";
 
-        mockMvc.perform(post("/api/v1/meeting")
+        mockMvc.perform(post("/api/v1/meetings")
                         .header("Authorization", token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -113,107 +109,112 @@ class MeetingControllerTest extends AbstractRestDocsTest {
     }
 
     @Test
-    @DisplayName("모임 조회 테스트")
+    @DisplayName("모임 정보 조회 - 성공")
     @JjakkakMockUser
-    void get_byUuid() throws Exception {
+    void getMeetingInfo_success() throws Exception {
 
-        // given
-        String uuid = "1234ABCD";
-        when(meetingService.getMeetingByUuid(anyString())).thenReturn(MeetingDummy.createResponseDto());
+        String meetingUuid = "123ABC";
+        when(meetingService.getMeetingInfo(anyString()))
+                .thenReturn(MeetingDummy.createInfoResponse());
 
-        // expected
-
-        mockMvc.perform(get("/api/v1/meeting/{meetingUuid}", uuid)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v1/meetings/{meetingUuid}/info", meetingUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.meetingId").value(1L),
+                        jsonPath("$.categoryNames.[0]").value("팀플"),
+                        jsonPath("$.categoryNames.[1]").value("회의"),
+                        jsonPath("$.meetingId").value(1),
                         jsonPath("$.meetingName").value("세븐일레븐"),
-                        jsonPath("$.meetingStartDate").value("2024-07-27"),
-                        jsonPath("$.meetingEndDate").value("2024-07-29"),
-                        jsonPath("$.numberOfPeople").value(6),
-                        jsonPath("$.isAnonymous").value(false),
-                        jsonPath("$.voteEndDate").value("2024-07-26T23:59:59"),
-                        jsonPath("$.confirmedSchedule").doesNotExist(), // null
-                        jsonPath("$.meetingLeaderId").value(1L),
-                        jsonPath("$.meetingUuid").value("1234ABCD")
-                )
+                        jsonPath("$.meetingStartDate").value("2024-08-27"),
+                        jsonPath("$.meetingEndDate").value("2024-08-29"))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("meetingUuid").description("모임 UUID")),
+                                parameterWithName("meetingUuid").description("모임 UUID")
+                        ),
                         responseFields(
+                                fieldWithPath("categoryNames").description("카테고리 리스트"),
                                 fieldWithPath("meetingId").description("모임 ID"),
                                 fieldWithPath("meetingName").description("모임 이름"),
                                 fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
-                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
-                                fieldWithPath("numberOfPeople").description("모임 인원"),
-                                fieldWithPath("isAnonymous").description("익명 여부"),
-                                fieldWithPath("voteEndDate").description("투표 종료 날짜"),
-                                fieldWithPath("confirmedSchedule").description("확정된 일정"),
-                                fieldWithPath("meetingLeaderId").description("모임 리더 ID"),
-                                fieldWithPath("meetingUuid").description("모임 UUID")
-                        )));
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜")
+                        ))
+                );
     }
 
     @Test
-    @DisplayName("모임 조회 테스트 - 실패")
+    @DisplayName("모임 최적 시간 조회 - 성공")
     @JjakkakMockUser
-    void get_byUuid_fail() throws Exception {
+    void getBestTime_success() throws Exception {
 
-        // given
-        when(meetingService.getMeetingByUuid(anyString()))
-                .thenThrow(new MeetingNotFoundException());
+        String meetingUuid = "123ABC";
+        when(meetingService.getBestTime(anyString()))
+                .thenReturn(MeetingDummy.createBestTimeResponse());
 
-        // expected
-        mockMvc.perform(get("/api/v1/meeting/{meetingUuid}", "ABCD1234")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpectAll(
-                        status().isNotFound(),
-                        jsonPath("$.code").value(404),
-                        jsonPath("$.message").value("모임을 찾을 수 없습니다.")
-                )
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("meetingUuid").description("모임 UUID")),
-                        responseFields(
-                                fieldWithPath("code").description("에러 코드"),
-                                fieldWithPath("message").description("에러 메시지"),
-                                fieldWithPath("validation").description("유효성 검사 오류 목록")
-                        )));
-    }
-
-    @Test
-    @JjakkakMockUser
-    @DisplayName("모임 확정 일정 수정 테스트")
-    void update_confirmedSchedule() throws Exception {
-
-        // given
-        MeetingConfirmRequestDto requestDto = new MeetingConfirmRequestDto();
-        ReflectionTestUtils.setField(requestDto, "confirmedSchedule", LocalDateTime.of(2024, 7, 28, 12, 30));
-
-        String json = objectMapper.writeValueAsString(requestDto);
-
-        // expected
-        mockMvc.perform(patch("/api/v1/meeting/{meetingId}/confirm", 1L)
+        mockMvc.perform(get("/api/v1/meetings/{meetingUuid}/best-times", meetingUuid)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$[0].memberNames.[0]").value("고래"),
+                        jsonPath("$[0].memberNames.[1]").value("상어"),
+                        jsonPath("$[0].startTime").value("2024-08-27T10:00:00"),
+                        jsonPath("$[0].endTime").value("2024-08-27T12:00:00"),
+                        jsonPath("$[0].rank").value(1.0))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("meetingId").description("모임 ID")),
-                        requestFields(
-                                fieldWithPath("confirmedSchedule").description("확정된 일정")
-                                        .attributes(key("constraint").value("확정된 일정은 시작일과 종료일 사이의 날짜여야 합니다.")))
-                ));
+                                parameterWithName("meetingUuid").description("모임 UUID")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].memberNames").description("멤버 이름 리스트"),
+                                fieldWithPath("[].startTime").description("시작 시간"),
+                                fieldWithPath("[].endTime").description("종료 시간"),
+                                fieldWithPath("[].rank").description("우선순위 (오름차순)")
+                        ))
+                );
     }
 
     @Test
-    @DisplayName("모임 삭제 테스트")
+    @DisplayName("모임 참석자 조회 - 성공")
+    @JjakkakMockUser
+    void getParticipants_success() throws Exception {
+
+        String meetingUuid = "123ABC";
+        when(meetingService.getParticipants(anyString()))
+                .thenReturn(MeetingDummy.createParticipants());
+
+        mockMvc.perform(get("/api/v1/meetings/{meetingUuid}/participants", meetingUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.numberOfPeople").value(2),
+                        jsonPath("$.participantInfoList.[0].nickname").value("고래"),
+                        jsonPath("$.participantInfoList.[0].voted").value(true),
+                        jsonPath("$.participantInfoList.[1].nickname").value("상어"),
+                        jsonPath("$.participantInfoList.[1].voted").value(true),
+                        jsonPath("$.anonymous").value(false))
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("meetingUuid").description("모임 UUID")
+                        ),
+                        responseFields(
+                                fieldWithPath("numberOfPeople").description("참석자 수"),
+                                fieldWithPath("participantInfoList.[].nickname").description("참석자 닉네임"),
+                                fieldWithPath("participantInfoList.[].voted").description("투표 여부"),
+                                fieldWithPath("anonymous").description("익명 여부")
+                        ))
+                );
+    }
+
+
+    @Test
+    @DisplayName("모임 삭제 - 성공")
     @JjakkakMockUser
     void delete_success() throws Exception {
 
         // expected
-        mockMvc.perform(delete("/api/v1/meeting/{meetingId}", 1L)
+        mockMvc.perform(delete("/api/v1/meetings/{meetingId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(restDocs.document(

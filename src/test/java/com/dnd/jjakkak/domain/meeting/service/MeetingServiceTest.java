@@ -4,11 +4,15 @@ import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
+import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +52,9 @@ class MeetingServiceTest {
     @Mock
     ScheduleService scheduleService;
 
+    @Mock
+    MemberRepository memberRepository;
+
     @Test
     @DisplayName("모임 생성 테스트 - 성공")
     void testCreateMeeting() {
@@ -62,6 +68,7 @@ class MeetingServiceTest {
         Category meeting = Category.builder()
                 .categoryName("회의")
                 .build();
+
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(teamProject));
         when(categoryRepository.findById(2L)).thenReturn(Optional.of(meeting));
@@ -77,56 +84,6 @@ class MeetingServiceTest {
 
     }
 
-    @Test
-    @DisplayName("모임 조회 테스트 - 단건 (성공)")
-    void testGetMeeting_Success() {
-
-        // given
-        Meeting meeting = Meeting.builder()
-                .meetingName("DND 7조 회의")
-                .meetingStartDate(LocalDate.of(2024, 7, 27))
-                .meetingEndDate(LocalDate.of(2024, 7, 29))
-                .numberOfPeople(6)
-                .isAnonymous(false)
-                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
-                .meetingLeaderId(1L)
-                .meetingUuid("1234abcd")
-                .build();
-
-        when(meetingRepository.findByMeetingUuid(anyString())).thenReturn(Optional.of(meeting));
-
-        // when
-        MeetingResponseDto actual = meetingService.getMeetingByUuid("1234abcd");
-
-        // then
-        assertAll(
-                () -> assertEquals(actual.getMeetingId(), meeting.getMeetingId()),
-                () -> assertEquals(actual.getMeetingName(), meeting.getMeetingName()),
-                () -> assertEquals(actual.getMeetingStartDate(), meeting.getMeetingStartDate()),
-                () -> assertEquals(actual.getMeetingEndDate(), meeting.getMeetingEndDate()),
-                () -> assertEquals(actual.getNumberOfPeople(), meeting.getNumberOfPeople()),
-                () -> assertEquals(actual.getIsAnonymous(), meeting.getIsAnonymous()),
-                () -> assertEquals(actual.getVoteEndDate(), meeting.getVoteEndDate()),
-                () -> assertEquals(actual.getMeetingLeaderId(), meeting.getMeetingLeaderId()),
-                () -> assertEquals(actual.getMeetingUuid(), meeting.getMeetingUuid())
-        );
-
-        verify(meetingRepository, times(1)).findByMeetingUuid(anyString());
-    }
-
-    @Test
-    @DisplayName("모임 조회 테스트 - 단건 (실패)")
-    void testGetMeeting_Fail() {
-        // given
-        when(meetingRepository.findByMeetingUuid(anyString())).thenReturn(Optional.empty());
-
-        // expected
-        assertThrows(MeetingNotFoundException.class,
-                () -> meetingService.getMeetingByUuid("1234abcd"));
-
-        verify(meetingRepository, times(1)).findByMeetingUuid(anyString());
-    }
-
 
     @Test
     @DisplayName("모임 삭제 테스트 - 성공")
@@ -137,6 +94,12 @@ class MeetingServiceTest {
                 .meetingLeaderId(1L)
                 .build();
 
+        Member member = Member.builder()
+                .memberNickname("seungjo")
+                .build();
+        ReflectionTestUtils.setField(member, "memberId", 1L);
+
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
         when(meetingRepository.findById(anyLong())).thenReturn(Optional.of(meeting));
 
         // when
@@ -151,8 +114,143 @@ class MeetingServiceTest {
     @DisplayName("모임 삭제 테스트 - 실패 (존재하지 않는 모임)")
     void testDeleteMeeting_Fail() {
 
+        Member member = Member.builder()
+                .memberNickname("seungjo")
+                .build();
+
+        ReflectionTestUtils.setField(member, "memberId", 1L);
+
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+        when(meetingRepository.findById(anyLong())).thenReturn(Optional.empty());
+
         // expected
         assertThrows(MeetingNotFoundException.class,
                 () -> meetingService.deleteMeeting(1L, 1L));
+    }
+
+    @Test
+    @DisplayName("모임 정보 조회 - 성공")
+    void testGetMeetingInfo_Success() {
+
+        String uuid = "1234abcd";
+        MeetingInfoResponseDto expected = MeetingDummy.createInfoResponse();
+
+        when(meetingRepository.getMeetingInfo(anyString()))
+                .thenReturn(expected);
+
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(true);
+
+
+        MeetingInfoResponseDto actual = meetingService.getMeetingInfo(uuid);
+
+        assertAll(
+                () -> assertEquals(expected.getMeetingId(), actual.getMeetingId()),
+                () -> assertEquals(expected.getMeetingName(), actual.getMeetingName()),
+                () -> assertEquals(expected.getMeetingStartDate(), actual.getMeetingStartDate()),
+                () -> assertEquals(expected.getMeetingEndDate(), actual.getMeetingEndDate()),
+                () -> assertEquals(expected.getCategoryNames(), actual.getCategoryNames())
+        );
+
+        verify(meetingRepository, times(1)).getMeetingInfo(uuid);
+        verify(meetingRepository, times(1)).existsByMeetingUuid(uuid);
+
+    }
+
+    @Test
+    @DisplayName("모임 정보 조회 - 실패 (존재하지 않는 모임)")
+    void testGetMeetingInfo_Fail() {
+
+        String uuid = "1234abcd";
+
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(false);
+
+        // expected
+        assertThrows(MeetingNotFoundException.class,
+                () -> meetingService.getMeetingInfo(uuid));
+    }
+
+    @Test
+    @DisplayName("모임 최적 시간 조회 - 성공")
+    void testGetMeetingBestTime_Success() {
+
+        String uuid = "1234abcd";
+        List<MeetingTimeResponseDto> expected = MeetingDummy.createBestTimeResponse();
+
+        when(meetingRepository.getBestTime(anyString()))
+                .thenReturn(expected);
+
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(true);
+
+        List<MeetingTimeResponseDto> actual = meetingService.getBestTime(uuid);
+
+        assertEquals(expected.size(), actual.size());
+
+        MeetingTimeResponseDto expectedTime = expected.get(0);
+        MeetingTimeResponseDto actualTime = actual.get(0);
+
+        assertAll(
+                () -> assertEquals(expectedTime.getMemberNames(), actualTime.getMemberNames()),
+                () -> assertEquals(expectedTime.getStartTime(), actualTime.getStartTime()),
+                () -> assertEquals(expectedTime.getEndTime(), actualTime.getEndTime()),
+                () -> assertEquals(expectedTime.getRank(), actualTime.getRank())
+        );
+
+        verify(meetingRepository, times(1)).getBestTime(uuid);
+        verify(meetingRepository, times(1)).existsByMeetingUuid(uuid);
+    }
+
+    @Test
+    @DisplayName("모임 최적 시간 조회 - 실패 (존재하지 않는 모임)")
+    void testGetMeetingBestTime_Fail() {
+
+        String uuid = "1234abcd";
+
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(false);
+
+        // expected
+        assertThrows(MeetingNotFoundException.class,
+                () -> meetingService.getBestTime(uuid));
+    }
+
+    @Test
+    @DisplayName("모임 참여자 조회 - 성공")
+    void testGetMeetingParticipants_Success() {
+
+        String uuid = "1234abcd";
+        MeetingParticipantResponseDto expected = MeetingDummy.createParticipants();
+
+        when(meetingRepository.getParticipant(anyString()))
+                .thenReturn(expected);
+
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(true);
+
+        MeetingParticipantResponseDto actual = meetingService.getParticipants(uuid);
+
+        assertAll(
+                () -> assertEquals(expected.getNumberOfPeople(), actual.getNumberOfPeople()),
+                () -> assertEquals(expected.isAnonymous(), actual.isAnonymous())
+        );
+
+        verify(meetingRepository, times(1)).getParticipant(uuid);
+        verify(meetingRepository, times(1)).existsByMeetingUuid(uuid);
+    }
+
+    @Test
+    @DisplayName("모임 참여자 조회 - 실패 (존재하지 않는 모임)")
+    void testGetMeetingParticipants_Fail() {
+
+        String uuid = "1234abcd";
+
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(false);
+
+        // expected
+        assertThrows(MeetingNotFoundException.class,
+                () -> meetingService.getParticipants(uuid));
     }
 }
