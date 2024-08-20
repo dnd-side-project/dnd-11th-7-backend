@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.meeting;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -49,26 +48,6 @@ public class MeetingDummy {
         return new MeetingCreateRequestDto();
     }
 
-    /**
-     * MeetingResponseDto 객체를 생성하여 반환합니다.
-     *
-     * @return MeetingResponseDto 객체
-     */
-    public static MeetingResponseDto createResponseDto() {
-
-        return MeetingResponseDto.builder()
-                .meetingId(1L)
-                .meetingName("세븐일레븐")
-                .meetingStartDate(LocalDate.of(2024, 7, 27))
-                .meetingEndDate(LocalDate.of(2024, 7, 29))
-                .numberOfPeople(6)
-                .isAnonymous(false)
-                .voteEndDate(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
-                .meetingLeaderId(1L)
-                .meetingUuid("1234ABCD")
-                .build();
-    }
-
     public static MeetingInfoResponseDto createInfoResponse() {
 
         MeetingInfoResponseDto responseDto = MeetingInfoResponseDto.builder()
@@ -79,7 +58,7 @@ public class MeetingDummy {
                 .build();
 
         List<String> categories = List.of("팀플", "회의");
-        responseDto.addCategoryName(categories);
+        responseDto.addCategoryNames(categories);
 
         return responseDto;
     }
