@@ -1,6 +1,6 @@
 package com.dnd.jjakkak.domain.member.service;
 
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
@@ -31,10 +31,10 @@ public class MemberService {
      * 해당 회원이 속한 모임 출력
      *
      * @param id 회원 ID
-     * @return 모임 응답 DTO 리스트
+     * @return 모임 정보 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public List<MeetingInfoResponseDto> getMeetingListByMemberId(Long id) {
+    public List<MeetingMyPageResponseDto> getMeetingListByMemberId(Long id) {
 
         if (memberRepository.existsById(id)) {
             throw new MemberNotFoundException();

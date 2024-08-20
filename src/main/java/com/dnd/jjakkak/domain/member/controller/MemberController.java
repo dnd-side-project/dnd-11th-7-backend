@@ -1,6 +1,6 @@
 package com.dnd.jjakkak.domain.member.controller;
 
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.service.MemberService;
@@ -31,7 +31,7 @@ public class MemberController {
      * @return 200 (OK), body: 모임 응답 DTO
      */
     @GetMapping("/{memberId}/meetingList")
-    public ResponseEntity<List<MeetingInfoResponseDto>> getMemberListByMemberId(@PathVariable("memberId") Long id) {
+    public ResponseEntity<List<MeetingMyPageResponseDto>> getMemberListByMemberId(@PathVariable("memberId") Long id) {
         return ResponseEntity.ok(memberService.getMeetingListByMemberId(id));
     }
 

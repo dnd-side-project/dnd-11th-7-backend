@@ -1,6 +1,6 @@
 package com.dnd.jjakkak.domain.meetingmember.repository;
 
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -36,5 +36,5 @@ public interface MeetingMemberRepositoryCustom {
      * @param memberId 회원 ID
      * @return 모임 정보 응답 DTO 리스트
      */
-    List<MeetingInfoResponseDto> findMeetingInfoByMemberId(Long memberId);
+    List<MeetingMyPageResponseDto> findMeetingInfoByMemberId(Long memberId);
 }
