@@ -85,10 +85,10 @@ public class MeetingDummy {
                 .build();
 
         MeetingParticipantResponseDto.ParticipantInfo whale
-                = new MeetingParticipantResponseDto.ParticipantInfo("고래", true);
+                = new MeetingParticipantResponseDto.ParticipantInfo("고래", true, true);
 
         MeetingParticipantResponseDto.ParticipantInfo shark
-                = new MeetingParticipantResponseDto.ParticipantInfo("상어", true);
+                = new MeetingParticipantResponseDto.ParticipantInfo("상어", true, false);
 
         response.addParticipantInfoList(List.of(whale, shark));
 

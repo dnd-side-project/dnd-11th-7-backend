@@ -8,6 +8,7 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
@@ -172,19 +173,19 @@ class MeetingServiceTest {
     }
 
     @Test
-    @DisplayName("모임 최적 시간 조회 - 성공")
+    @DisplayName("모임 시간 조회 - 성공")
     void testGetMeetingBestTime_Success() {
 
         String uuid = "1234abcd";
         List<MeetingTimeResponseDto> expected = MeetingDummy.createBestTimeResponse();
 
-        when(meetingRepository.getBestTime(anyString()))
+        when(meetingRepository.getMeetingTimes(anyString(), any()))
                 .thenReturn(expected);
 
         when(meetingRepository.existsByMeetingUuid(anyString()))
                 .thenReturn(true);
 
-        List<MeetingTimeResponseDto> actual = meetingService.getBestTime(uuid);
+        List<MeetingTimeResponseDto> actual = meetingService.getMeetingTimes(uuid, MeetingSort.COUNT);
 
         assertEquals(expected.size(), actual.size());
 
@@ -198,12 +199,12 @@ class MeetingServiceTest {
                 () -> assertEquals(expectedTime.getRank(), actualTime.getRank())
         );
 
-        verify(meetingRepository, times(1)).getBestTime(uuid);
+        verify(meetingRepository, times(1)).getMeetingTimes(uuid, MeetingSort.COUNT);
         verify(meetingRepository, times(1)).existsByMeetingUuid(uuid);
     }
 
     @Test
-    @DisplayName("모임 최적 시간 조회 - 실패 (존재하지 않는 모임)")
+    @DisplayName("모임 시간 조회 - 실패 (존재하지 않는 모임)")
     void testGetMeetingBestTime_Fail() {
 
         String uuid = "1234abcd";
@@ -213,7 +214,7 @@ class MeetingServiceTest {
 
         // expected
         assertThrows(MeetingNotFoundException.class,
-                () -> meetingService.getBestTime(uuid));
+                () -> meetingService.getMeetingTimes(uuid, MeetingSort.COUNT));
     }
 
     @Test

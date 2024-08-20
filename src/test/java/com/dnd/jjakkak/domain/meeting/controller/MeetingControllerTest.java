@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
@@ -148,10 +149,11 @@ class MeetingControllerTest extends AbstractRestDocsTest {
     void getBestTime_success() throws Exception {
 
         String meetingUuid = "123ABC";
-        when(meetingService.getBestTime(anyString()))
+        when(meetingService.getMeetingTimes(anyString(), any()))
                 .thenReturn(MeetingDummy.createBestTimeResponse());
 
-        mockMvc.perform(get("/api/v1/meetings/{meetingUuid}/best-times", meetingUuid)
+        mockMvc.perform(get("/api/v1/meetings/{meetingUuid}/times", meetingUuid)
+                        .param("sort", "COUNT")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
@@ -193,7 +195,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                         jsonPath("$.participantInfoList.[0].voted").value(true),
                         jsonPath("$.participantInfoList.[1].nickname").value("상어"),
                         jsonPath("$.participantInfoList.[1].voted").value(true),
-                        jsonPath("$.anonymous").value(false))
+                        jsonPath("$.anonymous").value(false),
+                        jsonPath("$.leader").value(false))
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
@@ -202,7 +205,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("numberOfPeople").description("참석자 수"),
                                 fieldWithPath("participantInfoList.[].nickname").description("참석자 닉네임"),
                                 fieldWithPath("participantInfoList.[].voted").description("투표 여부"),
-                                fieldWithPath("anonymous").description("익명 여부")
+                                fieldWithPath("anonymous").description("익명 여부"),
+                                fieldWithPath("leader").description("리더 여부")
                         ))
                 );
     }
