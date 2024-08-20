@@ -2,7 +2,9 @@ package com.dnd.jjakkak.domain.dateofschedule.service;
 
 import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateRequestDto;
 import com.dnd.jjakkak.domain.dateofschedule.entity.DateOfSchedule;
+import com.dnd.jjakkak.domain.dateofschedule.exception.ScheduleDateOutOfMeetingDateException;
 import com.dnd.jjakkak.domain.dateofschedule.repository.DateOfScheduleRepository;
+import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
 import com.dnd.jjakkak.domain.schedule.repository.ScheduleRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,7 +42,7 @@ public class DateOfScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        // TODO: schedule -> Meeting 의 startDate, endDate와 비교하여 생성할 수 있는지 확인
+        validateDateOfSchedule(schedule, requestDto);
 
         LocalDateTime startTime = requestDto.getStartTime();
         LocalDateTime endTime = requestDto.getEndTime();
@@ -67,6 +70,19 @@ public class DateOfScheduleService {
 
             // 다음 시간으로 이동
             startTime = nextEndTime;
+        }
+    }
+
+    private void validateDateOfSchedule(Schedule schedule, DateOfScheduleCreateRequestDto requestDto) {
+        Meeting meeting = schedule.getMeeting();
+        LocalDate meetingStartDate = meeting.getMeetingStartDate();
+        LocalDate meetingEndDate = meeting.getMeetingEndDate();
+
+        LocalDateTime startTime = requestDto.getStartTime();
+        LocalDateTime endTime = requestDto.getEndTime();
+
+        if (startTime.toLocalDate().isBefore(meetingStartDate) || endTime.toLocalDate().isAfter(meetingEndDate)) {
+            throw new ScheduleDateOutOfMeetingDateException();
         }
     }
 
