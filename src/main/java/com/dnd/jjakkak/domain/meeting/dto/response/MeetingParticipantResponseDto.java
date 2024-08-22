@@ -16,13 +16,13 @@ import java.util.List;
 public class MeetingParticipantResponseDto {
 
     private final Integer numberOfPeople;
-    private final boolean isAnonymous;
+    private final boolean anonymousStatus;
     private final List<ParticipantInfo> participantInfoList;
 
     @Builder
-    public MeetingParticipantResponseDto(Integer numberOfPeople, boolean isAnonymous) {
+    public MeetingParticipantResponseDto(Integer numberOfPeople, boolean anonymousStatus) {
         this.numberOfPeople = numberOfPeople;
-        this.isAnonymous = isAnonymous;
+        this.anonymousStatus = anonymousStatus;
         this.participantInfoList = new ArrayList<>();
     }
 
@@ -32,12 +32,15 @@ public class MeetingParticipantResponseDto {
 
     @Getter
     public static class ParticipantInfo {
-        private final String nickname;
-        private final boolean isVoted;
 
-        public ParticipantInfo(String nickname, boolean isVoted) {
+        private final String nickname;
+        private final boolean votedStatus;
+        private final boolean leaderStatus;
+
+        public ParticipantInfo(String nickname, boolean votedStatus, boolean leaderStatus) {
             this.nickname = nickname;
-            this.isVoted = isVoted;
+            this.votedStatus = votedStatus;
+            this.leaderStatus = leaderStatus;
         }
     }
 }

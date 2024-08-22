@@ -9,6 +9,7 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingUnauthorizedException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
@@ -152,19 +153,20 @@ public class MeetingService {
     }
 
     /**
-     * 모임의 최적 시간을 조회하는 메서드입니다.
+     * 모임의 시간을 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
-     * @return 최적 시간 응답 DTO (오름차순으로 정렬)
+     * @param sort 정렬 기준 (COUNT: 인원 수, LATEST: 최신순)
+     * @return 정렬된 시간 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public List<MeetingTimeResponseDto> getBestTime(String uuid) {
+    public List<MeetingTimeResponseDto> getMeetingTimes(String uuid, MeetingSort sort) {
 
         if (!meetingRepository.existsByMeetingUuid(uuid)) {
             throw new MeetingNotFoundException();
         }
 
-        return meetingRepository.getBestTime(uuid);
+        return meetingRepository.getMeetingTimes(uuid, sort);
     }
 
     /**

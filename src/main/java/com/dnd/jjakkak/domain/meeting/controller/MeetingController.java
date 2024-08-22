@@ -5,6 +5,7 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
+import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import jakarta.validation.Valid;
@@ -57,14 +58,18 @@ public class MeetingController {
     }
 
     /**
-     * 모임의 최적 시간을 조회하는 메서드입니다.
+     * 모임의 시간을 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
-     * @return 200 (OK), body: 최적 시간 응답 DTO
+     * @param sort 정렬 기준 (COUNT: 인원 수, LATEST: 최신순)
+     * @return 200 (OK), body: 정렬된 시간 응답 DTO 리스트
      */
-    @GetMapping("/{meetingUuid}/best-times")
-    public ResponseEntity<List<MeetingTimeResponseDto>> getBestTime(@PathVariable("meetingUuid") String uuid) {
-        return ResponseEntity.ok(meetingService.getBestTime(uuid));
+    @GetMapping("/{meetingUuid}/times")
+    public ResponseEntity<List<MeetingTimeResponseDto>> getMeetingTimes(
+            @PathVariable("meetingUuid") String uuid,
+            @RequestParam(value = "sort", defaultValue = "COUNT") MeetingSort sort) {
+
+        return ResponseEntity.ok(meetingService.getMeetingTimes(uuid, sort));
     }
 
     /**

@@ -54,7 +54,7 @@ public class ScheduleService {
         // 일정 생성
         Schedule schedule = Schedule.builder()
                 .meeting(meeting)
-                .scheduleNickname("익명")
+                .scheduleNickname("멤버")
                 .scheduleUuid(uuid)
                 .build();
 

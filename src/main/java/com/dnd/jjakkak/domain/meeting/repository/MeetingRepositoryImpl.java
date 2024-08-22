@@ -7,8 +7,10 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.entity.QMeeting;
+import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meetingcategory.entity.QMeetingCategory;
 import com.dnd.jjakkak.domain.schedule.entity.QSchedule;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
@@ -98,12 +100,20 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
      * {@inheritDoc}
      */
     @Override
-    public List<MeetingTimeResponseDto> getBestTime(String uuid) {
+    public List<MeetingTimeResponseDto> getMeetingTimes(String uuid, MeetingSort sort) {
 
         // TODO : 성능 개선 필요해보임
         QMeeting meeting = QMeeting.meeting;
         QSchedule schedule = QSchedule.schedule;
         QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
+
+        List<OrderSpecifier<?>> orderSpecifier = switch (sort) {
+            case COUNT -> List.of(dateOfSchedule.dateOfScheduleRank.count().desc(),
+                    dateOfSchedule.dateOfScheduleRank.avg().asc(),
+                    dateOfSchedule.dateOfScheduleStart.asc(),
+                    dateOfSchedule.dateOfScheduleEnd.asc());
+            case LATEST -> List.of(dateOfSchedule.dateOfScheduleStart.asc());
+        };
 
         // 우선순위 순으로 최적 시간 조회
         List<MeetingTimeResponseDto> responseDtoList = from(dateOfSchedule)
@@ -111,12 +121,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .join(schedule.meeting, meeting)
                 .where(meeting.meetingUuid.eq(uuid))
                 .groupBy(dateOfSchedule.dateOfScheduleStart, dateOfSchedule.dateOfScheduleEnd)
-                .orderBy(
-                        dateOfSchedule.dateOfScheduleRank.count().desc(),
-                        dateOfSchedule.dateOfScheduleRank.avg().asc(),
-                        dateOfSchedule.dateOfScheduleStart.asc(),
-                        dateOfSchedule.dateOfScheduleEnd.asc()
-                )
+                .orderBy(orderSpecifier.toArray(new OrderSpecifier[0]))
                 .select(Projections.constructor(MeetingTimeResponseDto.class,
                         dateOfSchedule.dateOfScheduleStart,
                         dateOfSchedule.dateOfScheduleEnd,
@@ -162,7 +167,8 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .where(meeting.meetingUuid.eq(uuid))
                 .select(Projections.constructor(MeetingParticipantResponseDto.ParticipantInfo.class,
                         schedule.scheduleNickname,
-                        schedule.isAssigned
+                        schedule.isAssigned,
+                        meeting.meetingLeaderId.eq(schedule.member.memberId)
                 ))
                 .fetch();
 
