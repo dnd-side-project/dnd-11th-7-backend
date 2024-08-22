@@ -191,22 +191,23 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.numberOfPeople").value(2),
+                        jsonPath("$.anonymousStatus").value(false),
                         jsonPath("$.participantInfoList.[0].nickname").value("고래"),
-                        jsonPath("$.participantInfoList.[0].voted").value(true),
+                        jsonPath("$.participantInfoList.[0].votedStatus").value(true),
+                        jsonPath("$.participantInfoList.[0].leaderStatus").value(true),
                         jsonPath("$.participantInfoList.[1].nickname").value("상어"),
-                        jsonPath("$.participantInfoList.[1].voted").value(true),
-                        jsonPath("$.anonymous").value(false),
-                        jsonPath("$.leader").value(false))
+                        jsonPath("$.participantInfoList.[1].votedStatus").value(true),
+                        jsonPath("$.participantInfoList.[1].leaderStatus").value(false))
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
                         ),
                         responseFields(
                                 fieldWithPath("numberOfPeople").description("참석자 수"),
+                                fieldWithPath("anonymousStatus").description("익명 여부"),
                                 fieldWithPath("participantInfoList.[].nickname").description("참석자 닉네임"),
-                                fieldWithPath("participantInfoList.[].voted").description("투표 여부"),
-                                fieldWithPath("anonymous").description("익명 여부"),
-                                fieldWithPath("leader").description("리더 여부")
+                                fieldWithPath("participantInfoList.[].votedStatus").description("투표 여부"),
+                                fieldWithPath("participantInfoList.[].leaderStatus").description("리더 여부")
                         ))
                 );
     }
