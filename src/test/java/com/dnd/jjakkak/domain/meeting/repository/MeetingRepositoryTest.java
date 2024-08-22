@@ -343,15 +343,15 @@ class MeetingRepositoryTest {
         MeetingParticipantResponseDto.ParticipantInfo leaderInfo = participantInfoList.get(0);
         assertAll(
                 () -> assertEquals("승조", leaderInfo.getNickname()),
-                () -> assertTrue(leaderInfo.isVoted()),
-                () -> assertTrue(leaderInfo.isLeader())
+                () -> assertTrue(leaderInfo.isVotedStatus()),
+                () -> assertTrue(leaderInfo.isLeaderStatus())
         );
 
         MeetingParticipantResponseDto.ParticipantInfo memberInfo = participantInfoList.get(1);
         assertAll(
                 () -> assertEquals("멤버2", memberInfo.getNickname()),
-                () -> assertFalse(memberInfo.isVoted()),
-                () -> assertFalse(memberInfo.isLeader())
+                () -> assertFalse(memberInfo.isVotedStatus()),
+                () -> assertFalse(memberInfo.isLeaderStatus())
         );
     }
 }

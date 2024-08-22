@@ -81,7 +81,7 @@ public class MeetingDummy {
 
         MeetingParticipantResponseDto response = MeetingParticipantResponseDto.builder()
                 .numberOfPeople(2)
-                .isAnonymous(false)
+                .anonymousStatus(false)
                 .build();
 
         MeetingParticipantResponseDto.ParticipantInfo whale
