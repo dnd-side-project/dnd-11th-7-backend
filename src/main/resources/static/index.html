@@ -553,7 +553,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories?_csrf=McleF2uqrkSYygsYEJPSo5n62U3H2Aou3gGjm1zQoooa-1a2UvlnLw6Zy3e1rG4uJr7mlfjO9Cyi6mgD72LHqGi1x-8pn2GP HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories?_csrf=8EbRuFdN7HJlwMFaZQqKr-PB7URdLkIeLvXws8j98yP7_mfqlHPniGN0iUBIoaNiUye-ltqjwH1sSyEzFsWTg6zPxEXLmF_T HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -652,7 +652,7 @@ Content-Length: 429
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/1?_csrf=BEV4Qaqqn8ivPuFmPliiH_aI94R2iN1KkHTI09SSsz_7DklrN3ccJ5_O_qmCB4RWC3WWJ8Xr2uVC7LtnqUT84uyggw_ObXld HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/1?_csrf=8YPXbqvHH6R6PJtLxJ-7u3ryMdcZo01OYNaag6255RvBzjX2w7a1Dcn2fpJXCfoo97KP3U7KHLYowC9jVbWjtJ3d1CL3rA3C HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -684,7 +684,7 @@ Content-Length: 51
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/100?_csrf=mVKYZ8cXXazRDKe0xjuvSTrBUbbP25-7zLyVEVT_lTR1-3rwrWKhVfQkas78NJSAoBabew3xfNT26_2Wqd2gdW3GpQxHnhvJ HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/100?_csrf=0OBdfaIFKSzuVLXG1E-_4BiSY9FtuRofD3nMghLD1ZsjAoyLtoRkHMc1GknDY9H35GKL1nqhTrBa334yPE-vtyrzs_kTM-26 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -722,10 +722,10 @@ Content-Length: 102
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings?_csrf=oIM6ZfUT4Qt1GDOrBW_0CpIm6R6QsSYlLIMcWN_K-wKjqZvombcOUZchhz5YegCeNULAP6AWxCeohB4ITuZ9PuvzmTTCkayM HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings?_csrf=5_MGyntD03J_1HnmU5EgAygPAewovJmZE7wnNUPDQFweIAoP0cU2-x966kJS5EiAarwUYU02LI4cjPy0dt9CDSegeWUoRjI5 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer access_token
-Content-Length: 229
+Content-Length: 242
 Host: localhost:8080
 
 {
@@ -735,7 +735,7 @@ Host: localhost:8080
   "meetingEndDate" : "2024-07-29",
   "numberOfPeople" : 6,
   "isAnonymous" : false,
-  "voteEndDate" : "2024-07-26T23:59:59"
+  "scheduleInputEndDateTime" : "2024-07-26T23:59:59"
 }</code></pre>
 </div>
 </div>
@@ -794,11 +794,11 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">default = false (실명)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">voteEndDate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scheduleInputEndDateTime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">투표 종료 날짜</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 입력 마감 시간</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">투표 종료일은 모임 시작일 이전이어야 합니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 입력 마감 시간은 모임 시작일 이전이어야 합니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">categoryIds</p></td>
@@ -830,10 +830,10 @@ X-Frame-Options: DENY</code></pre>
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings?_csrf=UJ0hDe8zivJ40PdXpOsMSz7GK21syJwmIEw2Nq_jjj419XcQZKRHOtlS6ctVs8BnxsY4KAygBgwKq64LGH5UUMrbuFtUlhVy HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings?_csrf=IpeDJQRWv67Wx-DTYSl5KpZbmBjpBErrrgst3frWhcTN7qXGQfbmR2Zgip37pdHgBQRNH6U9tXqMYS_GzG9J78uy5vSr2ZCk HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer access_token
-Content-Length: 180
+Content-Length: 193
 Host: localhost:8080
 
 {
@@ -843,7 +843,7 @@ Host: localhost:8080
   "meetingEndDate" : null,
   "numberOfPeople" : null,
   "isAnonymous" : null,
-  "voteEndDate" : null
+  "scheduleInputEndDateTime" : null
 }</code></pre>
 </div>
 </div>
@@ -861,18 +861,18 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 572
+Content-Length: 596
 
 {
   "code" : "400",
   "message" : "잘못된 요청입니다.",
   "validation" : {
-    "categoryIds" : "카테고리는 최소 1개 이상 3개 이하로 선택해주세요.",
     "meetingEndDate" : "모임 일정 종료일은 필수 값입니다.",
+    "categoryIds" : "카테고리는 최소 1개 이상 3개 이하로 선택해주세요.",
+    "scheduleInputEndDateTime" : "일정 입력 종료 시간은 필수 값입니다.",
     "isAnonymous" : "익명 여부는 필수 값입니다.",
     "meetingName" : "모임명은 필수 값입니다.",
     "numberOfPeople" : "인원수는 필수 값입니다.",
-    "voteEndDate" : "투표 종료일은 필수 값입니다.",
     "meetingStartDate" : "모임 일정 시작일은 필수 값입니다."
   }
 }</code></pre>
@@ -934,9 +934,9 @@ Content-Length: 572
 <td class="tableblock halign-left valign-top"><p class="tableblock">익명 여부는 필수 값입니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>validation.voteEndDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>validation.scheduleInputEndDateTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">투표 종료일은 필수 값입니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 입력 종료 시간은 필수 값입니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>validation.categoryIds</code></p></td>
@@ -995,7 +995,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/info?_csrf=KDZIxtSAX3BNDZhzVhTyKAQEQ77ztktE0Zwl8VbTzK8Eku7FHQV6ouDjb0hgPKBFNTnGS2E8bobB1Chp4KpAlGDq_cozqov3 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/info?_csrf=GmeJz1gMRhxip8plV98DebKDLy85PIGHwnvMxD0ehXfOyBkleQbv-mE9cH1PwflWMfI3GtOwAhYABLWq-0r68l4qvRb28CxE HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Host: localhost:8080</code></pre>
@@ -1034,14 +1034,15 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 174
+Content-Length: 228
 
 {
   "meetingId" : 1,
   "categoryNames" : [ "팀플", "회의" ],
   "meetingName" : "세븐일레븐",
   "meetingStartDate" : "2024-08-27",
-  "meetingEndDate" : "2024-08-29"
+  "meetingEndDate" : "2024-08-29",
+  "scheduleInputEndDateTime" : "2024-08-26T23:59:59"
 }</code></pre>
 </div>
 </div>
@@ -1084,6 +1085,11 @@ Content-Length: 174
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">모임 종료 날짜</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scheduleInputEndDateTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 입력 마감 시간</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1092,14 +1098,14 @@ Content-Length: 174
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/best-times?_csrf=HnUwslazqmIqU3uzZpSZ0V2CYFzJlNj451GRlBKtTleZr6StLhcBimXSywMHY0yCVrmt4D-zTT369r7VhGKh93GffTarypeV HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/times?sort=COUNT&amp;_csrf=RxOEdhzjI9Mjje0I7QxZSr5jLad55x-Is2Omp8HzqAdqxUKHdCa9RSyBRuIOvIgx1SFtK99TAMYY0S6lgweXlKCQmTIIpiHj HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. /api/v1/meetings/{meetingUuid}/best-times</caption>
+<caption class="title">Table 7. /api/v1/meetings/{meetingUuid}/times</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1183,7 +1189,7 @@ Content-Length: 140
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/participants?_csrf=drxwCjRXzaUb4ILrKnuwHMdubVspT9YudjsojJiYAHn3yvpKE4VEOlZh_pE2geOJT1aELqFaQGIafOEDRA1M7fr9MByV8s9z HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/participants?_csrf=9gkr5KoU6iJToVZlZqdeMBKqpJWSHF1qKDVRzUvQN1t8jup4zzwT3Mkg3RF-w2dXV4pqASeZifSrJGpHSQAw-33mBjgYut1M HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Host: localhost:8080</code></pre>
@@ -1222,18 +1228,20 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 185
+Content-Length: 258
 
 {
   "numberOfPeople" : 2,
+  "anonymousStatus" : false,
   "participantInfoList" : [ {
     "nickname" : "고래",
-    "voted" : true
+    "votedStatus" : true,
+    "leaderStatus" : true
   }, {
     "nickname" : "상어",
-    "voted" : true
-  } ],
-  "anonymous" : false
+    "votedStatus" : true,
+    "leaderStatus" : false
+  } ]
 }</code></pre>
 </div>
 </div>
@@ -1257,19 +1265,24 @@ Content-Length: 185
 <td class="tableblock halign-left valign-top"><p class="tableblock">참석자 수</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>anonymousStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">익명 여부</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>participantInfoList.[].nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">참석자 닉네임</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>participantInfoList.[].voted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>participantInfoList.[].votedStatus</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">투표 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>anonymous</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>participantInfoList.[].leaderStatus</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">익명 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리더 여부</p></td>
 </tr>
 </tbody>
 </table>
@@ -1284,7 +1297,7 @@ Content-Length: 185
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/member/1/meetingList?_csrf=33a359SVEpDxL0uvbw0hPpFyHwB3qhbv4ltrd7PeLi9_GDs4vkSC37Csd6PcF33KWiAVCahAMmESyHDC12MJR4O4GB5Mewtc HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/member/1/meetingList?_csrf=nIf6NaYh3sCkKqm5ZAoPKzGK8Qu0QGpP6oavzsxg1kY-ruocqrOYAZRF6aaJG5GOACc7GALr3GnRcQti2rCf_65Q7nUIzdou HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
@@ -1412,7 +1425,7 @@ Content-Length: 336
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-20 16:04:12 +0900
+Last updated 2024-08-20 20:44:48 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
