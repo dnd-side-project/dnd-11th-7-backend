@@ -72,8 +72,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                         .attributes(key("constraint").value("모임 인원은 2명 이상 10명 이하로 설정해주세요.")),
                                 fieldWithPath("isAnonymous").description("익명 여부")
                                         .attributes(key("constraint").value("default = false (실명)")),
-                                fieldWithPath("voteEndDate").description("투표 종료 날짜")
-                                        .attributes(key("constraint").value("투표 종료일은 모임 시작일 이전이어야 합니다.")),
+                                fieldWithPath("scheduleInputEndDateTime").description("일정 입력 마감 시간")
+                                        .attributes(key("constraint").value("일정 입력 마감 시간은 모임 시작일 이전이어야 합니다.")),
                                 fieldWithPath("categoryIds").description("카테고리 아이디 목록")
                                         .attributes(key("constraint").value("1개 이상의 카테고리를 선택해주세요."))
                         )));
@@ -103,7 +103,7 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("validation.meetingEndDate").description("모임 일정 종료일은 필수 값입니다."),
                                 fieldWithPath("validation.numberOfPeople").description("인원수는 필수 값입니다."),
                                 fieldWithPath("validation.isAnonymous").description("익명 여부는 필수 값입니다."),
-                                fieldWithPath("validation.voteEndDate").description("투표 종료일은 필수 값입니다."),
+                                fieldWithPath("validation.scheduleInputEndDateTime").description("일정 입력 종료 시간은 필수 값입니다."),
                                 fieldWithPath("validation.categoryIds").description("카테고리는 최소 1개 이상 8개 이하로 선택해주세요.")
                         )));
 
@@ -128,7 +128,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                         jsonPath("$.meetingId").value(1),
                         jsonPath("$.meetingName").value("세븐일레븐"),
                         jsonPath("$.meetingStartDate").value("2024-08-27"),
-                        jsonPath("$.meetingEndDate").value("2024-08-29"))
+                        jsonPath("$.meetingEndDate").value("2024-08-29"),
+                        jsonPath("$.scheduleInputEndDateTime").value("2024-08-26T23:59:59"))
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
@@ -138,7 +139,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("meetingId").description("모임 ID"),
                                 fieldWithPath("meetingName").description("모임 이름"),
                                 fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
-                                fieldWithPath("meetingEndDate").description("모임 종료 날짜")
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
+                                fieldWithPath("scheduleInputEndDateTime").description("일정 입력 마감 시간")
                         ))
                 );
     }

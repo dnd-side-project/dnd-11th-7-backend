@@ -57,7 +57,7 @@ class MeetingRepositoryTest {
                 .numberOfPeople(5)
                 .meetingStartDate(LocalDate.of(2024, 8, 21))
                 .meetingEndDate(LocalDate.of(2024, 8, 23))
-                .voteEndDate(LocalDateTime.of(2024, 8, 20, 23, 59, 59))
+                .scheduleInputEndDateTime(LocalDateTime.of(2024, 8, 20, 23, 59, 59))
                 .isAnonymous(false)
                 .build();
 

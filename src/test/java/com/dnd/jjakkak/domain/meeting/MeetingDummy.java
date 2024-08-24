@@ -34,7 +34,7 @@ public class MeetingDummy {
         ReflectionTestUtils.setField(requestDto, "meetingEndDate", LocalDate.of(2024, 7, 29));
         ReflectionTestUtils.setField(requestDto, "numberOfPeople", 6);
         ReflectionTestUtils.setField(requestDto, "isAnonymous", false);
-        ReflectionTestUtils.setField(requestDto, "voteEndDate", LocalDateTime.of(2024, 7, 26, 23, 59, 59));
+        ReflectionTestUtils.setField(requestDto, "scheduleInputEndDateTime", LocalDateTime.of(2024, 7, 26, 23, 59, 59));
         ReflectionTestUtils.setField(requestDto, "categoryIds", categoryIds);
 
         return requestDto;
@@ -56,6 +56,7 @@ public class MeetingDummy {
                 .meetingName("세븐일레븐")
                 .meetingStartDate(LocalDate.of(2024, 8, 27))
                 .meetingEndDate(LocalDate.of(2024, 8, 29))
+                .scheduleInputEndDateTime(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
                 .build();
 
         List<String> categories = List.of("팀플", "회의");
