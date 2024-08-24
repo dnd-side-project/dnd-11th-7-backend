@@ -41,8 +41,8 @@ public class Meeting {
     @Column(name = "is_anonymous")
     private Boolean isAnonymous;
 
-    @Column(nullable = false, name = "vote_end_date")
-    private LocalDateTime voteEndDate;
+    @Column(nullable = false, name = "schedule_input_end_date_time")
+    private LocalDateTime scheduleInputEndDateTime;
 
     @Column(nullable = false, name = "meeting_leader_id")
     private Long meetingLeaderId;
@@ -53,13 +53,13 @@ public class Meeting {
     @Builder
     public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
                    Integer numberOfPeople, Boolean isAnonymous,
-                   LocalDateTime voteEndDate, Long meetingLeaderId, String meetingUuid) {
+                   LocalDateTime scheduleInputEndDateTime, Long meetingLeaderId, String meetingUuid) {
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
         this.numberOfPeople = numberOfPeople;
         this.isAnonymous = isAnonymous;
-        this.voteEndDate = voteEndDate;
+        this.scheduleInputEndDateTime = scheduleInputEndDateTime;
         this.meetingLeaderId = meetingLeaderId;
         this.meetingUuid = meetingUuid;
     }

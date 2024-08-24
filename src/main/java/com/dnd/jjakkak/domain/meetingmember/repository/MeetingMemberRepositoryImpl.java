@@ -72,7 +72,7 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
                         meeting.meetingUuid,
                         meeting.meetingStartDate,
                         meeting.meetingEndDate,
-                        meeting.voteEndDate,
+                        meeting.scheduleInputEndDateTime,
                         meeting.numberOfPeople,
                         meeting.isAnonymous,
                         schedule.scheduleNickname

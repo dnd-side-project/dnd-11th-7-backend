@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +24,19 @@ public class MeetingInfoResponseDto {
     private final String meetingName;
     private final LocalDate meetingStartDate;
     private final LocalDate meetingEndDate;
+    private final LocalDateTime scheduleInputEndDateTime;
 
     @Builder
-    public MeetingInfoResponseDto(Long meetingId, String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate) {
+    public MeetingInfoResponseDto(Long meetingId, String meetingName,
+                                  LocalDate meetingStartDate, LocalDate meetingEndDate,
+                                  LocalDateTime scheduleInputEndDateTime) {
+
         this.categoryNames = new ArrayList<>();
         this.meetingId = meetingId;
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
+        this.scheduleInputEndDateTime = scheduleInputEndDateTime;
     }
 
     public void addCategoryNames(List<String> categoryNames) {
