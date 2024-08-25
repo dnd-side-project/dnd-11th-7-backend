@@ -24,19 +24,19 @@ public class MeetingInfoResponseDto {
     private final String meetingName;
     private final LocalDate meetingStartDate;
     private final LocalDate meetingEndDate;
-    private final LocalDateTime scheduleInputEndDateTime;
+    private final LocalDateTime dueDateTime;
 
     @Builder
     public MeetingInfoResponseDto(Long meetingId, String meetingName,
                                   LocalDate meetingStartDate, LocalDate meetingEndDate,
-                                  LocalDateTime scheduleInputEndDateTime) {
+                                  LocalDateTime dueDateTime) {
 
         this.categoryNames = new ArrayList<>();
         this.meetingId = meetingId;
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
-        this.scheduleInputEndDateTime = scheduleInputEndDateTime;
+        this.dueDateTime = dueDateTime;
     }
 
     public void addCategoryNames(List<String> categoryNames) {
