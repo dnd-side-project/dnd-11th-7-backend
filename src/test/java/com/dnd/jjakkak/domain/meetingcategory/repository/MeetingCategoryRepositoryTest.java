@@ -46,7 +46,7 @@ class MeetingCategoryRepositoryTest {
                 .meetingEndDate(LocalDate.of(2024, 7, 29))
                 .numberOfPeople(6)
                 .isAnonymous(false)
-                .scheduleInputEndDateTime(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
+                .dueDateTime(LocalDateTime.of(2024, 7, 26, 23, 59, 59))
                 .meetingLeaderId(1L)
                 .meetingUuid("12345678")
                 .build();
