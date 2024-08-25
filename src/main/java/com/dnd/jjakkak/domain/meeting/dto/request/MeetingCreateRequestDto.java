@@ -47,7 +47,7 @@ public class MeetingCreateRequestDto {
     private Boolean isAnonymous;
 
     @NotNull(message = "일정 입력 종료 시간은 필수 값입니다.")
-    private LocalDateTime scheduleInputEndDateTime;
+    private LocalDateTime dueDateTime;
 
     /**
      * 모임 일정을 검증하는 메서드입니다.
@@ -63,9 +63,15 @@ public class MeetingCreateRequestDto {
                     "모임 시작일은 종료일 이전으로 설정해주세요.");
         }
 
-        if (scheduleInputEndDateTime.isAfter(meetingStartDate.atStartOfDay())) {
+        if (meetingEndDate.isBefore(meetingStartDate)) {
             invalidMeetingDateException.addValidation(
-                    "scheduleInputEndDateTime",
+                    "meetingEndDate",
+                    "모임 종료일은 모임 시작일 이후로 설정해주세요.");
+        }
+
+        if (dueDateTime.isAfter(meetingStartDate.atStartOfDay())) {
+            invalidMeetingDateException.addValidation(
+                    "dueDateTime",
                     "일정 입력 종료 시간은 모임 시작일 이전으로 설정해주세요.");
         }
 

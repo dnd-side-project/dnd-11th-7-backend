@@ -81,7 +81,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                         meeting.meetingName,
                         meeting.meetingStartDate,
                         meeting.meetingEndDate,
-                        meeting.scheduleInputEndDateTime
+                        meeting.dueDateTime
                 ))
                 .fetchOne();
 
