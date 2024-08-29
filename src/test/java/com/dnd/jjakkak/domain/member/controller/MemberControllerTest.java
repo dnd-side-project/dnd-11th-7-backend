@@ -5,11 +5,9 @@ import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
-import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,11 +19,10 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -51,10 +48,10 @@ class MemberControllerTest extends AbstractRestDocsTest {
 
         List<MeetingMyPageResponseDto> response = MeetingDummy.createMeetingMyPageResponseDto();
 
-        Mockito.when(memberService.getMeetingListByMemberId(anyLong()))
+        when(memberService.getMeetingListByMemberId(anyLong()))
                 .thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/member/{memberId}/meetingList", 1L)
+        mockMvc.perform(get("/api/v1/members/meetingList", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpectAll(
@@ -71,8 +68,6 @@ class MemberControllerTest extends AbstractRestDocsTest {
                         jsonPath("$[0].leaderName").value("승조")
                 )
                 .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("memberId").description("조회할 멤버 ID")),
                         responseFields(
                                 fieldWithPath("[].categoryNames").description("카테고리 이름 리스트"),
                                 fieldWithPath("[].meetingId").description("모임 ID"),
@@ -94,22 +89,9 @@ class MemberControllerTest extends AbstractRestDocsTest {
     void testUpdateNickname() throws Exception {
         doNothing().when(memberService).updateNickname(anyLong(), any(MemberUpdateNicknameRequestDto.class));
 
-        mockMvc.perform(patch("/api/v1/member/{memberId}/nickname", 9L)
+        mockMvc.perform(patch("/api/v1/members/nickname", 9L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"memberNickname\": \"newName\"}")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser
-    @DisplayName("회원 프로필 업데이트")
-    void testUpdateProfile() throws Exception {
-        doNothing().when(memberService).updateProfile(anyLong(), any(MemberUpdateProfileRequestDto.class));
-
-        mockMvc.perform(patch("/api/v1/member/{memberId}/profile", 9L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"memberProfile\": \"http://newProfile\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -120,7 +102,7 @@ class MemberControllerTest extends AbstractRestDocsTest {
     void testDeleteMember() throws Exception {
         doNothing().when(memberService).deleteMember(anyLong());
 
-        mockMvc.perform(delete("/api/v1/member/{memberId}", 9L)
+        mockMvc.perform(delete("/api/v1/members", 9L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
