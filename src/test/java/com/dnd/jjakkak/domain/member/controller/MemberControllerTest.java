@@ -6,13 +6,16 @@ import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
 import com.dnd.jjakkak.domain.member.service.MemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -21,8 +24,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -40,6 +42,9 @@ class MemberControllerTest extends AbstractRestDocsTest {
 
     @MockBean
     MemberService memberService;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     @DisplayName("회원 모임 리스트 조회")
@@ -89,11 +94,21 @@ class MemberControllerTest extends AbstractRestDocsTest {
     void testUpdateNickname() throws Exception {
         doNothing().when(memberService).updateNickname(anyLong(), any(MemberUpdateNicknameRequestDto.class));
 
-        mockMvc.perform(patch("/api/v1/members/nickname", 9L)
+        MemberUpdateNicknameRequestDto requestDto = new MemberUpdateNicknameRequestDto();
+        ReflectionTestUtils.setField(requestDto, "memberNickname", "newName");
+
+        String json = objectMapper.writeValueAsString(requestDto);
+
+        mockMvc.perform(patch("/api/v1/members/nickname")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"memberNickname\": \"newName\"}")
+                        .content(json)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        requestFields(
+                                fieldWithPath("memberNickname").description("변경할 닉네임")
+                        )
+                ));
     }
 
     @Test
