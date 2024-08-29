@@ -67,7 +67,7 @@ public class MeetingService {
                 .meetingEndDate(requestDto.getMeetingEndDate())
                 .numberOfPeople(requestDto.getNumberOfPeople())
                 .isAnonymous(requestDto.getIsAnonymous())
-                .voteEndDate(requestDto.getVoteEndDate())
+                .dueDateTime(requestDto.getDueDateTime())
                 .meetingLeaderId(memberId)
                 .meetingUuid(uuid)
                 .build();
