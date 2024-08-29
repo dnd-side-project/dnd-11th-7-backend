@@ -2,17 +2,17 @@ package com.dnd.jjakkak.domain.member.controller;
 
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
-import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Member의 CRUD에 사용하는 컨트롤러입니다.
+ * 회원 컨트롤러 클래스입니다.
  *
  * @author 류태웅
  * @version 2024. 07. 29.
@@ -20,40 +20,45 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/member")
+@RequestMapping("/api/v1/members")
 public class MemberController {
     private final MemberService memberService;
 
     /**
-     * 회원이 속한 모임 조회
+     * 회원이 속한 모임을 조회합니다.
      *
-     * @param id 조회할 멤버 ID
-     * @return 200 (OK), body: 모임 응답 DTO
+     * @param memberId 조회할 회원 ID
+     * @return 200 (OK), body: 모임 응답 DTO 리스트
      */
-    @GetMapping("/{memberId}/meetingList")
-    public ResponseEntity<List<MeetingMyPageResponseDto>> getMemberListByMemberId(@PathVariable("memberId") Long id) {
-        return ResponseEntity.ok(memberService.getMeetingListByMemberId(id));
+    @GetMapping("/meetingList")
+    public ResponseEntity<List<MeetingMyPageResponseDto>> getMeetingList(@AuthenticationPrincipal Long memberId) {
+        return ResponseEntity.ok(memberService.getMeetingListByMemberId(memberId));
     }
 
-    @PatchMapping("/{memberId}/nickname")
-    public ResponseEntity<Void> updateNickname(
-            @PathVariable("memberId") Long id,
-            @Valid @RequestBody MemberUpdateNicknameRequestDto dto) {
-        memberService.updateNickname(id, dto);
+    /**
+     * 회원의 닉네임을 변경합니다.
+     *
+     * @param memberId   회원 ID
+     * @param requestDto 닉네임 변경 요청 DTO
+     * @return 200 (OK)
+     */
+    @PatchMapping("/nickname")
+    public ResponseEntity<Void> updateNickname(@AuthenticationPrincipal Long memberId,
+                                               @Valid @RequestBody MemberUpdateNicknameRequestDto requestDto) {
+
+        memberService.updateNickname(memberId, requestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{memberId}/profile")
-    public ResponseEntity<Void> updateProfile(
-            @PathVariable("memberId") Long id,
-            @Valid @RequestBody MemberUpdateProfileRequestDto dto) {
-        memberService.updateProfile(id, dto);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable("memberId") Long id) {
-        memberService.deleteMember(id);
+    /**
+     * 회원 탈퇴를 진행합니다.
+     *
+     * @param memberId 회원 ID
+     * @return 200 (OK)
+     */
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMember(@AuthenticationPrincipal Long memberId) {
+        memberService.deleteMember(memberId);
         return ResponseEntity.ok().build();
     }
 }

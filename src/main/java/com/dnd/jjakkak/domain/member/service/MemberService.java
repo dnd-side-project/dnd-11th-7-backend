@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.member.service;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateNicknameRequestDto;
-import com.dnd.jjakkak.domain.member.dto.request.MemberUpdateProfileRequestDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
@@ -30,53 +29,41 @@ public class MemberService {
     /**
      * 해당 회원이 속한 모임 출력
      *
-     * @param id 회원 ID
+     * @param memberId 회원 ID
      * @return 모임 정보 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public List<MeetingMyPageResponseDto> getMeetingListByMemberId(Long id) {
+    public List<MeetingMyPageResponseDto> getMeetingListByMemberId(Long memberId) {
 
-        if (memberRepository.existsById(id)) {
+        if (memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
 
-        return meetingMemberRepository.findMeetingInfoByMemberId(id);
+        return meetingMemberRepository.findMeetingInfoByMemberId(memberId);
     }
 
     /**
      * 회원의 닉네임을 수정합니다.
      *
-     * @param id  회원 ID
-     * @param dto 닉네임 수정 요청 DTO
+     * @param memberId 회원 ID
+     * @param requestDto      닉네임 수정 요청 DTO
      */
     @Transactional
-    public void updateNickname(Long id, MemberUpdateNicknameRequestDto dto) {
-        Member member = memberRepository.findById(id)
+    public void updateNickname(Long memberId, MemberUpdateNicknameRequestDto requestDto) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-        member.updateNickname(dto.getMemberNickname());
-    }
 
-    /**
-     * 회원의 프로필을 수정합니다.
-     *
-     * @param id  회원 ID
-     * @param dto 프로필 수정 요청 DTO
-     */
-    @Transactional
-    public void updateProfile(Long id, MemberUpdateProfileRequestDto dto) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
-        member.updateProfile(dto.getMemberProfile());
+        member.updateNickname(requestDto.getMemberNickname());
     }
 
     /**
      * 회원 탈퇴를 처리합니다. (Soft Delete)
      *
-     * @param id 회원 ID
+     * @param memberId 회원 ID
      */
     @Transactional
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+    public void deleteMember(Long memberId) {
+        memberRepository.deleteById(memberId);
     }
 
     /**
