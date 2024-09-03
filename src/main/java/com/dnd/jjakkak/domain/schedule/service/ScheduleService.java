@@ -4,6 +4,7 @@ import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateReq
 import com.dnd.jjakkak.domain.dateofschedule.service.DateOfScheduleService;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
+import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingmember.entity.MeetingMember;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
@@ -64,13 +65,15 @@ public class ScheduleService {
     /**
      * 비회원 일정 할당 메서드입니다.
      *
-     * @param requestDto 일정 할당 요청 DTO
+     * @param meetingUuid 모임 UUID
+     * @param requestDto  일정 할당 요청 DTO
+     * @return 일정 할당 응답 DTO (UUID)
      */
     @Transactional
-    public ScheduleAssignResponseDto assignScheduleToGuest(ScheduleAssignRequestDto requestDto) {
+    public ScheduleAssignResponseDto assignScheduleToGuest(String meetingUuid, ScheduleAssignRequestDto requestDto) {
 
         // meetingId로 할당되지 않은 schedule 조회
-        Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
+        Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingUuid(meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
         validateAndAssignSchedule(requestDto, schedule);
@@ -83,24 +86,24 @@ public class ScheduleService {
     /**
      * 회원 일정 할당 메서드입니다.
      *
-     * @param memberId   인증된 회원 ID
-     * @param requestDto 일정 할당 요청 DTO
+     * @param memberId    로그인한 회원 ID
+     * @param meetingUuid 모임 UUID
+     * @param requestDto  일정 할당 요청 DTO
      */
     @Transactional
-    public void assignScheduleToMember(Long memberId, ScheduleAssignRequestDto requestDto) {
+    public void assignScheduleToMember(Long memberId, String meetingUuid, ScheduleAssignRequestDto requestDto) {
 
         // meetingId로 할당되지 않은 schedule 조회
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingId(requestDto.getMeetingId())
+        Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingUuid(meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
         schedule.assignMember(member);
         validateAndAssignSchedule(requestDto, schedule);
 
-        MeetingMember.Pk pk = new MeetingMember.Pk(requestDto.getMeetingId(), memberId);
+        MeetingMember.Pk pk = new MeetingMember.Pk(schedule.getScheduleId(), member.getMemberId());
         MeetingMember meetingMember = MeetingMember.builder()
                 .pk(pk)
                 .member(member)
@@ -111,37 +114,42 @@ public class ScheduleService {
     }
 
     /**
-     * 일정을 수정하는 메서드입니다.
+     * 일정 수정 메서드입니다.
      *
-     * @param scheduleId 일정 ID
-     * @param requestDto 일정 수정 요청 DTO
+     * @param meetingUuid  모임 UUID
+     * @param scheduleUuid 일정 UUID
+     * @param requestDto   일정 수정 요청 DTO
      */
     @Transactional
-    public void updateSchedule(Long scheduleId, ScheduleUpdateRequestDto requestDto) {
+    public void updateSchedule(String meetingUuid, String scheduleUuid, ScheduleUpdateRequestDto requestDto) {
 
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+        Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
+
+        if (!(schedule.getMeeting().getMeetingUuid().equals(meetingUuid))) {
+            throw new MeetingNotFoundException();
+        }
 
         schedule.updateScheduleNickname(requestDto.getScheduleNickname());
 
-        dateOfScheduleService.updateDateList(scheduleId, requestDto.getDateOfScheduleList());
+        dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
 
     /**
      * 비회원 일정 조회 메서드입니다.
      *
-     * @param meetingId 모임 ID
-     * @param uuid      일정 UUID
+     * @param meetingUuid  모임 UUID
+     * @param scheduleUuid 일정 UUID
      * @return 일정 응답 DTO
      */
     @Transactional(readOnly = true)
-    public ScheduleResponseDto getGuestSchedule(Long meetingId, String uuid) {
+    public ScheduleResponseDto getGuestSchedule(String meetingUuid, String scheduleUuid) {
 
-        Schedule schedule = scheduleRepository.findByScheduleUuid(uuid)
+        Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        if (!schedule.getMeeting().getMeetingId().equals(meetingId)) {
-            throw new ScheduleNotFoundException();
+        if (!schedule.getMeeting().getMeetingUuid().equals(meetingUuid)) {
+            throw new MeetingNotFoundException();
         }
 
         return new ScheduleResponseDto(schedule);
@@ -151,17 +159,18 @@ public class ScheduleService {
     /**
      * 회원 일정 조회 메서드입니다.
      *
-     * @param meetingId 모임 ID
-     * @param memberId  인증된 회원 ID
+     * @param meetingUuid 모임 UUID
+     * @param memberId    요청 회원 ID
      * @return 일정 응답 DTO
      */
     @Transactional(readOnly = true)
-    public ScheduleResponseDto getMemberSchedule(Long meetingId, Long memberId) {
+    public ScheduleResponseDto getMemberSchedule(String meetingUuid, Long memberId) {
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
 
-        Schedule schedule = scheduleRepository.findByMemberIdAndMeetingId(member.getMemberId(), meetingId)
+        Schedule schedule = scheduleRepository.findByMemberIdAndMeetingUuid(memberId, meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
         return new ScheduleResponseDto(schedule);

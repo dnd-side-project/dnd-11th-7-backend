@@ -22,13 +22,14 @@ public class ScheduleRepositoryImpl extends QuerydslRepositorySupport implements
      * {@inheritDoc}
      */
     @Override
-    public Optional<Schedule> findByMemberIdAndMeetingId(Long memberId, Long meetingId) {
+    public Optional<Schedule> findByMemberIdAndMeetingUuid(Long memberId, String meetingUuid) {
+
         QSchedule schedule = QSchedule.schedule;
 
         return Optional.ofNullable(
                 from(schedule)
                         .where(schedule.member.memberId.eq(memberId)
-                                .and(schedule.meeting.meetingId.eq(meetingId)))
+                                .and(schedule.meeting.meetingUuid.eq(meetingUuid)))
                         .select(schedule)
                         .fetchOne());
     }
@@ -43,6 +44,22 @@ public class ScheduleRepositoryImpl extends QuerydslRepositorySupport implements
         return Optional.ofNullable(
                 from(schedule)
                         .where(schedule.meeting.meetingId.eq(meetingId)
+                                .and(schedule.isAssigned.eq(false)))
+                        .select(schedule)
+                        .limit(1L)
+                        .fetchOne());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Schedule> findNotAssignedScheduleByMeetingUuid(String meetingUuid) {
+        QSchedule schedule = QSchedule.schedule;
+
+        return Optional.ofNullable(
+                from(schedule)
+                        .where(schedule.meeting.meetingUuid.eq(meetingUuid)
                                 .and(schedule.isAssigned.eq(false)))
                         .select(schedule)
                         .limit(1L)
