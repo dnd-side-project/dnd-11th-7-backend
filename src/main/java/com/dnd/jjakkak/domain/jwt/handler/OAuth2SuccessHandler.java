@@ -62,6 +62,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .httpOnly(true)
                 .path("/")
                 .maxAge(maxAge)
+                .domain(jjakkakProperties.getFrontUrl())
                 .build();
     }
 
