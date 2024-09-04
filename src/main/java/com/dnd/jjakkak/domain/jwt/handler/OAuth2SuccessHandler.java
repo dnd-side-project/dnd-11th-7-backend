@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * OAuth 로그인 성공시 JWT 토큰(AT, RT)을 생성하고 쿠키에 저장합니다.
@@ -56,14 +58,32 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      * @return 생성된 쿠키
      */
     private ResponseCookie createCookie(String name, String value, int maxAge) {
+
+        String domain = extractDomain(jjakkakProperties.getFrontUrl());
+
         return ResponseCookie.from(name, value)
                 .secure(true)
                 .sameSite("None")
                 .httpOnly(true)
                 .path("/")
                 .maxAge(maxAge)
-                .domain(jjakkakProperties.getFrontUrl())
+                .domain(domain)
                 .build();
+    }
+
+    /**
+     * URL에서 도메인을 추출하는 메서드입니다.
+     *
+     * @param url URL (FRONT URL)
+     * @return 도메인
+     */
+    private String extractDomain(String url) {
+        try {
+            URL parsedUrl = new URL(url);
+            return parsedUrl.getHost();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Invalid URL: " + url, e);
+        }
     }
 
 }
