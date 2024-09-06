@@ -1,7 +1,7 @@
 package com.dnd.jjakkak.domain.schedule.dto.request;
 
 import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateRequestDto;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 public class ScheduleAssignRequestDto {
 
-    @NotNull(message = "일정 날짜를 입력해주세요.")
+    @Size(min = 1, message = "일정 날짜를 최소 1개 이상 입력해주세요.")
     private final List<DateOfScheduleCreateRequestDto> dateOfScheduleList = new ArrayList<>();
 
     private String nickName;
