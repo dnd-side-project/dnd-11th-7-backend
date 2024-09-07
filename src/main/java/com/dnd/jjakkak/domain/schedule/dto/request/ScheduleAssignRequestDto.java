@@ -19,5 +19,5 @@ public class ScheduleAssignRequestDto {
     @Size(min = 1, message = "일정 날짜를 최소 1개 이상 입력해주세요.")
     private final List<DateOfScheduleCreateRequestDto> dateOfScheduleList = new ArrayList<>();
 
-    private String nickName;
+    private String nickname;
 }
