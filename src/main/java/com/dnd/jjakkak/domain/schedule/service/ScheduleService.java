@@ -97,6 +97,10 @@ public class ScheduleService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
+        if (meetingRepository.existsByMemberIdAndMeetingUuid(memberId, meetingUuid)) {
+            throw new ScheduleAlreadyAssignedException();
+        }
+
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingUuid(meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
@@ -130,7 +134,7 @@ public class ScheduleService {
             throw new MeetingNotFoundException();
         }
 
-        schedule.updateScheduleNickname(requestDto.getScheduleNickname());
+        schedule.updateScheduleNickname(requestDto.getNickname());
 
         dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
@@ -210,7 +214,7 @@ public class ScheduleService {
 
         // 닉네임 변경
         if (!meetingRepository.isAnonymous(schedule.getMeeting().getMeetingId())) {
-            schedule.updateScheduleNickname(requestDto.getNickName());
+            schedule.updateScheduleNickname(requestDto.getNickname());
         }
 
         // 일정 날짜 저장

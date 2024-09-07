@@ -177,4 +177,21 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
 
         return responseDto;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsByMemberIdAndMeetingUuid(Long memberId, String meetingUuid) {
+
+        QMeeting meeting = QMeeting.meeting;
+        QSchedule schedule = QSchedule.schedule;
+
+        return from(schedule)
+                .join(schedule.meeting, meeting)
+                .where(meeting.meetingUuid.eq(meetingUuid)
+                        .and(schedule.member.memberId.eq(memberId)))
+                .select(schedule.count())
+                .fetchOne() > 0;
+    }
 }
