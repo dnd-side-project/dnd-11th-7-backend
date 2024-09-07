@@ -50,3 +50,5 @@ include::api/category.adoc[]
 include::api/meeting.adoc[]
 
 include::api/member.adoc[]
+
+include::api/schedule.adoc[]

@@ -19,8 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -91,7 +90,7 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("dateOfScheduleList[].startTime").description("일정 시작 시간"),
                                 fieldWithPath("dateOfScheduleList[].endTime").description("일정 종료 시간"),
                                 fieldWithPath("dateOfScheduleList[].rank").description("일정 우선순위"),
-                                fieldWithPath("nickname").description("닉네임").optional()
+                                fieldWithPath("nickname").description("닉네임")
                         )
                 ));
     }
@@ -217,6 +216,9 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
                         ),
+                        queryParameters(
+                                parameterWithName("scheduleUuid").description("일정 UUID")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("에러 코드"),
                                 fieldWithPath("message").description("에러 메시지"),
@@ -241,6 +243,9 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
+                        ),
+                        queryParameters(
+                                parameterWithName("scheduleUuid").description("일정 UUID")
                         ),
                         responseFields(
                                 fieldWithPath("scheduleId").description("일정 ID"),
