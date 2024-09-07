@@ -58,10 +58,10 @@ public abstract class AbstractRestDocsTest {
                 .alwaysDo(restDocs)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .apply(springSecurity())
-                .defaultRequest(post("/**").with(csrf()))
-                .defaultRequest(get("/**").with(csrf()))
-                .defaultRequest(patch("/**").with(csrf()))
-                .defaultRequest(delete("/**").with(csrf()))
+                .defaultRequest(post("/**").with(csrf().asHeader()))
+                .defaultRequest(get("/**").with(csrf().asHeader()))
+                .defaultRequest(patch("/**").with(csrf().asHeader()))
+                .defaultRequest(delete("/**").with(csrf().asHeader()))
                 .build();
     }
 }

@@ -56,6 +56,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      * @return 생성된 쿠키
      */
     private ResponseCookie createCookie(String name, String value, int maxAge) {
+
         return ResponseCookie.from(name, value)
                 .secure(true)
                 .sameSite("None")
@@ -64,5 +65,4 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .maxAge(maxAge)
                 .build();
     }
-
 }
