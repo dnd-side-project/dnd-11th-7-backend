@@ -22,7 +22,7 @@ public class ScheduleResponseDto {
     public ScheduleResponseDto(Schedule schedule) {
         this.scheduleId = schedule.getScheduleId();
         this.meetingId = schedule.getMeeting().getMeetingId();
-        this.memberId = schedule.getMember().getMemberId();
+        this.memberId = schedule.getMember() == null ? null : schedule.getMember().getMemberId();
         this.scheduleNickname = schedule.getScheduleNickname();
         this.scheduleUuid = schedule.getScheduleUuid();
         this.isAssigned = schedule.getIsAssigned();
