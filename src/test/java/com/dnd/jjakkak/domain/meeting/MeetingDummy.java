@@ -126,6 +126,8 @@ public class MeetingDummy {
                 .numberOfPeople(6)
                 .isAnonymous(false)
                 .dueDateTime(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
+                .meetingUuid("met123")
+                .meetingLeaderId(1L)
                 .build();
 
         ReflectionTestUtils.setField(meeting, "meetingId", 1L);
