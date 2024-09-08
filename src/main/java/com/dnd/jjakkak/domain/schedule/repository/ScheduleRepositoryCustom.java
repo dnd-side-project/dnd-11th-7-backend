@@ -24,14 +24,6 @@ public interface ScheduleRepositoryCustom {
     Optional<Schedule> findByMemberIdAndMeetingUuid(Long memberId, String meetingUuid);
 
     /**
-     * 모임 ID로 할당되지 않은 일정을 조회합니다.
-     *
-     * @param meetingId 모임 ID
-     * @return 일정
-     */
-    Optional<Schedule> findNotAssignedScheduleByMeetingId(Long meetingId);
-
-    /**
      * 모임의 UUID로 할당되지 않은 일정을 조회합니다.
      *
      * @param meetingUuid 모임 UUID
