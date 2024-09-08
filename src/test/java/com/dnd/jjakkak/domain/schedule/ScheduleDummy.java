@@ -61,9 +61,10 @@ public class ScheduleDummy {
         ReflectionTestUtils.setField(member, "memberId", 1L);
 
         Meeting meeting = Meeting.builder()
+                .meetingName("세븐일레븐")
                 .meetingStartDate(LocalDate.of(2024, 9, 6))
                 .meetingEndDate(LocalDate.of(2024, 9, 7))
-                .numberOfPeople(4)
+                .numberOfPeople(6)
                 .isAnonymous(false)
                 .dueDateTime(LocalDateTime.of(2024, 9, 5, 12, 0, 0))
                 .meetingLeaderId(member.getMemberId())
@@ -133,5 +134,31 @@ public class ScheduleDummy {
 
     public static ScheduleUpdateRequestDto invalidUpdateRequestDto() {
         return new ScheduleUpdateRequestDto();
+    }
+
+    public static Schedule defaultSchedule() {
+
+        Meeting meeting = Meeting.builder()
+                .meetingName("세븐일레븐")
+                .meetingStartDate(LocalDate.of(2024, 9, 6))
+                .meetingEndDate(LocalDate.of(2024, 9, 7))
+                .numberOfPeople(6)
+                .isAnonymous(false)
+                .dueDateTime(LocalDateTime.of(2024, 9, 5, 12, 0, 0))
+                .meetingLeaderId(1L)
+                .meetingUuid("met123")
+                .build();
+
+        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
+
+        Schedule schedule = Schedule.builder()
+                .meeting(meeting)
+                .scheduleUuid("sch123")
+                .scheduleNickname("멤버")
+                .build();
+
+        ReflectionTestUtils.setField(schedule, "scheduleId", 1L);
+
+        return schedule;
     }
 }
