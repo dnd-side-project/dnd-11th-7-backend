@@ -15,19 +15,19 @@ import java.util.Optional;
 public interface ScheduleRepositoryCustom {
 
     /**
-     * 회원 ID와 모임 ID로 일정을 조회합니다.
+     * 회원 ID와 모임 UUID로 일정을 조회합니다.
      *
-     * @param memberId  회원 ID
-     * @param meetingId 모임 ID
+     * @param memberId    회원 ID
+     * @param meetingUuid 모임 UUID
      * @return 일정
      */
-    Optional<Schedule> findByMemberIdAndMeetingId(Long memberId, Long meetingId);
+    Optional<Schedule> findByMemberIdAndMeetingUuid(Long memberId, String meetingUuid);
 
     /**
-     * 모임 ID로 할당되지 않은 일정을 조회합니다.
+     * 모임의 UUID로 할당되지 않은 일정을 조회합니다.
      *
-     * @param meetingId 모임 ID
+     * @param meetingUuid 모임 UUID
      * @return 일정
      */
-    Optional<Schedule> findNotAssignedScheduleByMeetingId(Long meetingId);
+    Optional<Schedule> findNotAssignedScheduleByMeetingUuid(String meetingUuid);
 }

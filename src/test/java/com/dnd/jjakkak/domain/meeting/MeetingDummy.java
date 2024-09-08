@@ -5,6 +5,7 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
+import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -114,5 +115,23 @@ public class MeetingDummy {
         responseDto.addCategoryNames(List.of("팀플", "스터디", "회의"));
 
         return List.of(responseDto);
+    }
+
+    public static Meeting createMeeting() {
+
+        Meeting meeting = Meeting.builder()
+                .meetingName("세븐일레븐")
+                .meetingStartDate(LocalDate.of(2024, 8, 27))
+                .meetingEndDate(LocalDate.of(2024, 8, 29))
+                .numberOfPeople(6)
+                .isAnonymous(false)
+                .dueDateTime(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
+                .meetingUuid("met123")
+                .meetingLeaderId(1L)
+                .build();
+
+        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
+
+        return meeting;
     }
 }

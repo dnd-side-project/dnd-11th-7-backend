@@ -7,7 +7,6 @@ import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,80 +19,86 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/schedules")
+@RequestMapping("/api/v1/meetings/{meetingUuid}/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-
     /**
-     * 회원의 일정을 할당하는 메서드입니다.
+     * 회원의 일정을 모임에 할당하는 메서드입니다.
      *
-     * @param memberId   인증된 회원 ID
-     * @param requestDto 일정 할당 요청 DTO
+     * @param meetingUuid 모임 UUID
+     * @param memberId    로그인한 회원 ID
+     * @param requestDto  일정 할당 요청 DTO
      * @return 200 (OK)
      */
-    @PatchMapping("/members/assign")
-    public ResponseEntity<Void> assignScheduleToMember(@AuthenticationPrincipal Long memberId,
+    @PatchMapping("/members")
+    public ResponseEntity<Void> assignScheduleToMember(@PathVariable("meetingUuid") String meetingUuid,
+                                                       @AuthenticationPrincipal Long memberId,
                                                        @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
 
-        scheduleService.assignScheduleToMember(memberId, requestDto);
+        scheduleService.assignScheduleToMember(memberId, meetingUuid, requestDto);
         return ResponseEntity.ok().build();
     }
 
     /**
-     * 비회원의 일정을 할당하는 메서드입니다.
+     * 비회원의 일정을 모임에 할당하는 메서드입니다.
      *
-     * @param requestDto 일정 할당 요청 DTO
-     * @return 200 (OK)
+     * @param meetingUuid 모임 UUID
+     * @param requestDto  일정 할당 요청 DTO
+     * @return 200 (OK), 비회원일 경우, scheduleUuid 반환
      */
-    @PatchMapping("/guests/assign")
-    public ResponseEntity<ScheduleAssignResponseDto> assignScheduleToGuest(@Valid @RequestBody ScheduleAssignRequestDto requestDto) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(scheduleService.assignScheduleToGuest(requestDto));
-    }
+    @PatchMapping("/guests")
+    public ResponseEntity<ScheduleAssignResponseDto> assignScheduleToGuest(@PathVariable("meetingUuid") String meetingUuid,
+                                                                           @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
 
+        ScheduleAssignResponseDto responseDto = scheduleService.assignScheduleToGuest(meetingUuid, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
 
     /**
      * 회원의 일정을 조회하는 메서드입니다.
      *
-     * @param meetingId 모임 ID
-     * @param memberId  인증된 회원 ID
+     * @param meetingUuid 모임 UUID
+     * @param memberId    요청 회원 ID
      * @return 200 (OK), body: 일정 응답 DTO
      */
-    @GetMapping("/members/{meetingId}")
-    public ResponseEntity<ScheduleResponseDto> getMemberSchedule(@PathVariable("meetingId") Long meetingId,
+    @GetMapping("/members")
+    public ResponseEntity<ScheduleResponseDto> getMemberSchedule(@PathVariable("meetingUuid") String meetingUuid,
                                                                  @AuthenticationPrincipal Long memberId) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(scheduleService.getMemberSchedule(meetingId, memberId));
+
+        ScheduleResponseDto responseDto = scheduleService.getMemberSchedule(meetingUuid, memberId);
+        return ResponseEntity.ok(responseDto);
     }
 
     /**
      * 비회원의 일정을 조회하는 메서드입니다.
      *
-     * @param meetingId 모임 ID
-     * @param uuid      일정 UUID (비회원)
+     * @param meetingUuid  모임 UUID
+     * @param scheduleUuid 일정 UUID (비회원)
      * @return 200 (OK), body: 일정 응답 DTO
      */
-    @GetMapping("/guests/{meetingId}")
-    public ResponseEntity<ScheduleResponseDto> getGuestSchedule(@PathVariable("meetingId") Long meetingId,
-                                                                @RequestParam("uuid") String uuid) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(scheduleService.getGuestSchedule(meetingId, uuid));
+    @GetMapping("/guests")
+    public ResponseEntity<ScheduleResponseDto> getGuestSchedule(@PathVariable("meetingUuid") String meetingUuid,
+                                                                @RequestParam("scheduleUuid") String scheduleUuid) {
+
+        ScheduleResponseDto responseDto = scheduleService.getGuestSchedule(meetingUuid, scheduleUuid);
+        return ResponseEntity.ok(responseDto);
     }
 
     /**
      * 일정을 수정하는 메서드입니다.
      *
-     * @param scheduleId 일정 ID
+     * @param scheduleUuid 일정 ID
      * @param requestDto 일정 수정 요청 DTO
      * @return 200 (OK)
      */
-    @PatchMapping("/{scheduleId}")
-    public ResponseEntity<Void> updateSchedule(@PathVariable("scheduleId") Long scheduleId,
+    @PatchMapping("/{scheduleUuid}")
+    public ResponseEntity<Void> updateSchedule(@PathVariable("meetingUuid") String meetingUuid,
+                                               @PathVariable("scheduleUuid") String scheduleUuid,
                                                @Valid @RequestBody ScheduleUpdateRequestDto requestDto) {
 
-        scheduleService.updateSchedule(scheduleId, requestDto);
+        scheduleService.updateSchedule(meetingUuid, scheduleUuid, requestDto);
         return ResponseEntity.ok().build();
     }
 }

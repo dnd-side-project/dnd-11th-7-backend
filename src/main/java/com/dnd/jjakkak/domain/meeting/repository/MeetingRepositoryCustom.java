@@ -57,4 +57,13 @@ public interface MeetingRepositoryCustom {
      * @return 참가자 응답 DTO
      */
     MeetingParticipantResponseDto getParticipant(String uuid);
+
+    /**
+     * 회원 ID와 모임 UUID로 모임 일정 할당 여부를 파악합니다.
+     *
+     * @param memberId    회원 ID
+     * @param meetingUuid 모임 UUID
+     * @return 모임 일정 할당 여부
+     */
+    boolean existsByMemberIdAndMeetingUuid(Long memberId, String meetingUuid);
 }
