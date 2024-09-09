@@ -4,6 +4,7 @@ import com.dnd.jjakkak.domain.jwt.filter.JwtAuthenticationFilter;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2FailureHandler;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2LogoutHandler;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2SuccessHandler;
+import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class SecurityConfig {
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
     private final ObjectMapper objectMapper;
+    private final JjakkakProperties jjakkakProperties;
 
     /**
      * Security Bean 등록.
@@ -109,9 +111,9 @@ public class SecurityConfig {
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() { // 추후 CORS 수정 필요
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173")); // 허용할 도메인 명시
+        config.setAllowedOrigins(List.of(jjakkakProperties.getFrontUrl())); // 허용할 도메인 명시
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers", "_retry"));
         config.addExposedHeader("Authorization"); //프론트에서 해당 헤더를 읽을 수 있게
         config.setAllowCredentials(true);
 
