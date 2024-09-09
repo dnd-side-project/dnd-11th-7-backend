@@ -24,6 +24,8 @@ import java.util.Date;
 public class JwtProvider {
 
     private final Key key;
+    private static final int ACCESS_TOKEN_EXPIRATION_DAY = 3;
+    private static final int REFRESH_TOKEN_EXPIRATION_DAY = 7;
 
     public JwtProvider(JjakkakProperties jjakkakProperties) {
         String jwtSecret = jjakkakProperties.getJwtSecret();
@@ -41,7 +43,9 @@ public class JwtProvider {
      * @return JWT
      */
     public String createAccessToken(String kakaoId) {
-        Date expiredDate = Date.from(Instant.now().plus(30, ChronoUnit.MINUTES));
+
+        Date expiredDate = Date.from(Instant.now().plus(ACCESS_TOKEN_EXPIRATION_DAY, ChronoUnit.DAYS));
+
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(kakaoId)
@@ -59,7 +63,7 @@ public class JwtProvider {
      * @return JWT
      */
     public String createRefreshToken(String kakaoId) {
-        Date expiredDate = Date.from(Instant.now().plus(7, ChronoUnit.DAYS));
+        Date expiredDate = Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION_DAY, ChronoUnit.DAYS));
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(kakaoId)
