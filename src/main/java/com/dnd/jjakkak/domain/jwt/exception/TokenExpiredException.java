@@ -2,10 +2,11 @@ package com.dnd.jjakkak.domain.jwt.exception;
 
 import com.dnd.jjakkak.global.exception.GeneralException;
 
-public class AccessTokenExpiredException extends GeneralException {
-    private static final String MESSAGE = "엑세스 토큰이 만료됨.";
+public class TokenExpiredException extends GeneralException {
 
-    public AccessTokenExpiredException() {
+    private static final String MESSAGE = "JWT 토큰이 만료되었습니다.";
+
+    public TokenExpiredException() {
         super(MESSAGE);
     }
 

@@ -1,5 +1,7 @@
 package com.dnd.jjakkak.domain.jwt.provider;
 
+import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
+import com.dnd.jjakkak.domain.jwt.exception.TokenExpiredException;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -75,16 +77,22 @@ public class JwtProvider {
     /**
      * JWT를 검증하는 메소드
      *
-     * @param jwt String
-     * @return subject
+     * @param jwt String (JWT)
+     * @return subject (kakaoId)
      */
-    public String validate(String jwt) throws ExpiredJwtException, MalformedJwtException, JwtException {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody();
-        return claims.getSubject();
+    public String validateToken(String jwt) throws JwtException {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt)
+                    .getBody();
+            return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (MalformedJwtException e) {
+            throw new MalformedTokenException();
+        }
     }
 
     /**

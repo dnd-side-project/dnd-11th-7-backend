@@ -1,14 +1,10 @@
 package com.dnd.jjakkak.domain.jwt.filter;
 
-import com.dnd.jjakkak.domain.jwt.exception.AccessTokenExpiredException;
-import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.global.config.security.SecurityEndpointPaths;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,9 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
-
-        String kakaoId = validateToken(token);
+        
+        String kakaoId = jwtProvider.validateToken(token);
         if (Strings.isEmpty(kakaoId)) {
             filterChain.doFilter(request, response);
             return;
@@ -80,22 +75,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private boolean isPathInWhiteList(String path) {
         return PatternMatchUtils.simpleMatch(SecurityEndpointPaths.WHITE_LIST, path);
-    }
-
-    /**
-     * 토큰을 통해 사용자 정보(kakaoId) 조회
-     *
-     * @param token Access Token
-     * @return kakaoId
-     */
-    private String validateToken(String token) {
-        try {
-            return jwtProvider.validate(token);
-        } catch (ExpiredJwtException e) {
-            throw new AccessTokenExpiredException();
-        } catch (MalformedJwtException e) {
-            throw new MalformedTokenException();
-        }
     }
 
 
