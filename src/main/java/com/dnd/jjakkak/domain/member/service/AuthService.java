@@ -25,7 +25,7 @@ public class AuthService {
      */
     public String reissueToken(String refreshToken) {
 
-        String kakaoId = jwtProvider.validate(refreshToken);
+        String kakaoId = jwtProvider.validateToken(refreshToken);
         String accessToken = jwtProvider.createAccessToken(kakaoId);
 
         return "Bearer " + accessToken;
@@ -39,7 +39,7 @@ public class AuthService {
     public boolean checkAuth(String authorization) {
 
         String accessToken = authorization.substring(7);
-        String validate = jwtProvider.validate(accessToken);
+        String validate = jwtProvider.validateToken(accessToken);
 
         return Strings.isNotBlank(validate);
     }
