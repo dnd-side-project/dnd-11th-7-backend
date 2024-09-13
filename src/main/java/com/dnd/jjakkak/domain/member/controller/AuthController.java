@@ -1,6 +1,7 @@
 package com.dnd.jjakkak.domain.member.controller;
 
 import com.dnd.jjakkak.domain.member.service.AuthService;
+import com.dnd.jjakkak.domain.member.service.BlacklistService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthController {
 
     private final AuthService authService;
+    private final BlacklistService blacklistService;
 
     /**
      * Authorization Header 확인 후 로그인 여부를 확인하는 메서드.
@@ -47,6 +49,7 @@ public class AuthController {
 
     /**
      * Refresh Token을 이용하여 Access Token 재발급하는 메서드.
+     * 이 때 Refresh Token이 이미 블랙리스트라면 예외처리
      *
      * @param refreshToken Refresh Token (Cookie)
      * @param response     HttpServletResponse
@@ -56,7 +59,7 @@ public class AuthController {
     public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken,
                                              HttpServletResponse response) {
 
-        if (Strings.isEmpty(refreshToken)) {
+        if (Strings.isEmpty(refreshToken) || blacklistService.isTokenBlacklisted(refreshToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 

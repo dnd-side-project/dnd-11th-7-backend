@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.global.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author 정승조
  * @version 2024. 07. 19.
  */
-
+@Slf4j
 @RestControllerAdvice
 public class ExceptionController {
 
@@ -61,9 +62,12 @@ public class ExceptionController {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
+
+        log.error("Server Error = {}", e.getMessage());
+
         ErrorResponse body = ErrorResponse.builder()
                 .code("500")
-                .message(e.getMessage())
+                .message("서버에서 에러가 발생하였습니다. 조금 뒤에 다시 시도해주세요.")
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
