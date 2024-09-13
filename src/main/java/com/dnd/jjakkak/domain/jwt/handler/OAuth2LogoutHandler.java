@@ -45,7 +45,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
             blacklistService.blacklistToken(refreshToken, expirationDate);
             log.debug("logout 성공");
         } else {
-            log.error("쿠키 인증 오류");
+            log.debug("쿠키 인증 오류");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
