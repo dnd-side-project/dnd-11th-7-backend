@@ -2,7 +2,6 @@ package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.service.RefreshTokenService;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +20,7 @@ import java.io.IOException;
  * OAuth 로그인 성공시 JWT 토큰(AT, RT)을 생성하고 쿠키에 저장합니다.
  *
  * @author 류태웅, 정승조
- * @version 2024. 08. 02.
+ * @version 2024. 09. 13.
  */
 @Slf4j
 @Component
@@ -30,7 +29,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JjakkakProperties jjakkakProperties;
     private final JwtProvider jwtProvider;
-    private final RefreshTokenService refreshTokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -39,7 +37,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // Refresh Token 생성 및 저장
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
-//        refreshTokenService.createRefreshToken(oauth2User.getMemberId(), refreshToken);
 
         // Refresh Token 쿠키 설정
         ResponseCookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
