@@ -52,7 +52,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
 
 
         log.debug("logout refreshToken: {}", refreshToken);
-        blacklistService.blacklistToken(refreshToken, LocalDateTime.now().plusWeeks(EXPIRATION_WEEK));
+        blacklistService.createBlacklistToken(refreshToken, LocalDateTime.now().plusWeeks(EXPIRATION_WEEK));
         log.debug("logout 성공");
     }
 

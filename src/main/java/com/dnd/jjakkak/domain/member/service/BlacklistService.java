@@ -41,7 +41,7 @@ public class BlacklistService {
      * @param expirationDate 토큰의 만료 시간
      */
     @Transactional
-    public void blacklistToken(String token, LocalDateTime expirationDate) {
+    public void createBlacklistToken(String token, LocalDateTime expirationDate) {
         BlacklistedToken blacklistedToken = BlacklistedToken.builder()
                         .token(token)
                         .expirationDate(expirationDate)
