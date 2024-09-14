@@ -33,15 +33,13 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         Member oauth2User = (Member) authentication.getPrincipal();
-        String kakaoId = Long.toString(oauth2User.getKakaoId());
 
-        // Refresh Token 생성 및 저장
+        String kakaoId = Long.toString(oauth2User.getKakaoId());
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
 
-        // Refresh Token 쿠키 설정
         ResponseCookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-        response.sendRedirect(jjakkakProperties.getFrontUrl());
+        response.sendRedirect(jjakkakProperties.getFrontUrl() + "/login/success");
     }
 
     /**
