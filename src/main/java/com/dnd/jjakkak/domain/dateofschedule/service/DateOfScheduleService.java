@@ -46,29 +46,27 @@ public class DateOfScheduleService {
 
         LocalDateTime startTime = requestDto.getStartTime();
         LocalDateTime endTime = requestDto.getEndTime();
-        Integer rank = requestDto.getRank();
+
+        // TODO : rank 값을 추후에 변경해야 함.
+        Integer rank = 1;
 
         Duration interval = Duration.ofHours(1);
-
         while (startTime.isBefore(endTime)) {
             LocalDateTime nextEndTime = startTime.plus(interval);
 
-            // 마지막 시간 간격 조정 (endTime을 넘어가지 않도록)
             if (nextEndTime.isAfter(endTime)) {
                 nextEndTime = endTime;
             }
 
-            // 일정 날짜 생성
             DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
                     .schedule(schedule)
                     .dateOfScheduleStart(startTime)
                     .dateOfScheduleEnd(nextEndTime)
-                    .dateOfScheduleRank(rank) // rank는 동일하게 사용
+                    .dateOfScheduleRank(rank)
                     .build();
 
             dateOfScheduleRepository.save(dateOfSchedule);
 
-            // 다음 시간으로 이동
             startTime = nextEndTime;
         }
     }
