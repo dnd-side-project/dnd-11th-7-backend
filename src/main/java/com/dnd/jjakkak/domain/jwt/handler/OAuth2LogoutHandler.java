@@ -36,13 +36,20 @@ public class OAuth2LogoutHandler implements LogoutHandler {
         log.debug("logout 시작");
 
         String refreshToken = extractRefreshToken(request.getCookies());
-        Long kakaoId = Long.parseLong(jwtProvider.validateToken(refreshToken));
 
-        if (refreshToken == null || memberRepository.existsByKakaoId(kakaoId)) {
-            log.debug("쿠키 인증 오류");
+        if (refreshToken == null) {
+            log.debug("Refresh Token 쿠키가 없습니다.");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+
+        Long kakaoId = Long.parseLong(jwtProvider.validateToken(refreshToken));
+        if (!memberRepository.existsByKakaoId(kakaoId)) {
+            log.debug("로그인한 회원 정보가 없습니다.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
 
         log.debug("logout refreshToken: {}", refreshToken);
         blacklistService.blacklistToken(refreshToken, LocalDateTime.now().plusWeeks(EXPIRATION_WEEK));
