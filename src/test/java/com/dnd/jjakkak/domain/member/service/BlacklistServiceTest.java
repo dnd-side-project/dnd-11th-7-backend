@@ -57,7 +57,7 @@ class BlacklistServiceTest {
         LocalDateTime expirationDate = LocalDateTime.now().plusDays(1);
 
         // when
-        blacklistService.blacklistToken(token, expirationDate);
+        blacklistService.createBlacklistToken(token, expirationDate);
 
         // then
         Mockito.verify(blacklistedTokenRepository, Mockito.times(1)).save(any());

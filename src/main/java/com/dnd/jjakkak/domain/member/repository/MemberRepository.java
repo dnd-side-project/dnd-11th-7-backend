@@ -17,6 +17,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByKakaoId(long kakaoId);
 
+    boolean existsByKakaoId(Long kakaoId);
+
     // 대량의 데이터 일괄 삭제 개선
     // Query-SQL을 지정해주지 않으면 delete를 여러번 수행한다.
     @Modifying
