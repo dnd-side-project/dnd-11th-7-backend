@@ -29,6 +29,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
     private final MemberRepository memberRepository;
     private final BlacklistService blacklistService;
     private final JwtProvider jwtProvider;
+    private static final Long EXPIRATION_WEEK = 1L;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -44,8 +45,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
         }
 
         log.debug("logout refreshToken: {}", refreshToken);
-        LocalDateTime expirationDate = LocalDateTime.now().plusWeeks(1);
-        blacklistService.blacklistToken(refreshToken, expirationDate);
+        blacklistService.blacklistToken(refreshToken, LocalDateTime.now().plusWeeks(EXPIRATION_WEEK));
         log.debug("logout 성공");
     }
 
