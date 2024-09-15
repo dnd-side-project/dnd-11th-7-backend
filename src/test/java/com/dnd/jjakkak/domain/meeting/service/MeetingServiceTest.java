@@ -6,6 +6,7 @@ import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTime;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
@@ -176,8 +177,9 @@ class MeetingServiceTest {
     @DisplayName("모임 시간 조회 - 성공")
     void testGetMeetingBestTime_Success() {
 
+        // given
         String uuid = "1234abcd";
-        List<MeetingTimeResponseDto> expected = MeetingDummy.createBestTimeResponse();
+        MeetingTimeResponseDto expected = MeetingDummy.createMeetingTimeResponseDto();
 
         when(meetingRepository.getMeetingTimes(anyString(), any()))
                 .thenReturn(expected);
@@ -185,12 +187,18 @@ class MeetingServiceTest {
         when(meetingRepository.existsByMeetingUuid(anyString()))
                 .thenReturn(true);
 
-        List<MeetingTimeResponseDto> actual = meetingService.getMeetingTimes(uuid, MeetingSort.COUNT);
+        // when
+        MeetingTimeResponseDto actual = meetingService.getMeetingTimes(uuid, MeetingSort.COUNT);
 
-        assertEquals(expected.size(), actual.size());
+        // then
+        assertAll(
+                () -> assertEquals(expected.getNumberOfPeople(), actual.getNumberOfPeople()),
+                () -> assertEquals(expected.getIsAnonymous(), actual.getIsAnonymous())
+        );
 
-        MeetingTimeResponseDto expectedTime = expected.get(0);
-        MeetingTimeResponseDto actualTime = actual.get(0);
+        assertEquals(expected.getMeetingTimeList().size(), actual.getMeetingTimeList().size());
+        MeetingTime expectedTime = expected.getMeetingTimeList().get(0);
+        MeetingTime actualTime = actual.getMeetingTimeList().get(0);
 
         assertAll(
                 () -> assertEquals(expectedTime.getMemberNames(), actualTime.getMemberNames()),
