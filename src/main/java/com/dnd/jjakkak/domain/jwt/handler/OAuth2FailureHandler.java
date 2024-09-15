@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
@@ -29,6 +30,7 @@ import java.security.SignatureException;
  * @version 2024. 09. 15.
  */
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
@@ -57,7 +59,10 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
             errorMessage = "알 수 없는 이유로 로그인이 안되고 있습니다.";
         }
 
-        errorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);//한글 인코딩 깨지는 문제 방지
-        response.sendRedirect(jjakkakProperties.getFrontUrl()+"/login/failure?error=" + errorMessage);
+        // 에러 메시지를 로그로 출력
+        log.error("Authentication failed: {}", errorMessage, e);
+
+        // 오류 메시지 없이 로그인 실패 페이지로 리다이렉션
+        response.sendRedirect(jjakkakProperties.getFrontUrl() + "/login/failure");
     }
 }
