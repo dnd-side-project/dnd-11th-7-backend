@@ -21,7 +21,7 @@ public class SecurityEndpointPaths {
             "/api/v1/categories",
             "/api/v1/member/**",
             "/api/v1/meetings",
-            "/api/v1/meetings/*/schedules/members/**"
+            "/api/v1/meetings/*/schedules/members"
     };
 
     public static final String[] ADMIN_LIST = {
