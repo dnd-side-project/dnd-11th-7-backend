@@ -105,6 +105,7 @@ public class ScheduleService {
                 .orElseThrow(ScheduleNotFoundException::new);
 
         schedule.assignMember(member);
+        schedule.updateScheduleNickname(member.getMemberNickname());
         validateAndAssignSchedule(requestDto, schedule);
 
         MeetingMember.Pk pk = new MeetingMember.Pk(schedule.getScheduleId(), member.getMemberId());
@@ -213,9 +214,7 @@ public class ScheduleService {
         }
 
         // 닉네임 변경
-        if (!meetingRepository.isAnonymous(schedule.getMeeting().getMeetingId())) {
-            schedule.updateScheduleNickname(requestDto.getNickname());
-        }
+        schedule.updateScheduleNickname(requestDto.getNickname() == null ? schedule.getScheduleNickname() : requestDto.getNickname());
 
         // 일정 날짜 저장
         for (DateOfScheduleCreateRequestDto dateOfScheduleCreateRequestDto : requestDto.getDateOfScheduleList()) {
