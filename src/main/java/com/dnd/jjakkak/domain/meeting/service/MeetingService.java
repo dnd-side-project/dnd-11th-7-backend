@@ -160,7 +160,7 @@ public class MeetingService {
      * @return 정렬된 시간 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public List<MeetingTimeResponseDto> getMeetingTimes(String uuid, MeetingSort sort) {
+    public MeetingTimeResponseDto getMeetingTimes(String uuid, MeetingSort sort) {
 
         if (!meetingRepository.existsByMeetingUuid(uuid)) {
             throw new MeetingNotFoundException();
@@ -199,5 +199,4 @@ public class MeetingService {
 
         return uuid;
     }
-
 }

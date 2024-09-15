@@ -58,14 +58,14 @@ public class MeetingController {
     }
 
     /**
-     * 모임의 시간을 조회하는 메서드입니다.
+     * 모임 시간을 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
      * @param sort 정렬 기준 (COUNT: 인원 수, LATEST: 최신순)
-     * @return 200 (OK), body: 정렬된 시간 응답 DTO 리스트
+     * @return 200 (OK), body: 모임 시간 응답 DTO
      */
     @GetMapping("/{meetingUuid}/times")
-    public ResponseEntity<List<MeetingTimeResponseDto>> getMeetingTimes(
+    public ResponseEntity<MeetingTimeResponseDto> getMeetingTimes(
             @PathVariable("meetingUuid") String uuid,
             @RequestParam(value = "sort", defaultValue = "COUNT") MeetingSort sort) {
 
