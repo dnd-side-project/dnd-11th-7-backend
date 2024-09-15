@@ -89,7 +89,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         // 2. 카테고리
         List<String> categoryNames = from(meetingCategory)
                 .join(meetingCategory.category, category)
-                .where(meetingCategory.meeting.eq(meeting))
+                .where(meetingCategory.meeting.meetingUuid.eq(uuid))
                 .select(category.categoryName)
                 .fetch();
 
