@@ -1,9 +1,7 @@
 package com.dnd.jjakkak.domain.meeting.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,26 +9,23 @@ import java.util.List;
  * 모임 시간 응답 DTO 클래스입니다.
  *
  * @author 정승조
- * @version 2024. 08. 19.
+ * @version 2024. 09. 15.
  */
 @Getter
 public class MeetingTimeResponseDto {
 
-    private final List<String> memberNames;
-    private final LocalDateTime startTime;
-    private final LocalDateTime endTime;
-    private final Double rank;
+    private final Integer numberOfPeople;
+    private final Boolean isAnonymous;
+    private final List<MeetingTime> meetingTimeList;
 
 
-    @Builder
-    public MeetingTimeResponseDto(LocalDateTime startTime, LocalDateTime endTime, Double rank) {
-        this.memberNames = new ArrayList<>();
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.rank = rank;
+    public MeetingTimeResponseDto(Integer numberOfPeople, Boolean isAnonymous) {
+        this.numberOfPeople = numberOfPeople;
+        this.isAnonymous = isAnonymous;
+        this.meetingTimeList = new ArrayList<>();
     }
 
-    public void addMemberNames(List<String> memberNames) {
-        this.memberNames.addAll(memberNames);
+    public void addMeetingTimeList(List<MeetingTime> meetingTime) {
+        this.meetingTimeList.addAll(meetingTime);
     }
 }
