@@ -4,6 +4,7 @@ import com.dnd.jjakkak.domain.category.entity.QCategory;
 import com.dnd.jjakkak.domain.dateofschedule.entity.QDateOfSchedule;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTime;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.entity.QMeeting;
@@ -88,7 +89,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         // 2. 카테고리
         List<String> categoryNames = from(meetingCategory)
                 .join(meetingCategory.category, category)
-                .where(meetingCategory.meeting.eq(meeting))
+                .where(meetingCategory.meeting.meetingUuid.eq(uuid))
                 .select(category.categoryName)
                 .fetch();
 
@@ -101,7 +102,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
      * {@inheritDoc}
      */
     @Override
-    public List<MeetingTimeResponseDto> getMeetingTimes(String uuid, MeetingSort sort) {
+    public MeetingTimeResponseDto getMeetingTimes(String uuid, MeetingSort sort) {
 
         // TODO : 성능 개선 필요해보임
         QMeeting meeting = QMeeting.meeting;
@@ -117,36 +118,45 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         };
 
         // 우선순위 순으로 최적 시간 조회
-        List<MeetingTimeResponseDto> responseDtoList = from(dateOfSchedule)
+        List<MeetingTime> meetingTimeList = from(dateOfSchedule)
                 .join(dateOfSchedule.schedule, schedule)
                 .join(schedule.meeting, meeting)
                 .where(meeting.meetingUuid.eq(uuid))
                 .groupBy(dateOfSchedule.dateOfScheduleStart, dateOfSchedule.dateOfScheduleEnd)
                 .orderBy(orderSpecifier.toArray(new OrderSpecifier[0]))
-                .select(Projections.constructor(MeetingTimeResponseDto.class,
+                .select(Projections.constructor(MeetingTime.class,
                         dateOfSchedule.dateOfScheduleStart,
                         dateOfSchedule.dateOfScheduleEnd,
                         dateOfSchedule.dateOfScheduleRank.avg()
                 ))
                 .fetch();
 
-
-        // 각 시간대에 해당하는 닉네임 리스트를 조회하여 BestTime 객체에 추가한다.
-        for (MeetingTimeResponseDto responseDto : responseDtoList) {
+        for (MeetingTime meetingTime : meetingTimeList) {
             List<String> nicknames = from(dateOfSchedule)
                     .join(dateOfSchedule.schedule, schedule)
                     .join(schedule.meeting, meeting)
                     .where(meeting.meetingUuid.eq(uuid)
-                            .and(dateOfSchedule.dateOfScheduleStart.eq(responseDto.getStartTime()))
-                            .and(dateOfSchedule.dateOfScheduleEnd.eq(responseDto.getEndTime())))
+                            .and(dateOfSchedule.dateOfScheduleStart.eq(meetingTime.getStartTime()))
+                            .and(dateOfSchedule.dateOfScheduleEnd.eq(meetingTime.getEndTime())))
                     .select(schedule.scheduleNickname)
                     .fetch();
 
-            responseDto.addMemberNames(nicknames);
+            meetingTime.addMemberNames(nicknames);
         }
 
-        return responseDtoList;
+        MeetingTimeResponseDto responseDto = from(meeting)
+                .where(meeting.meetingUuid.eq(uuid))
+                .select(Projections.constructor(MeetingTimeResponseDto.class,
+                        meeting.numberOfPeople,
+                        meeting.isAnonymous
+                ))
+                .fetchOne();
+
+        responseDto.addMeetingTimeList(meetingTimeList);
+
+        return responseDto;
     }
+
 
     /**
      * {@inheritDoc}

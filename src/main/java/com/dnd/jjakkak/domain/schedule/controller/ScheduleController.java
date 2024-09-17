@@ -90,7 +90,7 @@ public class ScheduleController {
      * 일정을 수정하는 메서드입니다.
      *
      * @param scheduleUuid 일정 ID
-     * @param requestDto 일정 수정 요청 DTO
+     * @param requestDto   일정 수정 요청 DTO
      * @return 200 (OK)
      */
     @PatchMapping("/{scheduleUuid}")

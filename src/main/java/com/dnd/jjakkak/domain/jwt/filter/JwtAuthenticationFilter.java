@@ -10,7 +10,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +32,6 @@ import java.util.List;
  * @author 류태웅
  * @version 2024. 08. 03.
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -46,35 +44,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (isPathInWhiteList(path)) {
-            filterChain.doFilter(request, response);
-            return;
+        if (isPathInUserList(path)) {
+            String token = parseBearerToken(request);
+
+            if (token == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String kakaoId = jwtProvider.validateToken(token);
+            if (Strings.isEmpty(kakaoId)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            authenticateUser(kakaoId, request);
         }
 
-        String token = parseBearerToken(request);
-        if (token == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
-        String kakaoId = jwtProvider.validateToken(token);
-        if (Strings.isEmpty(kakaoId)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        authenticateUser(kakaoId, request);
         filterChain.doFilter(request, response);
     }
 
     /**
-     * 요청 URI가 화이트 리스트에 포함되어 있는지 확인합니다.
+     * 요청 URI가 유저 리스트에 포함되어 있는지 확인합니다.
      *
      * @param path 요청 URI
-     * @return 화이트 리스트에 포함되어 있으면 true, 아니면 false
+     * @return 유저 리스트에 포함되어 있으면 true, 아니면 false
      */
-    private boolean isPathInWhiteList(String path) {
-        return PatternMatchUtils.simpleMatch(SecurityEndpointPaths.WHITE_LIST, path);
+    private boolean isPathInUserList(String path) {
+        return PatternMatchUtils.simpleMatch(SecurityEndpointPaths.USER_LIST, path);
     }
 
 

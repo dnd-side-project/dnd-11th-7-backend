@@ -4,6 +4,7 @@ import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.dateofschedule.entity.DateOfSchedule;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTime;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
@@ -165,8 +166,8 @@ class MeetingRepositoryTest {
     @Test
     @DisplayName("모임 시간 조회 - COUNT 기준 정렬")
     void getMeetingTimes_defaultSort() {
-        // given
 
+        // given
         Schedule schedule1 = Schedule.builder()
                 .meeting(testMeeting)
                 .scheduleNickname("멤버1")
@@ -215,18 +216,18 @@ class MeetingRepositoryTest {
         String uuid = "123abc";
 
         // when
-        List<MeetingTimeResponseDto> meetingTimes = meetingRepository.getMeetingTimes(uuid, MeetingSort.COUNT);
+        MeetingTimeResponseDto actual = meetingRepository.getMeetingTimes(uuid, MeetingSort.COUNT);
 
         // then
-        assertEquals(2, meetingTimes.size());
+        assertEquals(2, actual.getMeetingTimeList().size());
 
-        MeetingTimeResponseDto primary = meetingTimes.get(0);
+        MeetingTime primary = actual.getMeetingTimeList().get(0);
         assertAll(
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleStart(), primary.getStartTime()),
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleEnd(), primary.getEndTime())
         );
 
-        MeetingTimeResponseDto secondary = meetingTimes.get(1);
+        MeetingTime secondary = actual.getMeetingTimeList().get(1);
         assertAll(
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleStart(), secondary.getStartTime()),
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleEnd(), secondary.getEndTime())
@@ -277,18 +278,18 @@ class MeetingRepositoryTest {
         String uuid = "123abc";
 
         // when
-        List<MeetingTimeResponseDto> meetingTimes = meetingRepository.getMeetingTimes(uuid, MeetingSort.LATEST);
+        MeetingTimeResponseDto actual = meetingRepository.getMeetingTimes(uuid, MeetingSort.LATEST);
 
         // then
-        assertEquals(2, meetingTimes.size());
+        assertEquals(2, actual.getMeetingTimeList().size());
 
-        MeetingTimeResponseDto primary = meetingTimes.get(0);
+        MeetingTime primary = actual.getMeetingTimeList().get(0);
         assertAll(
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleStart(), primary.getStartTime()),
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleEnd(), primary.getEndTime())
         );
 
-        MeetingTimeResponseDto secondary = meetingTimes.get(1);
+        MeetingTime secondary = actual.getMeetingTimeList().get(1);
         assertAll(
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleStart(), secondary.getStartTime()),
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleEnd(), secondary.getEndTime())

@@ -6,8 +6,6 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import java.util.List;
-
 /**
  * 모임 Querydsl 메서드를 정의하는 인터페이스입니다.
  *
@@ -48,7 +46,7 @@ public interface MeetingRepositoryCustom {
      * @param sort 정렬 기준
      * @return 최적의 시간 응답 DTO 리스트
      */
-    List<MeetingTimeResponseDto> getMeetingTimes(String uuid, MeetingSort sort);
+    MeetingTimeResponseDto getMeetingTimes(String uuid, MeetingSort sort);
 
     /**
      * 모임의 UUID로 참가자를 조회합니다.

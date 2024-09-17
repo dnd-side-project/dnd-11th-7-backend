@@ -152,7 +152,7 @@ class MeetingControllerTest extends AbstractRestDocsTest {
 
         String meetingUuid = "123ABC";
         when(meetingService.getMeetingTimes(anyString(), any()))
-                .thenReturn(MeetingDummy.createBestTimeResponse());
+                .thenReturn(MeetingDummy.createMeetingTimeResponseDto());
 
         mockMvc.perform(get("/api/v1/meetings/{meetingUuid}/times", meetingUuid)
                         .param("sort", "COUNT")
@@ -160,20 +160,24 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$[0].memberNames.[0]").value("고래"),
-                        jsonPath("$[0].memberNames.[1]").value("상어"),
-                        jsonPath("$[0].startTime").value("2024-08-27T10:00:00"),
-                        jsonPath("$[0].endTime").value("2024-08-27T12:00:00"),
-                        jsonPath("$[0].rank").value(1.0))
+                        jsonPath("$.numberOfPeople").value(2),
+                        jsonPath("$.isAnonymous").value(false),
+                        jsonPath("$.meetingTimeList[0].memberNames.[0]").value("고래"),
+                        jsonPath("$.meetingTimeList[0].memberNames.[1]").value("상어"),
+                        jsonPath("$.meetingTimeList[0].startTime").value("2024-08-27T10:00:00"),
+                        jsonPath("$.meetingTimeList[0].endTime").value("2024-08-27T12:00:00"),
+                        jsonPath("$.meetingTimeList[0].rank").value(1.0))
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
                         ),
                         responseFields(
-                                fieldWithPath("[].memberNames").description("멤버 이름 리스트"),
-                                fieldWithPath("[].startTime").description("시작 시간"),
-                                fieldWithPath("[].endTime").description("종료 시간"),
-                                fieldWithPath("[].rank").description("우선순위 (오름차순)")
+                                fieldWithPath("numberOfPeople").description("총 인원 수"),
+                                fieldWithPath("isAnonymous").description("익명 여부"),
+                                fieldWithPath("meetingTimeList[].memberNames").description("멤버 이름 리스트"),
+                                fieldWithPath("meetingTimeList[].startTime").description("시작 시간"),
+                                fieldWithPath("meetingTimeList[].endTime").description("종료 시간"),
+                                fieldWithPath("meetingTimeList[].rank").description("우선순위 (오름차순)")
                         ))
                 );
     }

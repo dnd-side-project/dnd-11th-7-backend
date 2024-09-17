@@ -1,10 +1,7 @@
 package com.dnd.jjakkak.domain.meeting;
 
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingMyPageResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.*;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -67,9 +64,8 @@ public class MeetingDummy {
         return responseDto;
     }
 
-    public static List<MeetingTimeResponseDto> createBestTimeResponse() {
-
-        MeetingTimeResponseDto response = MeetingTimeResponseDto.builder()
+    public static MeetingTimeResponseDto createMeetingTimeResponseDto() {
+        MeetingTime response = MeetingTime.builder()
                 .startTime(LocalDateTime.of(2024, 8, 27, 10, 0))
                 .endTime(LocalDateTime.of(2024, 8, 27, 12, 0))
                 .rank(1.0)
@@ -77,8 +73,12 @@ public class MeetingDummy {
 
         response.addMemberNames(List.of("고래", "상어"));
 
-        return List.of(response);
+        MeetingTimeResponseDto responseDto = new MeetingTimeResponseDto(2, false);
+        responseDto.addMeetingTimeList(List.of(response));
+
+        return responseDto;
     }
+
 
     public static MeetingParticipantResponseDto createParticipants() {
 
