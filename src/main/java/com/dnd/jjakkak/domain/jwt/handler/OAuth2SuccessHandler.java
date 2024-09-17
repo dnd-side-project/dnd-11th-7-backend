@@ -6,8 +6,8 @@ import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,6 @@ import java.io.IOException;
  * @author 류태웅, 정승조
  * @version 2024. 09. 13.
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -32,6 +31,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
         Member oauth2User = (Member) authentication.getPrincipal();
 
         String kakaoId = Long.toString(oauth2User.getKakaoId());
@@ -39,7 +39,27 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         ResponseCookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-        response.sendRedirect(jjakkakProperties.getFrontUrl() + "/login/success");
+
+        String redirectUrl = getRedirectUrl(request);
+        response.sendRedirect(redirectUrl);
+    }
+
+    /**
+     * 리다이렉트 URL 을 반환하는 메서드입니다.
+     *
+     * @param request HttpServletRequest
+     * @return 리다이렉트 URL
+     */
+    public String getRedirectUrl(HttpServletRequest request) {
+        String baseUrl = jjakkakProperties.getFrontUrl() + "/login/success";
+
+        HttpSession session = request.getSession();
+        String redirectParam = (String) session.getAttribute("redirect");
+        session.removeAttribute("redirect");
+
+        return (redirectParam != null)
+                ? baseUrl + "?redirect=" + redirectParam
+                : baseUrl;
     }
 
     /**
