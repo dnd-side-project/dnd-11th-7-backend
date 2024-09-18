@@ -1,7 +1,6 @@
 package com.dnd.jjakkak.global.config.security;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
@@ -14,15 +13,15 @@ import org.springframework.stereotype.Component;
  * @author 정승조
  * @version 2024. 09. 18.
  */
-@Slf4j
 @Component
 public class CustomAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
+    private static final String AUTHORIZATION_REQUEST_BASE_URI = "/api/v1/auth/oauth2";
     private final OAuth2AuthorizationRequestResolver defaultAuthorizationRequestResolver;
 
     public CustomAuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
         this.defaultAuthorizationRequestResolver =
-                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, "/api/v1/auth/oauth2");
+                new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, AUTHORIZATION_REQUEST_BASE_URI);
     }
 
     @Override
