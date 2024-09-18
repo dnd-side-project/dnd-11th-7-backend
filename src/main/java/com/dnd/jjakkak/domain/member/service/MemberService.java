@@ -35,7 +35,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<MeetingMyPageResponseDto> getMeetingListByMemberId(Long memberId) {
 
-        if (memberRepository.existsById(memberId)) {
+        if (!memberRepository.existsById(memberId)) {
             throw new MemberNotFoundException();
         }
 
