@@ -5,10 +5,8 @@ import com.dnd.jjakkak.domain.jwt.handler.OAuth2FailureHandler;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2LogoutHandler;
 import com.dnd.jjakkak.domain.jwt.handler.OAuth2SuccessHandler;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +32,6 @@ import static com.dnd.jjakkak.global.config.security.SecurityEndpointPaths.*;
  * @author 류태웅
  * @version 2024. 08. 03.
  */
-@Configurable
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -45,8 +42,9 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
-    private final ObjectMapper objectMapper;
     private final JjakkakProperties jjakkakProperties;
+    private final CustomAuthorizationRequestResolver customAuthorizationRequestResolver;
+    private final FailedAuthenticationEntryPoint failedAuthenticationEntryPoint;
 
     /**
      * Security Bean 등록.
@@ -81,7 +79,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+                        .authorizationEndpoint(endpoint -> endpoint
+                                .authorizationRequestResolver(customAuthorizationRequestResolver))
                         .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
                         .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
@@ -94,7 +93,7 @@ public class SecurityConfig {
                         .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling // 실패 시 해당 메시지 반환
-                        .authenticationEntryPoint(new FailedAuthenticationEntryPoint(objectMapper))
+                        .authenticationEntryPoint(failedAuthenticationEntryPoint)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
