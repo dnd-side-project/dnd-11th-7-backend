@@ -5,7 +5,7 @@ import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
-import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
+import com.dnd.jjakkak.domain.meetingmember.service.MeetingMemberService;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
@@ -41,16 +41,22 @@ class ScheduleServiceTest {
 
     private static final String MEETING_UUID = "met123";
     private static final String SCHEDULE_UUID = "sch123";
+
     @InjectMocks
     ScheduleService scheduleService;
+
     @Mock
     ScheduleRepository scheduleRepository;
+
     @Mock
     MeetingRepository meetingRepository;
+
     @Mock
     DateOfScheduleService dateOfScheduleService;
+
     @Mock
-    MeetingMemberRepository meetingMemberRepository;
+    MeetingMemberService meetingMemberService;
+
     @Mock
     MemberRepository memberRepository;
 
@@ -203,6 +209,7 @@ class ScheduleServiceTest {
         verify(scheduleRepository, times(1)).findNotAssignedScheduleByMeetingUuid(MEETING_UUID);
         verify(meetingRepository, times(1)).checkMeetingFull(any());
         verify(dateOfScheduleService, times(2)).createDateOfSchedule(anyLong(), any());
+        verify(meetingMemberService, times(1)).createMeetingMemberBySchedule(anyLong(), anyLong());
     }
 
     @Test

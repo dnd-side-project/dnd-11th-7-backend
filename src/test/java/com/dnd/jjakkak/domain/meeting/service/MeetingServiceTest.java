@@ -13,6 +13,7 @@ import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
+import com.dnd.jjakkak.domain.meetingmember.service.MeetingMemberService;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
@@ -57,6 +58,9 @@ class MeetingServiceTest {
     @Mock
     MemberRepository memberRepository;
 
+    @Mock
+    MeetingMemberService meetingMemberService;
+
     @Test
     @DisplayName("모임 생성 테스트 - 성공")
     void testCreateMeeting() {
@@ -83,7 +87,6 @@ class MeetingServiceTest {
         verify(categoryRepository, times(2)).findById(anyLong());
         verify(meetingCategoryRepository, times(2)).save(any());
         verify(scheduleService, times(6)).createDefaultSchedule(any()); // 인원 수 = 6
-
     }
 
 

@@ -56,7 +56,7 @@ class MemberControllerTest extends AbstractRestDocsTest {
         when(memberService.getMeetingListByMemberId(anyLong()))
                 .thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/members/meetingList", 1L)
+        mockMvc.perform(get("/api/v1/members/meetings", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpectAll(
