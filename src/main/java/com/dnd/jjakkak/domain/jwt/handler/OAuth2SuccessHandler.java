@@ -26,6 +26,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private static final String REFRESH_TOKEN_NAME = "refresh_token";
+    private static final String QUERY_PARAM = "redirect";
     private final JjakkakProperties jjakkakProperties;
     private final JwtProvider jwtProvider;
 
@@ -37,7 +39,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String kakaoId = Long.toString(oauth2User.getKakaoId());
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
 
-        ResponseCookie refreshCookie = createCookie("refresh_token", refreshToken, 60 * 60 * 24 * 7);
+        ResponseCookie refreshCookie = createCookie(REFRESH_TOKEN_NAME, refreshToken, 60 * 60 * 24 * 7);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
         String redirectUrl = getRedirectUrl(request);
@@ -54,8 +56,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String baseUrl = jjakkakProperties.getFrontUrl() + "/login/success";
 
         HttpSession session = request.getSession();
-        String redirectParam = (String) session.getAttribute("redirect");
-        session.removeAttribute("redirect");
+        String redirectParam = (String) session.getAttribute(QUERY_PARAM);
+        session.removeAttribute(QUERY_PARAM);
 
         return (redirectParam != null)
                 ? baseUrl + "?redirect=" + redirectParam

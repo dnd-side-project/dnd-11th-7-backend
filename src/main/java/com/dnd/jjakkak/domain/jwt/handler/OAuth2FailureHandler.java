@@ -17,17 +17,17 @@ import java.io.IOException;
  * @author 류태웅
  * @version 2024. 09. 15.
  */
-
 @Component
 @RequiredArgsConstructor
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private static final String QUERY_PARAM = "redirect";
     private final JjakkakProperties jjakkakProperties;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
 
-        request.getSession().removeAttribute("redirect");
+        request.getSession().removeAttribute(QUERY_PARAM);
         response.sendRedirect(jjakkakProperties.getFrontUrl() + "/login/failure");
     }
 }
