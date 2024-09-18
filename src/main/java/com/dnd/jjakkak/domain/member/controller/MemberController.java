@@ -30,7 +30,7 @@ public class MemberController {
      * @param memberId 조회할 회원 ID
      * @return 200 (OK), body: 모임 응답 DTO 리스트
      */
-    @GetMapping("/meetingList")
+    @GetMapping("/meetings")
     public ResponseEntity<List<MeetingMyPageResponseDto>> getMeetingList(@AuthenticationPrincipal Long memberId) {
         return ResponseEntity.ok(memberService.getMeetingListByMemberId(memberId));
     }
