@@ -77,6 +77,7 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
                         meeting.isAnonymous,
                         schedule.scheduleNickname
                 ))
+                .distinct()
                 .fetch();
 
         for (MeetingMyPageResponseDto responseDto : responseDtoList) {
