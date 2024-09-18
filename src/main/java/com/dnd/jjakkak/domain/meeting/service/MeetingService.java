@@ -16,6 +16,7 @@ import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.entity.MeetingCategory;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
+import com.dnd.jjakkak.domain.meetingmember.service.MeetingMemberService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
@@ -44,6 +45,7 @@ public class MeetingService {
     private final CategoryRepository categoryRepository;
     private final MeetingMemberRepository meetingMemberRepository;
     private final MemberRepository memberRepository;
+    private final MeetingMemberService meetingMemberService;
 
     /**
      * 모임을 생성하는 메서드입니다.
@@ -94,6 +96,8 @@ public class MeetingService {
         for (int i = 0; i < meeting.getNumberOfPeople(); i++) {
             scheduleService.createDefaultSchedule(meeting);
         }
+
+        meetingMemberService.createMeetingMemberByMeeting(meeting.getMeetingId(), memberId);
 
         return new MeetingCreateResponseDto(uuid);
     }

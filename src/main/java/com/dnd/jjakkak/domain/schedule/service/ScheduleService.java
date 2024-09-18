@@ -6,8 +6,8 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
-import com.dnd.jjakkak.domain.meetingmember.entity.MeetingMember;
 import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
+import com.dnd.jjakkak.domain.meetingmember.service.MeetingMemberService;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
@@ -40,6 +40,7 @@ public class ScheduleService {
     private final DateOfScheduleService dateOfScheduleService;
     private final MeetingMemberRepository meetingMemberRepository;
     private final MemberRepository memberRepository;
+    private final MeetingMemberService meetingMemberService;
 
     /**
      * 기본 일정을 생성하는 메서드입니다.
@@ -108,14 +109,7 @@ public class ScheduleService {
         schedule.updateScheduleNickname(member.getMemberNickname());
         validateAndAssignSchedule(requestDto, schedule);
 
-        MeetingMember.Pk pk = new MeetingMember.Pk(schedule.getScheduleId(), member.getMemberId());
-        MeetingMember meetingMember = MeetingMember.builder()
-                .pk(pk)
-                .member(member)
-                .meeting(schedule.getMeeting())
-                .build();
-
-        meetingMemberRepository.save(meetingMember);
+        meetingMemberService.createMeetingMemberBySchedule(schedule.getScheduleId(), memberId);
     }
 
     /**
