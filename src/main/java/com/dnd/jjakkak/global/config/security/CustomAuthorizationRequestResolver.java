@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class CustomAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
     private static final String AUTHORIZATION_REQUEST_BASE_URI = "/api/v1/auth/oauth2";
+    private static final String QUERY_PARAM = "redirect";
     private final OAuth2AuthorizationRequestResolver defaultAuthorizationRequestResolver;
 
     public CustomAuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
@@ -49,9 +50,9 @@ public class CustomAuthorizationRequestResolver implements OAuth2AuthorizationRe
             return null;
         }
 
-        String redirect = request.getParameter("redirect");
+        String redirect = request.getParameter(QUERY_PARAM);
         if (redirect != null) {
-            request.getSession().setAttribute("redirect", redirect);
+            request.getSession().setAttribute(QUERY_PARAM, redirect);
         }
 
         return authorizationRequest;
