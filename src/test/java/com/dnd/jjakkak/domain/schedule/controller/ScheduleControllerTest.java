@@ -259,9 +259,9 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
     }
 
     @Test
-    @DisplayName("일정 수정 - 실패 (일정 없이 요청)")
-    @JjakkakMockUser
-    void update_schedule_fail() throws Exception {
+    @DisplayName("비회원 일정 수정 - 실패 (일정 없이 요청)")
+    @WithMockUser(roles = "GUEST")
+    void update_guest_schedule_fail() throws Exception {
 
         // given
         String json = objectMapper.writeValueAsString(ScheduleDummy.invalidUpdateRequestDto());
@@ -287,9 +287,9 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
 
 
     @Test
-    @DisplayName("일정 수정 - 성공")
-    @JjakkakMockUser
-    void update_schedule_success() throws Exception {
+    @DisplayName("비회원 일정 수정 - 성공")
+    @WithMockUser(roles = "GUEST")
+    void update_guest_schedule_success() throws Exception {
 
         // given
         String json = objectMapper.writeValueAsString(ScheduleDummy.updateRequestDto());
@@ -308,8 +308,59 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("dateOfScheduleList").description("일정 목록"),
                                 fieldWithPath("dateOfScheduleList[].startTime").description("일정 시작 시간"),
                                 fieldWithPath("dateOfScheduleList[].endTime").description("일정 종료 시간"),
-                                fieldWithPath("dateOfScheduleList[].rank").description("일정 우선순위"),
-                                fieldWithPath("nickname").description("닉네임")
+                                fieldWithPath("dateOfScheduleList[].rank").description("일정 우선순위")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원 일정 수정 - 실패 (일정 없이 요청)")
+    @JjakkakMockUser
+    void update_member_schedule_fail() throws Exception {
+
+        // given
+        String json = objectMapper.writeValueAsString(ScheduleDummy.invalidUpdateRequestDto());
+
+        // expected
+        mockMvc.perform(patch(URI, MEETING_UUID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("meetingUuid").description("모임 UUID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("에러 코드"),
+                                fieldWithPath("message").description("에러 메시지"),
+                                fieldWithPath("validation").description("유효성 검사"),
+                                fieldWithPath("validation.dateOfScheduleList").description("일정 날짜 에러 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("회원 일정 수정 - 성공")
+    @JjakkakMockUser
+    void update_member_schedule_success() throws Exception {
+
+        // given
+        String json = objectMapper.writeValueAsString(ScheduleDummy.updateRequestDto());
+
+        // expected
+        mockMvc.perform(patch(URI, MEETING_UUID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("meetingUuid").description("모임 UUID")
+                        ),
+                        requestFields(
+                                fieldWithPath("dateOfScheduleList").description("일정 목록"),
+                                fieldWithPath("dateOfScheduleList[].startTime").description("일정 시작 시간"),
+                                fieldWithPath("dateOfScheduleList[].endTime").description("일정 종료 시간"),
+                                fieldWithPath("dateOfScheduleList[].rank").description("일정 우선순위")
                         )
                 ));
     }

@@ -221,7 +221,7 @@ class ScheduleServiceTest {
                 .thenReturn(Optional.of(ScheduleDummy.defaultSchedule()));
 
         // when
-        scheduleService.updateSchedule(MEETING_UUID, SCHEDULE_UUID, ScheduleDummy.updateRequestDto());
+        scheduleService.updateGuestSchedule(MEETING_UUID, SCHEDULE_UUID, ScheduleDummy.updateRequestDto());
 
         // then
         verify(scheduleRepository, times(1)).findByScheduleUuid(anyString());
@@ -239,7 +239,7 @@ class ScheduleServiceTest {
         ScheduleUpdateRequestDto requestDto = ScheduleDummy.updateRequestDto();
         // when & then
         assertThrows(ScheduleNotFoundException.class,
-                () -> scheduleService.updateSchedule(MEETING_UUID, SCHEDULE_UUID, requestDto));
+                () -> scheduleService.updateGuestSchedule(MEETING_UUID, SCHEDULE_UUID, requestDto));
 
         verify(scheduleRepository, times(1)).findByScheduleUuid(anyString());
         verify(dateOfScheduleService, times(0)).updateDateList(anyLong(), any());
@@ -258,7 +258,7 @@ class ScheduleServiceTest {
 
         // when & then
         assertThrows(MeetingNotFoundException.class,
-                () -> scheduleService.updateSchedule("different", SCHEDULE_UUID, requestDto));
+                () -> scheduleService.updateGuestSchedule("different", SCHEDULE_UUID, requestDto));
 
         verify(scheduleRepository, times(1)).findByScheduleUuid(anyString());
         verify(dateOfScheduleService, times(0)).updateDateList(anyLong(), any());
