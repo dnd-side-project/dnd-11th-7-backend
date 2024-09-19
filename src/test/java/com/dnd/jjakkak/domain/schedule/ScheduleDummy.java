@@ -113,7 +113,6 @@ public class ScheduleDummy {
     public static ScheduleUpdateRequestDto updateRequestDto() {
 
         ScheduleUpdateRequestDto requestDto = new ScheduleUpdateRequestDto();
-        ReflectionTestUtils.setField(requestDto, "nickname", "정승조");
 
         DateOfScheduleCreateRequestDto firstDto = new DateOfScheduleCreateRequestDto();
         ReflectionTestUtils.setField(firstDto, "startTime", LocalDateTime.of(2024, 9, 6, 9, 0, 0));
