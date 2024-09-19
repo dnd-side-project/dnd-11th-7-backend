@@ -87,18 +87,35 @@ public class ScheduleController {
     }
 
     /**
-     * 일정을 수정하는 메서드입니다.
+     * 비회원의 일정을 수정하는 메서드입니다.
      *
      * @param scheduleUuid 일정 ID
      * @param requestDto   일정 수정 요청 DTO
      * @return 200 (OK)
      */
     @PatchMapping("/{scheduleUuid}")
-    public ResponseEntity<Void> updateSchedule(@PathVariable("meetingUuid") String meetingUuid,
-                                               @PathVariable("scheduleUuid") String scheduleUuid,
-                                               @Valid @RequestBody ScheduleUpdateRequestDto requestDto) {
+    public ResponseEntity<Void> updateGuestSchedule(@PathVariable("meetingUuid") String meetingUuid,
+                                                    @PathVariable("scheduleUuid") String scheduleUuid,
+                                                    @Valid @RequestBody ScheduleUpdateRequestDto requestDto) {
 
-        scheduleService.updateSchedule(meetingUuid, scheduleUuid, requestDto);
+        scheduleService.updateGuestSchedule(meetingUuid, scheduleUuid, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 회원의 일정을 수정하는 메서드입니다.
+     *
+     * @param memberId    회원 ID
+     * @param meetingUuid 모임 UUID
+     * @param requestDto  일정 수정 요청 DTO
+     * @return 200 (OK)
+     */
+    @PatchMapping
+    public ResponseEntity<Void> updateMemberSchedule(@AuthenticationPrincipal Long memberId,
+                                                     @PathVariable("meetingUuid") String meetingUuid,
+                                                     @Valid @RequestBody ScheduleUpdateRequestDto requestDto) {
+
+        scheduleService.updateMemberSchedule(memberId, meetingUuid, requestDto);
         return ResponseEntity.ok().build();
     }
 }

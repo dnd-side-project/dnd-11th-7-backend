@@ -113,14 +113,14 @@ public class ScheduleService {
     }
 
     /**
-     * 일정 수정 메서드입니다.
+     * 비회원 일정 수정 메서드입니다.
      *
      * @param meetingUuid  모임 UUID
      * @param scheduleUuid 일정 UUID
      * @param requestDto   일정 수정 요청 DTO
      */
     @Transactional
-    public void updateSchedule(String meetingUuid, String scheduleUuid, ScheduleUpdateRequestDto requestDto) {
+    public void updateGuestSchedule(String meetingUuid, String scheduleUuid, ScheduleUpdateRequestDto requestDto) {
 
         Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
@@ -129,7 +129,25 @@ public class ScheduleService {
             throw new MeetingNotFoundException();
         }
 
-        schedule.updateScheduleNickname(requestDto.getNickname());
+        dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
+    }
+
+    /**
+     * 회원 일정 수정 메서드입니다.
+     *
+     * @param memberId    회원 ID
+     * @param meetingUuid 모임 UUID
+     * @param requestDto  일정 수정 요청 DTO
+     */
+    @Transactional
+    public void updateMemberSchedule(Long memberId, String meetingUuid, ScheduleUpdateRequestDto requestDto) {
+
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException();
+        }
+
+        Schedule schedule = scheduleRepository.findByMemberIdAndMeetingUuid(memberId, meetingUuid)
+                .orElseThrow(ScheduleNotFoundException::new);
 
         dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
@@ -218,4 +236,6 @@ public class ScheduleService {
         // isAssigned -> true
         schedule.scheduleAssign();
     }
+
+
 }
