@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.domain.schedule.repository;
 
+import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -30,4 +31,13 @@ public interface ScheduleRepositoryCustom {
      * @return 일정
      */
     Optional<Schedule> findNotAssignedScheduleByMeetingUuid(String meetingUuid);
+
+
+    /**
+     * 일정 ID로 일정과 일정의 날짜를 조회합니다.
+     *
+     * @param scheduleId 일정 ID
+     * @return 일정 응답 DTO (일정 정보, 일정 날짜)
+     */
+    ScheduleResponseDto findScheduleWithDateOfSchedule(Long scheduleId);
 }

@@ -1,9 +1,14 @@
 package com.dnd.jjakkak.domain.schedule.repository;
 
+import com.dnd.jjakkak.domain.dateofschedule.dto.response.DateOfScheduleResponseDto;
+import com.dnd.jjakkak.domain.dateofschedule.entity.QDateOfSchedule;
+import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
 import com.dnd.jjakkak.domain.schedule.entity.QSchedule;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
+import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -48,5 +53,34 @@ public class ScheduleRepositoryImpl extends QuerydslRepositorySupport implements
                         .select(schedule)
                         .limit(1L)
                         .fetchOne());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ScheduleResponseDto findScheduleWithDateOfSchedule(Long scheduleId) {
+        QSchedule schedule = QSchedule.schedule;
+        QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
+
+        ScheduleResponseDto responseDto = from(schedule)
+                .where(schedule.scheduleId.eq(scheduleId))
+                .select(Projections.constructor(ScheduleResponseDto.class,
+                        schedule.scheduleNickname,
+                        schedule.scheduleUuid
+                ))
+                .fetchOne();
+
+
+        List<DateOfScheduleResponseDto> dateOfScheduleList = from(dateOfSchedule)
+                .where(dateOfSchedule.schedule.scheduleId.eq(scheduleId))
+                .select(Projections.constructor(DateOfScheduleResponseDto.class,
+                        dateOfSchedule.dateOfScheduleStart,
+                        dateOfSchedule.dateOfScheduleEnd))
+                .fetch();
+
+        responseDto.addAllDateOfSchedule(dateOfScheduleList);
+
+        return responseDto;
     }
 }

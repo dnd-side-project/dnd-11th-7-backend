@@ -169,7 +169,7 @@ public class ScheduleService {
             throw new MeetingNotFoundException();
         }
 
-        return new ScheduleResponseDto(schedule);
+        return scheduleRepository.findScheduleWithDateOfSchedule(schedule.getScheduleId());
     }
 
 
@@ -187,10 +187,14 @@ public class ScheduleService {
             throw new MemberNotFoundException();
         }
 
+        if (!meetingRepository.existsByMeetingUuid(meetingUuid)) {
+            throw new MeetingNotFoundException();
+        }
+
         Schedule schedule = scheduleRepository.findByMemberIdAndMeetingUuid(memberId, meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        return new ScheduleResponseDto(schedule);
+        return scheduleRepository.findScheduleWithDateOfSchedule(schedule.getScheduleId());
     }
 
     /**
