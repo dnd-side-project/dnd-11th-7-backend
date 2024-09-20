@@ -270,18 +270,21 @@ class ScheduleServiceTest {
 
         // given
         Schedule schedule = ScheduleDummy.defaultSchedule();
+
         when(scheduleRepository.findByScheduleUuid(anyString()))
                 .thenReturn(Optional.of(schedule));
+
+        when(scheduleRepository.findScheduleWithDateOfSchedule(anyLong()))
+                .thenReturn(ScheduleDummy.scheduleResponseDto());
+
 
         // when
         ScheduleResponseDto responseDto = scheduleService.getGuestSchedule(MEETING_UUID, SCHEDULE_UUID);
 
         // then
         assertAll(
-                () -> assertEquals(schedule.getScheduleId(), responseDto.getScheduleId()),
-                () -> assertEquals(schedule.getScheduleUuid(), responseDto.getScheduleUuid()),
                 () -> assertEquals(schedule.getScheduleNickname(), responseDto.getScheduleNickname()),
-                () -> assertEquals(schedule.getIsAssigned(), responseDto.getIsAssigned())
+                () -> assertEquals(schedule.getScheduleUuid(), responseDto.getScheduleUuid())
         );
 
         verify(scheduleRepository, times(1)).findByScheduleUuid(anyString());
@@ -336,15 +339,20 @@ class ScheduleServiceTest {
         when(scheduleRepository.findByMemberIdAndMeetingUuid(anyLong(), anyString()))
                 .thenReturn(Optional.of(schedule));
 
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(true);
+
+        when(scheduleRepository.findScheduleWithDateOfSchedule(anyLong()))
+                .thenReturn(ScheduleDummy.scheduleResponseDto());
+
         // when
         ScheduleResponseDto responseDto = scheduleService.getMemberSchedule(MEETING_UUID, 1L);
 
         // then
         assertAll(
-                () -> assertEquals(schedule.getScheduleId(), responseDto.getScheduleId()),
                 () -> assertEquals(schedule.getScheduleUuid(), responseDto.getScheduleUuid()),
                 () -> assertEquals(schedule.getScheduleNickname(), responseDto.getScheduleNickname()),
-                () -> assertEquals(schedule.getIsAssigned(), responseDto.getIsAssigned())
+                () -> assertEquals(2, responseDto.getDateOfScheduleList().size())
         );
 
         verify(scheduleRepository, times(1)).findByMemberIdAndMeetingUuid(anyLong(), anyString());
@@ -373,6 +381,9 @@ class ScheduleServiceTest {
         when(memberRepository.existsById(anyLong()))
                 .thenReturn(true);
 
+        when(meetingRepository.existsByMeetingUuid(anyString()))
+                .thenReturn(true);
+
         when(scheduleRepository.findByMemberIdAndMeetingUuid(anyLong(), anyString()))
                 .thenReturn(Optional.empty());
 
@@ -390,6 +401,9 @@ class ScheduleServiceTest {
 
         // given
         when(memberRepository.existsById(anyLong()))
+                .thenReturn(true);
+
+        when(meetingRepository.existsByMeetingUuid(anyString()))
                 .thenReturn(true);
 
         when(scheduleRepository.findByMemberIdAndMeetingUuid(anyLong(), anyString()))
