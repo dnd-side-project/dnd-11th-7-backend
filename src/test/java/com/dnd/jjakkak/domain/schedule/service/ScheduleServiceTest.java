@@ -14,6 +14,7 @@ import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
+import com.dnd.jjakkak.domain.schedule.exception.InvalidScheduleUuidException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleAlreadyAssignedException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
 import com.dnd.jjakkak.domain.schedule.repository.ScheduleRepository;
@@ -298,7 +299,7 @@ class ScheduleServiceTest {
                 .thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(ScheduleNotFoundException.class,
+        assertThrows(InvalidScheduleUuidException.class,
                 () -> scheduleService.getGuestSchedule(MEETING_UUID, SCHEDULE_UUID));
 
         verify(scheduleRepository, times(1)).findByScheduleUuid(anyString());
