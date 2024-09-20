@@ -93,24 +93,49 @@ include::{snippets}/schedule-controller-test/guest_schedule_get_fail/query-param
 .HTTP Response
 include::{snippets}/schedule-controller-test/guest_schedule_get_fail/http-response.adoc[]
 
-=== 일정 수정 - 성공
+=== 회원 일정 수정 - 성공
 
 .HTTP Request
-include::{snippets}/schedule-controller-test/update_schedule_success/http-request.adoc[]
-include::{snippets}/schedule-controller-test/update_schedule_success/path-parameters.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_success/http-request.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_success/path-parameters.adoc[]
 
 .Request Fields
-include::{snippets}/schedule-controller-test/update_schedule_success/request-fields.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_success/request-fields.adoc[]
 
 .HTTP Response
-include::{snippets}/schedule-controller-test/update_schedule_success/http-response.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_success/http-response.adoc[]
 
-=== 일정 수정 - 실패 (일정을 입력하지 않은 경우)
+=== 회원 일정 수정 - 실패 (일정을 입력하지 않은 경우)
 
 .HTTP Request
-include::{snippets}/schedule-controller-test/update_schedule_fail/http-request.adoc[]
-include::{snippets}/schedule-controller-test/update_schedule_fail/path-parameters.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_fail/http-request.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_fail/path-parameters.adoc[]
 
 .HTTP Response
-include::{snippets}/schedule-controller-test/update_schedule_fail/http-response.adoc[]
-include::{snippets}/schedule-controller-test/update_schedule_fail/response-fields.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_fail/http-response.adoc[]
+include::{snippets}/schedule-controller-test/update_member_schedule_fail/response-fields.adoc[]
+
+=== 비회원 일정 수정 - 성공
+
+.HTTP Request
+include::{snippets}/schedule-controller-test/update_guest_schedule_success/http-request.adoc[]
+include::{snippets}/schedule-controller-test/update_guest_schedule_success/path-parameters.adoc[]
+
+.Request Fields
+include::{snippets}/schedule-controller-test/update_guest_schedule_success/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/schedule-controller-test/update_guest_schedule_success/http-response.adoc[]
+
+=== 비회원 일정 수정 - 실패 (일정을 입력하지 않은 경우)
+
+.HTTP Request
+include::{snippets}/schedule-controller-test/update_guest_schedule_fail/http-request.adoc[]
+include::{snippets}/schedule-controller-test/update_guest_schedule_fail/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/schedule-controller-test/update_guest_schedule_fail/http-response.adoc[]
+
+.Error Response
+include::{snippets}/schedule-controller-test/update_guest_schedule_fail/response-fields.adoc[]
+

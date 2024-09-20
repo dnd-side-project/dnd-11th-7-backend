@@ -570,7 +570,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories HTTP/1.1
-X-CSRF-TOKEN: YrSVvzNsMJsIWqlBnXTR-7mctVJfRJBkF4smK8mnY0W2VcxlVtGihwJeCfglPJ4n-1nlw4GrmDBmcvZJLuoVGPiRV3zUZfpT
+X-CSRF-TOKEN: 0TBx62a7bl5K0ZY3g5zwcXgxIMYBctO1mocG_HtevUTICbdr41MViQCIXDhn4aEAurHEQ0ADDacwQ7eYqL4-mRo8iXz9aoYO
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -670,7 +670,7 @@ Content-Length: 429
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/1 HTTP/1.1
-X-CSRF-TOKEN: yq-0E0yh6Z2TCd0PPz3yZDxfsts2y2_S0KxD_CnXyEXdX82F_Z2EJnuW3P--Pe02XRDGBQw5n-NQ-V7_5pxxyhiz_nbpOvi8
+X-CSRF-TOKEN: YCmgXwAVBqEFSInoaWR5P53JMvKYyP6haLAIsQu1w6LKYASuBk-ZajF0MZIofO3dX0lND_n7H8v-q8uMUYY7hzvQ8JL-VGKd
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -703,7 +703,7 @@ Content-Length: 51
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/100 HTTP/1.1
-X-CSRF-TOKEN: xiH436hJo5wik2GKAkwTCD5S0tB6__b_7lgizXYfXIwjBtrt_hLO78l5x_0P8VS_OmEnbV00_7FIyJfSjDob9U8tbb1GN7ve
+X-CSRF-TOKEN: xW27vUjA7ZuoeRmcETeSmiphExF6V8q2bXZV4GQrJkbJ13DLpw7Z332miauFHSyrdxqmqx4APihMM_qbD0RmgwBKE3H5sUP-
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -745,7 +745,7 @@ Content-Length: 102
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer access_token
 Content-Length: 229
-X-CSRF-TOKEN: -Rn_Im6reTb6YTvfZ8i93IxD5Pq0fyXySDyjOr1oiBubrp18zCHKQF2dTAfXAAjmV-WJurlzyZuBSkPffFqXWIta6Xmuy_9J
+X-CSRF-TOKEN: KjnqpudLkWtigjxQiuLwWMZCGz_kW0WP0O0muPFRtfN8gag6GArZk4Z4pVNP5ws06M_EPv4kNgfUPnei5t9D3cVjhJYat8wM
 Host: localhost:8080
 
 {
@@ -854,7 +854,7 @@ X-Frame-Options: DENY</code></pre>
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer access_token
 Content-Length: 180
-X-CSRF-TOKEN: EvhmnhM-NGdSj1gbpHWupNclH36Btb1E7vDnhV3MZyLOD1JQc8sFpisPVgZ_t28iwFiaxrIRMhyz1oRpj8LXtm7-AUP9PzZm
+X-CSRF-TOKEN: WcMxgJIMEamLCrfS-hJeW0av9HeaHPiG6dVu4PAmzb3mw9cwP6BSuKJvJc-mPtKwnz9qaHCW2RWoecmr37dX0scX_YyE-u9R
 Host: localhost:8080
 
 {
@@ -888,9 +888,9 @@ Content-Length: 583
   "code" : "400",
   "message" : "잘못된 요청입니다.",
   "validation" : {
-    "categoryIds" : "카테고리는 최소 1개 이상 3개 이하로 선택해주세요.",
-    "isAnonymous" : "익명 여부는 필수 값입니다.",
     "meetingEndDate" : "모임 일정 종료일은 필수 값입니다.",
+    "isAnonymous" : "익명 여부는 필수 값입니다.",
+    "categoryIds" : "카테고리는 최소 1개 이상 3개 이하로 선택해주세요.",
     "meetingName" : "모임명은 필수 값입니다.",
     "dueDateTime" : "일정 입력 종료 시간은 필수 값입니다.",
     "numberOfPeople" : "인원수는 필수 값입니다.",
@@ -992,7 +992,7 @@ Content-Length: 583
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/meetings/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: Nl4abpRLIdEAcWKIMSN6itp4F9_n-21RPJ8rKkKI9WHPhY9bAD18DfF-Q7QtQQG4BA5Ou7hLOr3fmAt8DvoaSXu_xVb55L0_
+X-CSRF-TOKEN: YRqoYzBXVpWJ2qAgtXF7XD5OEWTMKeEztswnaeFUSDvz4OwIWSqYUFI1N_OkvJcW1lxPPQcqPF2oHtke069CC4I2KwiWg41s
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1020,7 +1020,7 @@ X-Frame-Options: DENY</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/info HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-X-CSRF-TOKEN: v7HSQ0kwqmvNCKH6px5ggwPHzhjmTmSYReW7Rv_-zhGNIJKC2tS3dnxSmw_gOZnCnzNUsDbz4yHTKAG1cYTdJcvG_yW4Rqq0
+X-CSRF-TOKEN: IIhqoD6CfbW-DSWNJMgzUqF1BlhVPwIS_ckZyp91LVGFmgZuErxckQ7jGYyTOEG-FOUHY8ARKzlmDDo_y_wrq6oWH2DkrWBf
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1124,7 +1124,7 @@ Content-Length: 215
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/times?sort=COUNT HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-X-CSRF-TOKEN: d_hodWUtFPwdPXqvjqxz7sas-JleyAFkrNRXslXOrUwlrZobT8xcRFUecc8wDkLMvYFHi_Cb1aA6q2VJn-du0TCsznsclPki
+X-CSRF-TOKEN: du8V_D2szIiDKOFQ1FHEEALCEzqHjCTQpS9gKndUhMVY4pOPRIkhzw7N-uuuTtBktnzwcjT2PlvluhP9lEkFEkFt5vJug_W6
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1230,7 +1230,7 @@ Content-Length: 225
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/participants HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-X-CSRF-TOKEN: ESpsD6v0pOWayDPNEmsJFN5E_V2o_pLq71y7OrFDq8tLeqzSdx1cNsjMxoC3rVevdkY9cecl0GSeyqvH12WDWYgmyKh5G5_i
+X-CSRF-TOKEN: _7qvJAFckA2qVQ-xpxdsA_amIM8Pw96VNiKBoRhtB9zBKRSkz4vMQTk-8j-HbW2AlDpYMc6fDa43oru4BxOzwisON-SjTHGU
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1338,7 +1338,7 @@ Content-Length: 258
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/members/meetings HTTP/1.1
 Accept: application/json
-X-CSRF-TOKEN: 7kggZVQbWcUsrgLVSnzPxvTrqo-hcgfa3p-coi0dAlNKB0WJ3CkVAWYrPPABnWbkKFH7opKJh7eSFjH37K-vlkh5Z2R9PyPt
+X-CSRF-TOKEN: p8WP6N_cs4L4MODPtDmsaiPW6B5P9iEo419MBMBmI594Iu1ck_Dp3Lm40ePVVNX91hSYD0XhxSZ9lUMF1jkqPfJVEflPFI84
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1449,7 +1449,7 @@ Content-Length: 336
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Content-Length: 34
-X-CSRF-TOKEN: CEv6ieJ0SA8sqb9yG_rWZwpcx1JF-F8nXRSUsLlb7KwzQvMBOSrMutNNeTwByo5LItfiBT4-6jMjymkKbSDwg41j1MhRdpAz
+X-CSRF-TOKEN: oA0f0EzmHv1v1pBQeWZzHATAHKT9OcN-jQtjV5sLCVoptxJUxDt95H2HLJ5C4ac2TEtHLDCmMZyZCPBTvW4FZ6M8bzkf0SRn
 Host: localhost:8080
 
 {
@@ -1508,7 +1508,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/members HTTP/1.1
 Accept: application/json
-X-CSRF-TOKEN: Ppf8wpDEKlutAGUWuzfPqhC1BAH7I5HTzyvQTOS7PGjiYw4xDvTL8KP9Tz2ANgYu2Br7nCKFKWPIQqT--B-xfoWJXguHB20F
+X-CSRF-TOKEN: _AZA6thbH3asN_9OloTtMrgpfxja1K-gopOTAYYSrvQaqFuemD9x3OFvJ0eBBM93oanZAIlNUnm7sJ6Nkqv1NOBxnMF_nWP_
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1545,10 +1545,10 @@ X-Frame-Options: DENY</code></pre>
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules/members HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 263
-X-CSRF-TOKEN: DP9dI-H3woiUn9gHNPy6va4__dl-3Gc20KZeDQHRQFkRNgS3O55tQdOW8-u5rro-AdGO3p5d0LhK5F4bsZ9nOzCwJmlwB2eD
+X-CSRF-TOKEN: gdrLiExPY0fQf0v4ezLVEEx-bIZDQylFA8AU7gIlcCdVnMM85-mpvSorV3X9HX_BQh_hc35OQed0IRxoYvNy3zcTSRE3-KcP
 Host: localhost:8080
 
 {
@@ -1661,10 +1661,10 @@ X-Frame-Options: DENY</code></pre>
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules/members HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 53
-X-CSRF-TOKEN: HGnhYYUe7Ozrx-2uJMunyzkSOGv0pgE3qt_OMDuG2Z7QDXQbLV3WV7d_3dTG99_LRuaT8wgjFVLEwDIanbmtUQPi6PjmPBAo
+X-CSRF-TOKEN: wiWZ1eqZ2K28zHSZhL-3fB0X3lO5XoESq5p4UW3j1abph0Ln9RCstIypvZmR_BH4sJKDSntx8zGIb7U_z6hAY1-F7MKPtieD
 Host: localhost:8080
 
 {
@@ -1760,10 +1760,10 @@ Content-Length: 173
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules/guests HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/guests HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 263
-X-CSRF-TOKEN: Zm78O-OW3LBmjjX5mqdBgCOOcN0c-OT2qzvFcBqu2lnXUpaFU1uZD9ak7dRLuFCbqIp1sEe4XeUoyofbzQP8RS7P4mnnZqW3
+X-CSRF-TOKEN: RF7bG5PgfzNUdbUFAuzQQp81dJ4OnZy8vPssdovf8cg0i6aScji5I6PVTQt5E4JnNMHkdaxXWfw7qPmR38lPTu_uwPxWuZWj
 Host: localhost:8080
 
 {
@@ -1857,10 +1857,10 @@ X-Frame-Options: DENY</code></pre>
 <div class="listingblock">
 <div class="title">HTTP Request</div>
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules/guests HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/guests HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 53
-X-CSRF-TOKEN: NGLsQZps1bffR1vdft8hPxlde-xX1dsYRrKUo2Chbg_ukmIYVQDfdqxb4ILyfmLpTfIVBy5kVtVv7es1coD2llXAXjzY8QYs
+X-CSRF-TOKEN: I1amnRGTxW0TXd6yPppRFtDrAdlIQxl3z-Hp2PYxR4SBqoFlFmKU-3Sh81s-bLqHCbdldeTSLLstdXxaqdPd6MVSI7SxzOBW
 Host: localhost:8080
 
 {
@@ -1938,7 +1938,7 @@ Content-Length: 173
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/members HTTP/1.1
-X-CSRF-TOKEN: kxbJGjd8Zj5lx7sUCLvSd0q1-30FUi_YmFSOeSuo3XbmMyOsqiX9eQ8fVQpI84okPZbmT36E1hxhYhv1rze3QU2auBLWBhKe
+X-CSRF-TOKEN: oiR__FFMcFQ-MsYa1NGOuB4BA4Gm5mExDDirGyVILsiR-c30kkAZxTQtQTITCvd74vy62StkLuDChAAcOVmYehV_H6mhnK_D
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2020,7 +2020,7 @@ Content-Length: 265
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/members HTTP/1.1
-X-CSRF-TOKEN: iu7d7RgQq9MAE78FmzLOON45BT9Is3KnPhoDmldiz5JZKgS_v9nr3SB2mbYtIt00_R_6Xb9fKAZ-1RaKD3gyrWQD-aNvHjzZ
+X-CSRF-TOKEN: 1Dsx4M3yqAR1HydCQZwTt8fkdrbQHluXRKKslVVOiT_mYtsV7A4Gg_7GzD1YfkJ2dLEnhaaGW9TjK2K6dJOd8WMs6AvQUbp0
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2054,7 +2054,7 @@ Content-Length: 94
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/guests?scheduleUuid=sch123 HTTP/1.1
-X-CSRF-TOKEN: Ga_FvLV1XIDx5tGofFUZtDXZXQGAxCb1nmc9P4ToUATIpOAse53y3dcUb-HcgOOYTHgt0gLgcDnkpRfYq1JfCuDeYWf5kYQb
+X-CSRF-TOKEN: tl4cVZuCzJQ8ZXuWR8GiV4i1StaAMT3kF_C4y2gRX6FlY7wAjzgqN_m1qaURV0vyJuyWYbiMZ-65BQrJcsDa-1koOpkBBdli
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2132,7 +2132,7 @@ Content-Length: 265
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/guests?scheduleUuid=sch123 HTTP/1.1
-X-CSRF-TOKEN: XsYTKLH3mzqF49iJRnidZ_1pyfCkyzayP_Y74v0PMb39vflhOPFxSonG-Fiogu3rIlWpBMtR5JGV-wCfXMBegZxtAovPi8oA
+X-CSRF-TOKEN: GihuyhSQMKNQP4BfhyAre7d1m4-B3aDf6nzafKuge_EJk38TIx9d_COjCcJ9BuNt4Q0fGtYXtu655MPy2kzvSc7CT5Q79Uwj
 Host: localhost:8080</code></pre>
 </div>
 </div>
