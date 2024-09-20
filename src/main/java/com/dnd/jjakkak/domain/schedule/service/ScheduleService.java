@@ -15,6 +15,7 @@ import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleAssignResponseDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
+import com.dnd.jjakkak.domain.schedule.exception.InvalidScheduleUuidException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleAlreadyAssignedException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
 import com.dnd.jjakkak.domain.schedule.repository.ScheduleRepository;
@@ -161,7 +162,7 @@ public class ScheduleService {
     public ScheduleResponseDto getGuestSchedule(String meetingUuid, String scheduleUuid) {
 
         Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
-                .orElseThrow(ScheduleNotFoundException::new);
+                .orElseThrow(InvalidScheduleUuidException::new);
 
         if (!schedule.getMeeting().getMeetingUuid().equals(meetingUuid)) {
             throw new MeetingNotFoundException();
