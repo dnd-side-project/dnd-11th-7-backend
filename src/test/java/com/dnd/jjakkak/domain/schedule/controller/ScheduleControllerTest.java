@@ -20,6 +20,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -179,22 +180,29 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
 
         // given
         Mockito.when(scheduleService.getMemberSchedule(Mockito.anyString(), Mockito.anyLong()))
-                .thenReturn(ScheduleDummy.memberScheduleResponseDto());
+                .thenReturn(ScheduleDummy.scheduleResponseDto());
 
         // expected
         mockMvc.perform(get(URI + "/members", MEETING_UUID))
-                .andExpect(status().isOk())
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("scheduleNickname").value("유저"),
+                        jsonPath("scheduleUuid").value("sch123"),
+                        jsonPath("dateOfScheduleList.[0].startTime").value("2024-09-06T09:00:00"),
+                        jsonPath("dateOfScheduleList.[0].endTime").value("2024-09-06T12:00:00"),
+                        jsonPath("dateOfScheduleList.[1].startTime").value("2024-09-07T12:00:00"),
+                        jsonPath("dateOfScheduleList.[1].endTime").value("2024-09-07T15:00:00")
+                )
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
                         ),
                         responseFields(
-                                fieldWithPath("scheduleId").description("일정 ID"),
-                                fieldWithPath("meetingId").description("모임 ID"),
-                                fieldWithPath("memberId").description("회원 ID"),
                                 fieldWithPath("scheduleNickname").description("일정을 등록한 유저 닉네임"),
                                 fieldWithPath("scheduleUuid").description("일정 UUID"),
-                                fieldWithPath("isAssigned").description("일정 할당 여부")
+                                fieldWithPath("dateOfScheduleList").description("일정 목록"),
+                                fieldWithPath("dateOfScheduleList.[].startTime").description("일정 시작 시간"),
+                                fieldWithPath("dateOfScheduleList.[].endTime").description("일정 종료 시간")
                         )
                 ));
     }
@@ -234,12 +242,20 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
 
         // given
         Mockito.when(scheduleService.getGuestSchedule(Mockito.anyString(), Mockito.anyString()))
-                .thenReturn(ScheduleDummy.guestScheduleResponseDto());
+                .thenReturn(ScheduleDummy.scheduleResponseDto());
 
         // expected
         mockMvc.perform(get(URI + "/guests", MEETING_UUID)
                         .param("scheduleUuid", SCHEDULE_UUID))
-                .andExpect(status().isOk())
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("scheduleNickname").value("유저"),
+                        jsonPath("scheduleUuid").value("sch123"),
+                        jsonPath("dateOfScheduleList.[0].startTime").value("2024-09-06T09:00:00"),
+                        jsonPath("dateOfScheduleList.[0].endTime").value("2024-09-06T12:00:00"),
+                        jsonPath("dateOfScheduleList.[1].startTime").value("2024-09-07T12:00:00"),
+                        jsonPath("dateOfScheduleList.[1].endTime").value("2024-09-07T15:00:00")
+                )
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
@@ -248,12 +264,11 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                                 parameterWithName("scheduleUuid").description("일정 UUID")
                         ),
                         responseFields(
-                                fieldWithPath("scheduleId").description("일정 ID"),
-                                fieldWithPath("meetingId").description("모임 ID"),
-                                fieldWithPath("memberId").description("회원 ID"),
                                 fieldWithPath("scheduleNickname").description("일정을 등록한 유저 닉네임"),
                                 fieldWithPath("scheduleUuid").description("일정 UUID"),
-                                fieldWithPath("isAssigned").description("일정 할당 여부")
+                                fieldWithPath("dateOfScheduleList").description("일정 목록"),
+                                fieldWithPath("dateOfScheduleList.[].startTime").description("일정 시작 시간"),
+                                fieldWithPath("dateOfScheduleList.[].endTime").description("일정 종료 시간")
                         )
                 ));
     }

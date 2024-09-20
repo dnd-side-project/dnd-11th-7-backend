@@ -1,8 +1,8 @@
 package com.dnd.jjakkak.domain.schedule;
 
 import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateRequestDto;
+import com.dnd.jjakkak.domain.dateofschedule.dto.response.DateOfScheduleResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
-import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
@@ -51,63 +51,16 @@ public class ScheduleDummy {
     }
 
 
-    public static ScheduleResponseDto memberScheduleResponseDto() {
+    public static ScheduleResponseDto scheduleResponseDto() {
 
-        Member member = Member.builder()
-                .memberNickname("정승조")
-                .kakaoId(123L)
-                .build();
+        ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto("유저", "sch123");
 
-        ReflectionTestUtils.setField(member, "memberId", 1L);
+        DateOfScheduleResponseDto firstDto = new DateOfScheduleResponseDto(LocalDateTime.of(2024, 9, 6, 9, 0, 0), LocalDateTime.of(2024, 9, 6, 12, 0, 0));
+        DateOfScheduleResponseDto secondDto = new DateOfScheduleResponseDto(LocalDateTime.of(2024, 9, 7, 12, 0, 0), LocalDateTime.of(2024, 9, 7, 15, 0, 0));
 
-        Meeting meeting = Meeting.builder()
-                .meetingName("세븐일레븐")
-                .meetingStartDate(LocalDate.of(2024, 9, 6))
-                .meetingEndDate(LocalDate.of(2024, 9, 7))
-                .numberOfPeople(6)
-                .isAnonymous(false)
-                .dueDateTime(LocalDateTime.of(2024, 9, 5, 12, 0, 0))
-                .meetingLeaderId(member.getMemberId())
-                .meetingUuid("met123")
-                .build();
+        scheduleResponseDto.addAllDateOfSchedule(List.of(firstDto, secondDto));
 
-        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
-
-        Schedule schedule = Schedule.builder()
-                .meeting(meeting)
-                .member(member)
-                .scheduleUuid("sch123")
-                .scheduleNickname("정승조")
-                .build();
-
-        ReflectionTestUtils.setField(schedule, "scheduleId", 1L);
-
-        return new ScheduleResponseDto(schedule);
-    }
-
-    public static ScheduleResponseDto guestScheduleResponseDto() {
-
-        Meeting meeting = Meeting.builder()
-                .meetingStartDate(LocalDate.of(2024, 9, 6))
-                .meetingEndDate(LocalDate.of(2024, 9, 7))
-                .numberOfPeople(4)
-                .isAnonymous(false)
-                .dueDateTime(LocalDateTime.of(2024, 9, 5, 12, 0, 0))
-                .meetingLeaderId(1L)
-                .meetingUuid("met123")
-                .build();
-
-        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
-
-        Schedule schedule = Schedule.builder()
-                .meeting(meeting)
-                .scheduleUuid("sch123")
-                .scheduleNickname("비회원")
-                .build();
-
-        ReflectionTestUtils.setField(schedule, "scheduleId", 1L);
-
-        return new ScheduleResponseDto(schedule);
+        return scheduleResponseDto;
     }
 
     public static ScheduleUpdateRequestDto updateRequestDto() {
@@ -153,7 +106,7 @@ public class ScheduleDummy {
         Schedule schedule = Schedule.builder()
                 .meeting(meeting)
                 .scheduleUuid("sch123")
-                .scheduleNickname("멤버")
+                .scheduleNickname("유저")
                 .build();
 
         ReflectionTestUtils.setField(schedule, "scheduleId", 1L);
