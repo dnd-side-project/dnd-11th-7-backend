@@ -30,9 +30,9 @@ public class ScheduleController {
      * @param meetingUuid 모임 UUID
      * @param memberId    로그인한 회원 ID
      * @param requestDto  일정 할당 요청 DTO
-     * @return 200 (OK)
+     * @return 201 (CREATED)
      */
-    @PatchMapping("/members")
+    @PostMapping("/members")
     public ResponseEntity<Void> assignScheduleToMember(@PathVariable("meetingUuid") String meetingUuid,
                                                        @AuthenticationPrincipal Long memberId,
                                                        @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
@@ -46,9 +46,9 @@ public class ScheduleController {
      *
      * @param meetingUuid 모임 UUID
      * @param requestDto  일정 할당 요청 DTO
-     * @return 200 (OK), 비회원일 경우, scheduleUuid 반환
+     * @return 201 (CREATED), 비회원일 경우, scheduleUuid 반환
      */
-    @PatchMapping("/guests")
+    @PostMapping("/guests")
     public ResponseEntity<ScheduleAssignResponseDto> assignScheduleToGuest(@PathVariable("meetingUuid") String meetingUuid,
                                                                            @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
 
