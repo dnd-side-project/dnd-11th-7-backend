@@ -6,7 +6,6 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
-import com.dnd.jjakkak.domain.meetingmember.repository.MeetingMemberRepository;
 import com.dnd.jjakkak.domain.meetingmember.service.MeetingMemberService;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
@@ -38,7 +37,6 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MeetingRepository meetingRepository;
     private final DateOfScheduleService dateOfScheduleService;
-    private final MeetingMemberRepository meetingMemberRepository;
     private final MemberRepository memberRepository;
     private final MeetingMemberService meetingMemberService;
 
