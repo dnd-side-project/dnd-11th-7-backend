@@ -73,7 +73,6 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
                         meeting.numberOfPeople,
                         meeting.isAnonymous
                 ))
-                .distinct()
                 .orderBy(meeting.dueDateTime.desc(), meeting.meetingId.desc())
                 .fetch();
 
