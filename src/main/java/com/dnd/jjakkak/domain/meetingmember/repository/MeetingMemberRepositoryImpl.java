@@ -78,6 +78,7 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
                         schedule.scheduleNickname
                 ))
                 .distinct()
+                .orderBy(meeting.dueDateTime.desc())
                 .fetch();
 
         for (MeetingMyPageResponseDto responseDto : responseDtoList) {
