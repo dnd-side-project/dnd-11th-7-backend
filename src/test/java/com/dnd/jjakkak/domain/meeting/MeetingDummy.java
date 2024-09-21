@@ -109,7 +109,6 @@ public class MeetingDummy {
                 .dueDateTime(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
                 .numberOfPeople(6)
                 .isAnonymous(false)
-                .leaderName("승조")
                 .build();
 
         responseDto.addCategoryNames(List.of("팀플", "스터디", "회의"));

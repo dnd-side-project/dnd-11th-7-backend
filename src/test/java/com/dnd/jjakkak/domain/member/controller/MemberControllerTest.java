@@ -69,8 +69,7 @@ class MemberControllerTest extends AbstractRestDocsTest {
                         jsonPath("$[0].meetingEndDate").exists(),
                         jsonPath("$[0].dueDateTime").exists(),
                         jsonPath("$[0].numberOfPeople").value(6),
-                        jsonPath("$[0].isAnonymous").value(false),
-                        jsonPath("$[0].leaderName").value("승조")
+                        jsonPath("$[0].isAnonymous").value(false)
                 )
                 .andDo(restDocs.document(
                         responseFields(
@@ -82,8 +81,7 @@ class MemberControllerTest extends AbstractRestDocsTest {
                                 fieldWithPath("[].meetingEndDate").description("모임 종료일"),
                                 fieldWithPath("[].dueDateTime").description("투표 종료일"),
                                 fieldWithPath("[].numberOfPeople").description("모임 인원"),
-                                fieldWithPath("[].isAnonymous").description("익명 여부"),
-                                fieldWithPath("[].leaderName").description("모임 리더 이름")
+                                fieldWithPath("[].isAnonymous").description("익명 여부")
                         )
                 ));
     }
