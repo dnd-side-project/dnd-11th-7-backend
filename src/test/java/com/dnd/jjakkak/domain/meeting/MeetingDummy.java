@@ -106,7 +106,7 @@ public class MeetingDummy {
                 .meetingUuid("123ABC")
                 .meetingStartDate(LocalDate.of(2024, 8, 27))
                 .meetingEndDate(LocalDate.of(2024, 8, 29))
-                .voteEndDate(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
+                .dueDateTime(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
                 .numberOfPeople(6)
                 .isAnonymous(false)
                 .leaderName("승조")
