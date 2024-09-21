@@ -23,12 +23,17 @@ public class AuthService {
      * @param refreshToken Refresh Token 값
      * @return 재발급된 AccessToken
      */
-    public String reissueToken(String refreshToken) {
+    public String reissueAccessToken(String refreshToken) {
 
         String kakaoId = jwtProvider.validateToken(refreshToken);
         String accessToken = jwtProvider.createAccessToken(kakaoId);
 
         return "Bearer " + accessToken;
+    }
+
+    public String refreshRefreshToken(String refreshToken) {
+        String kakaoId = jwtProvider.validateToken(refreshToken);
+        return jwtProvider.createRefreshToken(kakaoId);
     }
 
     /**

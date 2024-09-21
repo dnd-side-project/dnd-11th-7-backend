@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.jwt.handler;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.member.service.BlacklistService;
+import com.dnd.jjakkak.domain.member.service.TokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +29,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
 
     private final MemberRepository memberRepository;
     private final BlacklistService blacklistService;
+    private final TokenService tokenService;
     private final JwtProvider jwtProvider;
     private static final Long EXPIRATION_WEEK = 1L;
 
@@ -50,9 +52,10 @@ public class OAuth2LogoutHandler implements LogoutHandler {
             return;
         }
 
+        tokenService.deleteRefreshToken(kakaoId.toString());
 
         log.debug("logout refreshToken: {}", refreshToken);
-        blacklistService.createBlacklistToken(refreshToken, LocalDateTime.now().plusWeeks(EXPIRATION_WEEK));
+        // blacklistService.createBlacklistToken(refreshToken, LocalDateTime.now().plusWeeks(EXPIRATION_WEEK));
         log.debug("logout 성공");
     }
 

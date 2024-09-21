@@ -90,7 +90,7 @@ class AuthControllerTest extends AbstractRestDocsTest {
         MockCookie refreshToken = new MockCookie("refresh_token", "1a2s2d3f4g");
         String accessToken = "Bearer mock-access-token";
 
-        when(authService.reissueToken(anyString()))
+        when(authService.reissueAccessToken(anyString()))
                 .thenReturn(accessToken);
 
         mockMvc.perform(get("/api/v1/auth/reissue")
