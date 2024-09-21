@@ -8,7 +8,6 @@ import com.dnd.jjakkak.domain.meetingcategory.entity.QMeetingCategory;
 import com.dnd.jjakkak.domain.meetingmember.entity.MeetingMember;
 import com.dnd.jjakkak.domain.meetingmember.entity.QMeetingMember;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.schedule.entity.QSchedule;
 import com.querydsl.core.types.Projections;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
@@ -59,12 +58,10 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
         QMeetingMember meetingMember = QMeetingMember.meetingMember;
         QMeeting meeting = QMeeting.meeting;
         QMeetingCategory meetingCategory = QMeetingCategory.meetingCategory;
-        QSchedule schedule = QSchedule.schedule;
         QCategory category = QCategory.category;
 
         List<MeetingMyPageResponseDto> responseDtoList = from(meetingMember)
                 .join(meetingMember.meeting, meeting)
-                .join(schedule).on(schedule.member.memberId.eq(meeting.meetingLeaderId))
                 .where(meetingMember.pk.memberId.eq(memberId))
                 .select(Projections.constructor(MeetingMyPageResponseDto.class,
                         meeting.meetingId,
@@ -74,8 +71,7 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
                         meeting.meetingEndDate,
                         meeting.dueDateTime,
                         meeting.numberOfPeople,
-                        meeting.isAnonymous,
-                        schedule.scheduleNickname
+                        meeting.isAnonymous
                 ))
                 .distinct()
                 .orderBy(meeting.dueDateTime.desc())
