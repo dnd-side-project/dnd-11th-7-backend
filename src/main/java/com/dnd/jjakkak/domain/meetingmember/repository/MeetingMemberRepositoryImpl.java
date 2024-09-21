@@ -73,7 +73,7 @@ public class MeetingMemberRepositoryImpl extends QuerydslRepositorySupport imple
                         meeting.numberOfPeople,
                         meeting.isAnonymous
                 ))
-                .orderBy(meeting.dueDateTime.desc(), meeting.meetingId.desc())
+                .orderBy(meeting.dueDateTime.asc(), meeting.meetingId.desc())
                 .fetch();
 
         for (MeetingMyPageResponseDto responseDto : responseDtoList) {
