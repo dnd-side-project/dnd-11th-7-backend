@@ -63,6 +63,11 @@ public class OAuth2LogoutHandler implements LogoutHandler {
      * @return Refresh Token
      */
     public String extractRefreshToken(Cookie[] cookies) {
+
+        if (cookies == null) {
+            return null;
+        }
+
         return Arrays.stream(cookies)
                 .filter(cookie -> "refresh_tokne".equals(cookie.getName()))
                 .findFirst()

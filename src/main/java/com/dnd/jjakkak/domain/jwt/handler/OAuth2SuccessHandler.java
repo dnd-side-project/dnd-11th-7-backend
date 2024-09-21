@@ -1,7 +1,9 @@
 package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.jwt.provider.JwtUtils;
 import com.dnd.jjakkak.domain.member.entity.Member;
+import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +30,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private static final String REFRESH_TOKEN_NAME = "refresh_token";
     private static final String QUERY_PARAM = "redirect";
+    private final RefreshTokenService refreshTokenService;
     private final JjakkakProperties jjakkakProperties;
     private final JwtProvider jwtProvider;
 
@@ -36,10 +39,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Member oauth2User = (Member) authentication.getPrincipal();
 
-        String kakaoId = Long.toString(oauth2User.getKakaoId());
-        String refreshToken = jwtProvider.createRefreshToken(kakaoId);
+        Long kakaoId = oauth2User.getKakaoId();
+        String refreshToken = jwtProvider.createRefreshToken(String.valueOf(kakaoId));
 
-        ResponseCookie refreshCookie = createCookie(REFRESH_TOKEN_NAME, refreshToken, 60 * 60 * 24 * 7);
+        refreshTokenService.saveRefreshToken(kakaoId, refreshToken);
+        ResponseCookie refreshCookie = JwtUtils.createCookie(REFRESH_TOKEN_NAME, refreshToken, 60 * 60 * 24 * 7);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
         String redirectUrl = getRedirectUrl(request);
@@ -64,22 +68,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 : baseUrl;
     }
 
-    /**
-     * 쿠키를 생성하는 메서드입니다.
-     *
-     * @param name   쿠키 이름
-     * @param value  쿠키 값
-     * @param maxAge 쿠키 만료 시간
-     * @return 생성된 쿠키
-     */
-    private ResponseCookie createCookie(String name, String value, int maxAge) {
 
-        return ResponseCookie.from(name, value)
-                .secure(true)
-                .sameSite("None")
-                .httpOnly(true)
-                .path("/")
-                .maxAge(maxAge)
-                .build();
-    }
 }

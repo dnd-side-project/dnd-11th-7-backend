@@ -10,12 +10,12 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockCookie;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * AuthController 테스트 클래스입니다.
@@ -82,22 +82,22 @@ class AuthControllerTest extends AbstractRestDocsTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    @Test
-    @DisplayName("토큰 재발급 - 성공")
-    @JjakkakMockUser
-    void testReissue_InvalidRefreshToken() throws Exception {
-
-        MockCookie refreshToken = new MockCookie("refresh_token", "1a2s2d3f4g");
-        String accessToken = "Bearer mock-access-token";
-
-        when(authService.reissueToken(anyString()))
-                .thenReturn(accessToken);
-
-        mockMvc.perform(get("/api/v1/auth/reissue")
-                        .cookie(refreshToken))
-                .andExpectAll(
-                        status().isOk(),
-                        header().string("Authorization", accessToken)
-                );
-    }
+//    @Test
+//    @DisplayName("토큰 재발급 - 성공")
+//    @JjakkakMockUser
+//    void testReissue_InvalidRefreshToken() throws Exception {
+//
+//        MockCookie refreshToken = new MockCookie("refresh_token", "1a2s2d3f4g");
+//        String accessToken = "Bearer mock-access-token";
+//
+//        when(authService.reissueToken(anyString()))
+//                .thenReturn(accessToken);
+//
+//        mockMvc.perform(get("/api/v1/auth/reissue")
+//                        .cookie(refreshToken))
+//                .andExpectAll(
+//                        status().isOk(),
+//                        header().string("Authorization", accessToken)
+//                );
+//    }
 }

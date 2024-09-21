@@ -42,10 +42,12 @@ public class BlacklistService {
      */
     @Transactional
     public void createBlacklistToken(String token, LocalDateTime expirationDate) {
+
         BlacklistedToken blacklistedToken = BlacklistedToken.builder()
                         .token(token)
                         .expirationDate(expirationDate)
                         .build();
+
         blacklistedTokenRepository.save(blacklistedToken);
     }
 

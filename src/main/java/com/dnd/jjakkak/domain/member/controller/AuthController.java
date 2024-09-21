@@ -1,12 +1,13 @@
 package com.dnd.jjakkak.domain.member.controller;
 
+import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
+import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
 import com.dnd.jjakkak.domain.member.service.AuthService;
 import com.dnd.jjakkak.domain.member.service.BlacklistService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,12 +60,15 @@ public class AuthController {
     public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken,
                                              HttpServletResponse response) {
 
-        if (Strings.isEmpty(refreshToken) || blacklistService.isTokenBlacklisted(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        log.info("Refresh Token: {}", refreshToken);
+        if (Strings.isEmpty(refreshToken)) {
+            throw new UnauthorizedException();
         }
 
-        String newAccessToken = authService.reissueToken(refreshToken);
-        response.setHeader("Authorization", newAccessToken);
+        ReissueResponseDto reissue = authService.reissueToken(refreshToken);
+        response.setHeader("Authorization", "Bearer " + reissue.getAccessToken());
+        response.addHeader("Set-Cookie", reissue.getRefreshTokenCookie().toString());
+
         return ResponseEntity.ok().build();
     }
 }
