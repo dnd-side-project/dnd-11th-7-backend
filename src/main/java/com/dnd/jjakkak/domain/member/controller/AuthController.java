@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.member.controller;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.service.AuthService;
 import com.dnd.jjakkak.domain.member.service.TokenService;
+import com.dnd.jjakkak.global.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -74,8 +75,7 @@ public class AuthController {
         // 저장된 토큰과 일치하지 않으면, Redis에서 해당 KakaoId의 RT 삭제 및 재로그인 요청
         if (!refreshToken.equals(storedRefreshToken)) {
             tokenService.deleteRefreshToken(kakaoId);  // 기존 RT 삭제
-            deleteCookie(response);
-            // todo : 재로그인 리다이렉트
+            CookieUtil.deleteCookie(response, "refresh_token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -84,27 +84,9 @@ public class AuthController {
 
         String newRefreshToken = authService.refreshRefreshToken(refreshToken);
 
-        createCookie(response, newRefreshToken);
+        CookieUtil.createCookie(response, "refresh_token", newRefreshToken, 7 * 24 * 60 * 60);
         tokenService.saveRefreshToken(kakaoId, newRefreshToken);
 
         return ResponseEntity.ok().build();
-    }
-
-    // todo : 쿠키 유틸을 만드는 것은 어떨까?
-
-    private void deleteCookie(HttpServletResponse response){
-        Cookie deleteOldRefreshTokenCookie = new Cookie("refresh_token", null);
-        deleteOldRefreshTokenCookie.setMaxAge(0);
-        deleteOldRefreshTokenCookie.setPath("/");
-        response.addCookie(deleteOldRefreshTokenCookie);
-    }
-
-    private void createCookie(HttpServletResponse response, String newRefreshToken){
-        Cookie newRefreshTokenCookie = new Cookie("refresh_token", newRefreshToken);
-        newRefreshTokenCookie.setHttpOnly(true);
-        newRefreshTokenCookie.setSecure(true);
-        newRefreshTokenCookie.setPath("/");
-        newRefreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
-        response.addCookie(newRefreshTokenCookie);
     }
 }
