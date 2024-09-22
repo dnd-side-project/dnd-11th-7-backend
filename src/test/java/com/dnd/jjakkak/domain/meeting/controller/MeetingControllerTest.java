@@ -197,23 +197,23 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.numberOfPeople").value(2),
-                        jsonPath("$.anonymousStatus").value(false),
+                        jsonPath("$.isAnonymous").value(false),
                         jsonPath("$.participantInfoList.[0].nickname").value("고래"),
-                        jsonPath("$.participantInfoList.[0].votedStatus").value(true),
-                        jsonPath("$.participantInfoList.[0].leaderStatus").value(true),
+                        jsonPath("$.participantInfoList.[0].isAssigned").value(true),
+                        jsonPath("$.participantInfoList.[0].isLeader").value(true),
                         jsonPath("$.participantInfoList.[1].nickname").value("상어"),
-                        jsonPath("$.participantInfoList.[1].votedStatus").value(true),
-                        jsonPath("$.participantInfoList.[1].leaderStatus").value(false))
+                        jsonPath("$.participantInfoList.[1].isAssigned").value(true),
+                        jsonPath("$.participantInfoList.[1].isLeader").value(false))
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
                         ),
                         responseFields(
                                 fieldWithPath("numberOfPeople").description("참석자 수"),
-                                fieldWithPath("anonymousStatus").description("익명 여부"),
+                                fieldWithPath("isAnonymous").description("익명 여부"),
                                 fieldWithPath("participantInfoList.[].nickname").description("참석자 닉네임"),
-                                fieldWithPath("participantInfoList.[].votedStatus").description("투표 여부"),
-                                fieldWithPath("participantInfoList.[].leaderStatus").description("리더 여부")
+                                fieldWithPath("participantInfoList.[].isAssigned").description("일정 할당 여부"),
+                                fieldWithPath("participantInfoList.[].isLeader").description("참석자 리더 여부")
                         ))
                 );
     }
