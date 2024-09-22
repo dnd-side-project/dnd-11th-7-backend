@@ -490,8 +490,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_회원_일정_조회_실패_모임이_존재하지_않는_경우">4.6. 회원 일정 조회 - 실패 (모임이 존재하지 않는 경우)</a></li>
 <li><a href="#_비회원_일정_조회_성공">4.7. 비회원 일정 조회 - 성공</a></li>
 <li><a href="#_비회원_일정_조회_실패_모임이_존재하지_않는_경우">4.8. 비회원 일정 조회 - 실패 (모임이 존재하지 않는 경우)</a></li>
-<li><a href="#_일정_수정_성공">4.9. 일정 수정 - 성공</a></li>
-<li><a href="#_일정_수정_실패_일정을_입력하지_않은_경우">4.10. 일정 수정 - 실패 (일정을 입력하지 않은 경우)</a></li>
+<li><a href="#_회원_일정_수정_성공">4.9. 회원 일정 수정 - 성공</a></li>
+<li><a href="#_회원_일정_수정_실패_일정을_입력하지_않은_경우">4.10. 회원 일정 수정 - 실패 (일정을 입력하지 않은 경우)</a></li>
+<li><a href="#_비회원_일정_수정_성공">4.11. 비회원 일정 수정 - 성공</a></li>
+<li><a href="#_비회원_일정_수정_실패_일정을_입력하지_않은_경우">4.12. 비회원 일정 수정 - 실패 (일정을 입력하지 않은 경우)</a></li>
 </ul>
 </li>
 </ul>
@@ -570,7 +572,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories HTTP/1.1
-X-CSRF-TOKEN: 0TBx62a7bl5K0ZY3g5zwcXgxIMYBctO1mocG_HtevUTICbdr41MViQCIXDhn4aEAurHEQ0ADDacwQ7eYqL4-mRo8iXz9aoYO
+X-CSRF-TOKEN: Sfz-4dfr87Q4u27L8K_Y1AabVHb6Z2Jb2Ouhh_l6FrgrZ5qFLcnI1-PZxYcV3ln4lYLssmCieU6bAVF24I3Htc1Nd4wfVfnj
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -670,7 +672,7 @@ Content-Length: 429
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/1 HTTP/1.1
-X-CSRF-TOKEN: YCmgXwAVBqEFSInoaWR5P53JMvKYyP6haLAIsQu1w6LKYASuBk-ZajF0MZIofO3dX0lND_n7H8v-q8uMUYY7hzvQ8JL-VGKd
+X-CSRF-TOKEN: My0QYLEBXgPF0gqTbcD_s_4p2-fd7bDiWECykOGDUuyrLn-IAxUiA9Q1PDHotGnwDu3Lg8ga9oXt39bPb3LRqYOyYd2dG0vp
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -703,7 +705,7 @@ Content-Length: 51
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/categories/100 HTTP/1.1
-X-CSRF-TOKEN: xW27vUjA7ZuoeRmcETeSmiphExF6V8q2bXZV4GQrJkbJ13DLpw7Z332miauFHSyrdxqmqx4APihMM_qbD0RmgwBKE3H5sUP-
+X-CSRF-TOKEN: FR9mjpjLuTeayMq6c8OZ1Up2s51Lwbuu765ragfTxQjVlv1xISYCtqiq2we3rfKLEu6t4H0Snv9999qD28tZDzbnp2m2pssV
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -745,7 +747,7 @@ Content-Length: 102
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer access_token
 Content-Length: 229
-X-CSRF-TOKEN: KjnqpudLkWtigjxQiuLwWMZCGz_kW0WP0O0muPFRtfN8gag6GArZk4Z4pVNP5ws06M_EPv4kNgfUPnei5t9D3cVjhJYat8wM
+X-CSRF-TOKEN: J-Q8wmm_kJWiQ1M69vWw-nns_fzowh9PXBN3eqygIuK-LHKqRYFd-wqLoq2PITBZxtiEzE3b0J2LoSliZHVEQ5zGEdWLHkOa
 Host: localhost:8080
 
 {
@@ -854,7 +856,7 @@ X-Frame-Options: DENY</code></pre>
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer access_token
 Content-Length: 180
-X-CSRF-TOKEN: WcMxgJIMEamLCrfS-hJeW0av9HeaHPiG6dVu4PAmzb3mw9cwP6BSuKJvJc-mPtKwnz9qaHCW2RWoecmr37dX0scX_YyE-u9R
+X-CSRF-TOKEN: LiHzC8LOC-E4PCaj74FUOMKZyEYPzinSNmN8AnjeCgCT6gDcGRORMvf2PIAVWUCajKxgWvep5SQ3qx3_AlsfOkDtPDP3jjHs
 Host: localhost:8080
 
 {
@@ -889,8 +891,8 @@ Content-Length: 583
   "message" : "잘못된 요청입니다.",
   "validation" : {
     "meetingEndDate" : "모임 일정 종료일은 필수 값입니다.",
-    "isAnonymous" : "익명 여부는 필수 값입니다.",
     "categoryIds" : "카테고리는 최소 1개 이상 3개 이하로 선택해주세요.",
+    "isAnonymous" : "익명 여부는 필수 값입니다.",
     "meetingName" : "모임명은 필수 값입니다.",
     "dueDateTime" : "일정 입력 종료 시간은 필수 값입니다.",
     "numberOfPeople" : "인원수는 필수 값입니다.",
@@ -992,7 +994,7 @@ Content-Length: 583
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/meetings/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-X-CSRF-TOKEN: YRqoYzBXVpWJ2qAgtXF7XD5OEWTMKeEztswnaeFUSDvz4OwIWSqYUFI1N_OkvJcW1lxPPQcqPF2oHtke069CC4I2KwiWg41s
+X-CSRF-TOKEN: yrUPb0Af0PwNeTjLw6t1_uwXKRUGTnzgSqA6zJuoq0rmTcqi_YFqDCMq5ZggGwv_ooZBx9l2BC1ifxjNK5dY-6mRk36He6-X
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1020,7 +1022,7 @@ X-Frame-Options: DENY</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/info HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-X-CSRF-TOKEN: IIhqoD6CfbW-DSWNJMgzUqF1BlhVPwIS_ckZyp91LVGFmgZuErxckQ7jGYyTOEG-FOUHY8ARKzlmDDo_y_wrq6oWH2DkrWBf
+X-CSRF-TOKEN: XItgzO84zJhyBKSNw96urw4LybwrHdPe0uu5SI6fTpfUn3f8ZbNT_ooBrqtfNcC5pvOanz0z5IVIfrDztt2NKu38f67nrRbP
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1124,7 +1126,7 @@ Content-Length: 215
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/times?sort=COUNT HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-X-CSRF-TOKEN: du8V_D2szIiDKOFQ1FHEEALCEzqHjCTQpS9gKndUhMVY4pOPRIkhzw7N-uuuTtBktnzwcjT2PlvluhP9lEkFEkFt5vJug_W6
+X-CSRF-TOKEN: MO-1rKFWyTphKUME5RT_JXNV8-nbNjVXw_rJjwr5YU5ziq9KUd7XzcBnqgxMHnM8hznLR0Q03tHuAQ16-syq6zPBUiwS6J59
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1230,7 +1232,7 @@ Content-Length: 225
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/123ABC/participants HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
-X-CSRF-TOKEN: _7qvJAFckA2qVQ-xpxdsA_amIM8Pw96VNiKBoRhtB9zBKRSkz4vMQTk-8j-HbW2AlDpYMc6fDa43oru4BxOzwisON-SjTHGU
+X-CSRF-TOKEN: _Sm5A7RCEdzKhTBtRPldA09mrNBY2D7bq01EcAUYdgfC9u11nEzYZYUnI7rn4FYIcNRpYHlegbFu4Qr2yCxxRmcsRGT6k9VG
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1338,7 +1340,7 @@ Content-Length: 258
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/members/meetings HTTP/1.1
 Accept: application/json
-X-CSRF-TOKEN: p8WP6N_cs4L4MODPtDmsaiPW6B5P9iEo419MBMBmI594Iu1ck_Dp3Lm40ePVVNX91hSYD0XhxSZ9lUMF1jkqPfJVEflPFI84
+X-CSRF-TOKEN: MOHEZgckyH6jBgFXeQaMXvnn3VrYwmeqIv7h7FOyqFS4NHEUVdOlVDVAq06OP2NvTyu4Z8GD8GPo9QOHR8jV32KLkGzeBBUh
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1449,7 +1451,7 @@ Content-Length: 336
 Content-Type: application/json;charset=UTF-8
 Accept: application/json
 Content-Length: 34
-X-CSRF-TOKEN: oA0f0EzmHv1v1pBQeWZzHATAHKT9OcN-jQtjV5sLCVoptxJUxDt95H2HLJ5C4ac2TEtHLDCmMZyZCPBTvW4FZ6M8bzkf0SRn
+X-CSRF-TOKEN: MdQ5Tl_nehsHwNS5wKuvG3zPsFPHQa3IozDq0-MPpy7OKrzcAuJbe2mCSi8q8rfb9IabIk_7nTLwI5vlxQXYsYI6wx79TI-5
 Host: localhost:8080
 
 {
@@ -1508,7 +1510,7 @@ X-Frame-Options: DENY</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/members HTTP/1.1
 Accept: application/json
-X-CSRF-TOKEN: _AZA6thbH3asN_9OloTtMrgpfxja1K-gopOTAYYSrvQaqFuemD9x3OFvJ0eBBM93oanZAIlNUnm7sJ6Nkqv1NOBxnMF_nWP_
+X-CSRF-TOKEN: CpOfPukJY3TSLvPDqMkGPuCIgCPqZ49Qs1Fpwkb4db2KLNuHOfanB4o9UUT_SsemzOQyD4O-rRvSAb99imYNp3-bRo64T7jj
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1548,7 +1550,7 @@ X-Frame-Options: DENY</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 263
-X-CSRF-TOKEN: gdrLiExPY0fQf0v4ezLVEEx-bIZDQylFA8AU7gIlcCdVnMM85-mpvSorV3X9HX_BQh_hc35OQed0IRxoYvNy3zcTSRE3-KcP
+X-CSRF-TOKEN: HYuYWsz6awoDMofdZeDUuZgZCKLS5xhf3cLrElZiQg0lkxVOL7-gYvnMXj8uArTrUM3gi_0gJcDghily6vrSImdbJz1GpCZ9
 Host: localhost:8080
 
 {
@@ -1664,7 +1666,7 @@ X-Frame-Options: DENY</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 53
-X-CSRF-TOKEN: wiWZ1eqZ2K28zHSZhL-3fB0X3lO5XoESq5p4UW3j1abph0Ln9RCstIypvZmR_BH4sJKDSntx8zGIb7U_z6hAY1-F7MKPtieD
+X-CSRF-TOKEN: qh5tgJUE2VWulFIBg83zeMtqDq7IfCRWz3SjquY_RZ4mYHwjyC5YsKJn4WeD8WEzt-DHGf4MI5arT0V7_0DHz9YPfK4UWUtC
 Host: localhost:8080
 
 {
@@ -1763,7 +1765,7 @@ Content-Length: 173
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/guests HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 263
-X-CSRF-TOKEN: RF7bG5PgfzNUdbUFAuzQQp81dJ4OnZy8vPssdovf8cg0i6aScji5I6PVTQt5E4JnNMHkdaxXWfw7qPmR38lPTu_uwPxWuZWj
+X-CSRF-TOKEN: BFto0TCEhgGrF1kod3Dy7phcCskrzSu5cKMGim-GOHz5oC4kYGkMsgO15GCGdWwdFV3G3K1rJ6sf-RiUQcBkvli3XkXNkB4Q
 Host: localhost:8080
 
 {
@@ -1860,7 +1862,7 @@ X-Frame-Options: DENY</code></pre>
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/meetings/met123/schedules/guests HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 53
-X-CSRF-TOKEN: I1amnRGTxW0TXd6yPppRFtDrAdlIQxl3z-Hp2PYxR4SBqoFlFmKU-3Sh81s-bLqHCbdldeTSLLstdXxaqdPd6MVSI7SxzOBW
+X-CSRF-TOKEN: sIW6-saSaGpTWjVqDSyJVluxbn-zGwwvPAbO60FvUkXKdqdyhuONzf_wUQl-bFFcOAG9b2_VQ0aCfTgCCDWqiiQLYSH8FMYT
 Host: localhost:8080
 
 {
@@ -1938,7 +1940,7 @@ Content-Length: 173
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/members HTTP/1.1
-X-CSRF-TOKEN: oiR__FFMcFQ-MsYa1NGOuB4BA4Gm5mExDDirGyVILsiR-c30kkAZxTQtQTITCvd74vy62StkLuDChAAcOVmYehV_H6mhnK_D
+X-CSRF-TOKEN: 3Tl6feqZV9Pn1FuPyz9Hxtm2lV0ShFjqym56Xh2xEBaANCv16V8ZGdKuYebK5W_s_hJz9uiFuD92vTrH-l4ebCmII3W2BE_C
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2020,7 +2022,7 @@ Content-Length: 265
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/members HTTP/1.1
-X-CSRF-TOKEN: 1Dsx4M3yqAR1HydCQZwTt8fkdrbQHluXRKKslVVOiT_mYtsV7A4Gg_7GzD1YfkJ2dLEnhaaGW9TjK2K6dJOd8WMs6AvQUbp0
+X-CSRF-TOKEN: EM9ujwsaxRMuAOI5AJ7CKjaFvqHmJRxMkYYp52I9pM3VC4iNdPoKtjx4oycDNIYKNbP2SFPmk5mDFX9hpOAf1wdZkqziPL-5
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2054,7 +2056,7 @@ Content-Length: 94
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/guests?scheduleUuid=sch123 HTTP/1.1
-X-CSRF-TOKEN: tl4cVZuCzJQ8ZXuWR8GiV4i1StaAMT3kF_C4y2gRX6FlY7wAjzgqN_m1qaURV0vyJuyWYbiMZ-65BQrJcsDa-1koOpkBBdli
+X-CSRF-TOKEN: vp_ekgacylSxyMOqRLbAihpzL70QOrcOKvUPHHwRSJKmBFiSiqrv9zCu8zKc-veSIZv0siwRAoV1W4AjSJc-Lkohf6OSN23z
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2132,7 +2134,7 @@ Content-Length: 265
 <div class="title">HTTP Request</div>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/meetings/met123/schedules/guests?scheduleUuid=sch123 HTTP/1.1
-X-CSRF-TOKEN: GihuyhSQMKNQP4BfhyAre7d1m4-B3aDf6nzafKuge_EJk38TIx9d_COjCcJ9BuNt4Q0fGtYXtu655MPy2kzvSc7CT5Q79Uwj
+X-CSRF-TOKEN: b-jjzHbdPkmPSp9Ob3MoDQInRGmJB61bzL8iGLjdPPmO1BSUWNuC9Ue-DXyiKPx8Wl4cbzIeaVDtYp12rYsTL9ztCZ-35yWj
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2199,33 +2201,423 @@ Content-Length: 94
 </div>
 </div>
 <div class="sect2">
-<h3 id="_일정_수정_성공">4.9. 일정 수정 - 성공</h3>
-<div class="paragraph">
+<h3 id="_회원_일정_수정_성공">4.9. 회원 일정 수정 - 성공</h3>
+<div class="listingblock">
 <div class="title">HTTP Request</div>
-<p>Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_success/http-request.adoc[]
-Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_success/path-parameters.adoc[]</p>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 235
+X-CSRF-TOKEN: I-j0L88bVmYwOd-sQqWH3jgM9AO_lK2J6PUjUcsUOAC-Ji2WQoqSGa1-bgQdALqdJoizvAg12WHa8ZSki8QWYfIkCDnbQhqh
+Host: localhost:8080
+
+{
+  "dateOfScheduleList" : [ {
+    "startTime" : "2024-09-06T09:00:00",
+    "endTime" : "2024-09-06T12:00:00",
+    "rank" : 1
+  }, {
+    "startTime" : "2024-09-06T18:00:00",
+    "endTime" : "2024-09-06T21:00:00",
+    "rank" : 2
+  } ]
+}</code></pre>
 </div>
-<div class="paragraph">
-<div class="title">Request Fields</div>
-<p>Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_success/request-fields.adoc[]</p>
 </div>
-<div class="paragraph">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 22. /api/v1/meetings/{meetingUuid}/schedules</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>meetingUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">모임 UUID</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 23. Request Fields</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 목록</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList[].startTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 시작 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList[].endTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 종료 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList[].rank</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 우선순위</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
 <div class="title">HTTP Response</div>
-<p>Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_success/http-response.adoc[]</p>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_일정_수정_실패_일정을_입력하지_않은_경우">4.10. 일정 수정 - 실패 (일정을 입력하지 않은 경우)</h3>
-<div class="paragraph">
+<h3 id="_회원_일정_수정_실패_일정을_입력하지_않은_경우">4.10. 회원 일정 수정 - 실패 (일정을 입력하지 않은 경우)</h3>
+<div class="listingblock">
 <div class="title">HTTP Request</div>
-<p>Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_fail/http-request.adoc[]
-Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_fail/path-parameters.adoc[]</p>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 32
+X-CSRF-TOKEN: CiHn3yrl2kN8LabXNX4AzRO9eJt0-iEzo5At3ZZLKauV7NCQO0Pe5hOE7HtRTJXvUFM0-yHZVaIWyREelKQe7PcoEcnxiuT1
+Host: localhost:8080
+
+{
+  "dateOfScheduleList" : [ ]
+}</code></pre>
 </div>
-<div class="paragraph">
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 24. /api/v1/meetings/{meetingUuid}/schedules</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>meetingUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">모임 UUID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
 <div class="title">HTTP Response</div>
-<p>Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_fail/http-response.adoc[]
-Unresolved directive in api/schedule.adoc - include::/Users/seungjo/development/dnd-11th-7-backend/build/generated-snippets/schedule-controller-test/update_schedule_fail/response-fields.adoc[]</p>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 173
+
+{
+  "code" : "400",
+  "message" : "잘못된 요청입니다.",
+  "validation" : {
+    "dateOfScheduleList" : "일정 날짜를 최소 1개 이상 입력해주세요."
+  }
+}</code></pre>
 </div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">에러 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">에러 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>validation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효성 검사</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>validation.dateOfScheduleList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 날짜 에러 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_비회원_일정_수정_성공">4.11. 비회원 일정 수정 - 성공</h3>
+<div class="listingblock">
+<div class="title">HTTP Request</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules/sch123 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 235
+X-CSRF-TOKEN: gXr3bo5rseRrzU2aB7LDPyfJcYJ48jloTHkR3OMVmLqSUIcst0uRCLZSh9BGqS6tY5_3CkX-XLpIxlpFKUoi6oZw-YihYb4U
+Host: localhost:8080
+
+{
+  "dateOfScheduleList" : [ {
+    "startTime" : "2024-09-06T09:00:00",
+    "endTime" : "2024-09-06T12:00:00",
+    "rank" : 1
+  }, {
+    "startTime" : "2024-09-06T18:00:00",
+    "endTime" : "2024-09-06T21:00:00",
+    "rank" : 2
+  } ]
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 25. /api/v1/meetings/{meetingUuid}/schedules/{scheduleUuid}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>meetingUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">모임 UUID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scheduleUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 UUID</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 26. Request Fields</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Optional</th>
+<th class="tableblock halign-left valign-top">Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 목록</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList[].startTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 시작 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList[].endTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 종료 시간</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dateOfScheduleList[].rank</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 우선순위</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">HTTP Response</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_비회원_일정_수정_실패_일정을_입력하지_않은_경우">4.12. 비회원 일정 수정 - 실패 (일정을 입력하지 않은 경우)</h3>
+<div class="listingblock">
+<div class="title">HTTP Request</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PATCH /api/v1/meetings/met123/schedules/sch123 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 32
+X-CSRF-TOKEN: UaZ6KBwPvunyAsb1J09SUMAkdZ6lEjNGV47Jn3uwnWbdWQXFZcdNTno93YzfZqKTRWJmNaEWWPzAcFdrYbmqqkLRqgPtYTSh
+Host: localhost:8080
+
+{
+  "dateOfScheduleList" : [ ]
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 27. /api/v1/meetings/{meetingUuid}/schedules/{scheduleUuid}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>meetingUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">모임 UUID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scheduleUuid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 UUID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">HTTP Response</div>
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 400 Bad Request
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 173
+
+{
+  "code" : "400",
+  "message" : "잘못된 요청입니다.",
+  "validation" : {
+    "dateOfScheduleList" : "일정 날짜를 최소 1개 이상 입력해주세요."
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 28. Error Response</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">에러 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">에러 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>validation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효성 검사</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>validation.dateOfScheduleList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">일정 날짜 에러 메시지</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
