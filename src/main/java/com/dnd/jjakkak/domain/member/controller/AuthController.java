@@ -2,9 +2,8 @@ package com.dnd.jjakkak.domain.member.controller;
 
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.service.AuthService;
-import com.dnd.jjakkak.domain.member.service.TokenService;
+import com.dnd.jjakkak.domain.member.service.RefreshTokenRedisService;
 import com.dnd.jjakkak.global.util.CookieUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthController {
 
     private final AuthService authService;
-    private final TokenService tokenService;
+    private final RefreshTokenRedisService refreshTokenRedisService;
     private final JwtProvider jwtProvider;
 
     /**
@@ -70,11 +69,11 @@ public class AuthController {
 
         String kakaoId = jwtProvider.validateToken(refreshToken);
 
-        String storedRefreshToken = tokenService.findRefreshToken(kakaoId);
+        String storedRefreshToken = refreshTokenRedisService.findRefreshToken(kakaoId);
 
         // 저장된 토큰과 일치하지 않으면, Redis에서 해당 KakaoId의 RT 삭제 및 재로그인 요청
         if (!refreshToken.equals(storedRefreshToken)) {
-            tokenService.deleteRefreshToken(kakaoId);  // 기존 RT 삭제
+            refreshTokenRedisService.deleteRefreshToken(kakaoId);  // 기존 RT 삭제
             CookieUtil.deleteCookie(response, "refresh_token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -85,7 +84,7 @@ public class AuthController {
         String newRefreshToken = authService.refreshRefreshToken(refreshToken);
 
         CookieUtil.createCookie(response, "refresh_token", newRefreshToken, 7 * 24 * 60 * 60);
-        tokenService.saveRefreshToken(kakaoId, newRefreshToken);
+        refreshTokenRedisService.saveRefreshToken(kakaoId, newRefreshToken);
 
         return ResponseEntity.ok().build();
     }

@@ -2,7 +2,7 @@ package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
-import com.dnd.jjakkak.domain.member.service.TokenService;
+import com.dnd.jjakkak.domain.member.service.RefreshTokenRedisService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class OAuth2LogoutHandler implements LogoutHandler {
 
     private final MemberRepository memberRepository;
-    private final TokenService tokenService;
+    private final RefreshTokenRedisService refreshTokenRedisService;
     private final JwtProvider jwtProvider;
 
     @Override
@@ -48,7 +48,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
             return;
         }
 
-        tokenService.deleteRefreshToken(kakaoId.toString());
+        refreshTokenRedisService.deleteRefreshToken(kakaoId.toString());
 
         log.debug("logout refreshToken: {}", refreshToken);
         log.debug("logout 성공");

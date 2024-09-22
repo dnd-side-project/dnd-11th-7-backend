@@ -8,7 +8,7 @@ import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
-public class TokenService {
+public class RefreshTokenRedisService {
     private final RedisTemplate<String, String> redisTemplate;
 
     // kakaoId로 RT 조회
