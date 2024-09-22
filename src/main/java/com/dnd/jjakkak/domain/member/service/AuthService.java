@@ -25,6 +25,8 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private static final String TEST_REFRESH_TOKEN_VALUE = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNjU0ODMxNTk4IiwiaWF0IjoxNzI2OTgwNzEwLCJleHAiOjE3Mjc1ODU1MTB9.KfELuCbYwPGUxVEUfrEQpFN2Z_7ND_nUGYMwojPtSzo";
+
 
     /**
      * RefreshToken을 이용하여 AccessToken 재발급
@@ -34,6 +36,8 @@ public class AuthService {
      */
     @Transactional
     public ReissueResponseDto reissueToken(String refreshToken) {
+
+        refreshToken = TEST_REFRESH_TOKEN_VALUE;
 
         log.info("Refresh Token: {}", refreshToken);
         String kakaoId = jwtProvider.validateToken(refreshToken);
@@ -55,9 +59,9 @@ public class AuthService {
         String newRefreshToken = jwtProvider.createRefreshToken(kakaoId);
 
         // 새로운 RefreshToken을 DB에 저장한다.
-        refreshTokenService.saveRefreshToken(Long.parseLong(kakaoId), newRefreshToken);
+        refreshTokenService.saveRefreshToken(Long.parseLong(kakaoId), TEST_REFRESH_TOKEN_VALUE);
 
-        ResponseCookie refreshCookie = JwtUtils.createCookie("refresh_token", newRefreshToken, 60 * 60 * 24 * 7);
+        ResponseCookie refreshCookie = JwtUtils.createCookie("refresh_token", TEST_REFRESH_TOKEN_VALUE, 60 * 60 * 24 * 7);
 
         return new ReissueResponseDto(accessToken, refreshCookie);
     }

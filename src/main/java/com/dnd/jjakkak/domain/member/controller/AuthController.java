@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.member.controller;
 import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
 import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
 import com.dnd.jjakkak.domain.member.service.AuthService;
-import com.dnd.jjakkak.domain.member.service.BlacklistService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthController {
 
     private final AuthService authService;
-    private final BlacklistService blacklistService;
 
     /**
      * Authorization Header 확인 후 로그인 여부를 확인하는 메서드.
