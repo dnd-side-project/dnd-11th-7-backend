@@ -34,6 +34,8 @@ public class AuthController {
     private final TokenService tokenService;
     private final JwtProvider jwtProvider;
 
+    private static final String TEST_REFRESH_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNjMwMzM4NjM4IiwiaWF0IjoxNzI2OTA5MjE0LCJleHAiOjE3Mjc1MTQwMTR9.0cL9xh05NJt7WzXgSF85iEDzK3TGXcAXKW-N1qXXkOM";
+
     /**
      * Authorization Header 확인 후 로그인 여부를 확인하는 메서드.
      *
@@ -89,9 +91,8 @@ public class AuthController {
         String newAccessToken = authService.reissueAccessToken(refreshToken);
         response.setHeader("Authorization", newAccessToken);
 
-        String newRefreshToken = authService.refreshRefreshToken(refreshToken);
-
-        deleteCookie(response);
+//        String newRefreshToken = authService.refreshRefreshToken(refreshToken);
+        String newRefreshToken = TEST_REFRESH_TOKEN;
 
         // todo : 여기도 기한을!
         // blacklistService.createBlacklistToken(refreshToken, LocalDateTime.now().plusWeeks(1L));
