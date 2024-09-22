@@ -179,7 +179,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .select(Projections.constructor(MeetingParticipantResponseDto.ParticipantInfo.class,
                         schedule.scheduleNickname,
                         schedule.isAssigned,
-                        meeting.meetingLeaderId.eq(schedule.member.memberId)
+                        schedule.member.memberId.eq(meeting.meetingLeaderId)
                 ))
                 .fetch();
 
