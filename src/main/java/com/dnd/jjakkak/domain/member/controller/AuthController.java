@@ -1,14 +1,14 @@
 package com.dnd.jjakkak.domain.member.controller;
 
-import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
+import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
 import com.dnd.jjakkak.domain.member.service.AuthService;
-import com.dnd.jjakkak.domain.member.service.RefreshTokenRedisService;
-import com.dnd.jjakkak.global.util.CookieUtil;
-import jakarta.servlet.http.HttpServletResponse;
+import com.dnd.jjakkak.global.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenRedisService refreshTokenRedisService;
-    private final JwtProvider jwtProvider;
 
     /**
      * Authorization Header 확인 후 로그인 여부를 확인하는 메서드.
@@ -55,37 +53,26 @@ public class AuthController {
      * 이때 RT가 유효하지 않거나 Redis에 맞지 않을 경우 401
      *
      * @param refreshToken Refresh Token (Cookie)
-     * @param response     HttpServletResponse
      * @return 200 (OK), Header - Authorization (Bearer Token), Refresh Token (Cookie)
      */
 
     @GetMapping("/reissue")
-    public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken,
-                                             HttpServletResponse response) {
+    public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken) {
 
         if (Strings.isEmpty(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
 
-        String kakaoId = jwtProvider.validateToken(refreshToken);
+        ReissueResponseDto reissuedToken = authService.reissueToken(refreshToken);
 
-        String storedRefreshToken = refreshTokenRedisService.findRefreshToken(kakaoId);
+        ResponseCookie refreshCookie = CookieUtils.createCookie(
+                "refresh_token",
+                reissuedToken.getRefreshToken(),
+                60 * 60 * 24 * 7);
 
-        // 저장된 토큰과 일치하지 않으면, Redis에서 해당 KakaoId의 RT 삭제 및 재로그인 요청
-        if (!refreshToken.equals(storedRefreshToken)) {
-            refreshTokenRedisService.deleteRefreshToken(kakaoId);  // 기존 RT 삭제
-            CookieUtil.deleteCookie(response, "refresh_token");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        String newAccessToken = authService.reissueAccessToken(refreshToken);
-        response.setHeader("Authorization", newAccessToken);
-
-        String newRefreshToken = authService.refreshRefreshToken(refreshToken);
-
-        CookieUtil.createCookie(response, "refresh_token", newRefreshToken, 7 * 24 * 60 * 60);
-        refreshTokenRedisService.saveRefreshToken(kakaoId, newRefreshToken);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, reissuedToken.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .build();
     }
 }

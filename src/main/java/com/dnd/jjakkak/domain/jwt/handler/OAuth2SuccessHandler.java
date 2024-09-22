@@ -2,7 +2,7 @@ package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.entity.Member;
-import com.dnd.jjakkak.domain.member.service.RefreshTokenRedisService;
+import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private static final String QUERY_PARAM = "redirect";
     private final JjakkakProperties jjakkakProperties;
     private final JwtProvider jwtProvider;
-    private final RefreshTokenRedisService refreshTokenRedisService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -44,7 +44,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         ResponseCookie refreshCookie = createCookie(REFRESH_TOKEN_NAME, refreshToken, 60 * 60 * 24 * 7);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-        refreshTokenRedisService.saveRefreshToken(kakaoId, refreshToken);
+        refreshTokenService.saveRefreshToken(kakaoId, refreshToken);
 
         String redirectUrl = getRedirectUrl(request);
         response.sendRedirect(redirectUrl);

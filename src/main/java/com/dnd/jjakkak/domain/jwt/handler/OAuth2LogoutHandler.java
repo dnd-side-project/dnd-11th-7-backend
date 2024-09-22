@@ -2,7 +2,7 @@ package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
-import com.dnd.jjakkak.domain.member.service.RefreshTokenRedisService;
+import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class OAuth2LogoutHandler implements LogoutHandler {
 
     private final MemberRepository memberRepository;
-    private final RefreshTokenRedisService refreshTokenRedisService;
+    private final RefreshTokenService refreshTokenService;
     private final JwtProvider jwtProvider;
 
     @Override
@@ -48,7 +48,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
             return;
         }
 
-        refreshTokenRedisService.deleteRefreshToken(kakaoId.toString());
+        refreshTokenService.deleteRefreshToken(kakaoId.toString());
 
         log.debug("logout refreshToken: {}", refreshToken);
         log.debug("logout 성공");
@@ -61,6 +61,11 @@ public class OAuth2LogoutHandler implements LogoutHandler {
      * @return Refresh Token
      */
     public String extractRefreshToken(Cookie[] cookies) {
+
+        if (cookies == null) {
+            return null;
+        }
+
         return Arrays.stream(cookies)
                 .filter(cookie -> "refresh_tokne".equals(cookie.getName()))
                 .findFirst()
