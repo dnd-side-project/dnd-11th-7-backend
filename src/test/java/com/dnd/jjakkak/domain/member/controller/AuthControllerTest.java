@@ -3,7 +3,6 @@ package com.dnd.jjakkak.domain.member.controller;
 import com.dnd.jjakkak.config.AbstractRestDocsTest;
 import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.member.service.AuthService;
-import com.dnd.jjakkak.domain.member.service.BlacklistService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -29,9 +28,6 @@ class AuthControllerTest extends AbstractRestDocsTest {
 
     @MockBean
     AuthService authService;
-
-    @MockBean
-    BlacklistService blacklistService;
 
     @Test
     @DisplayName("로그인 상태 확인 - 확인됨")

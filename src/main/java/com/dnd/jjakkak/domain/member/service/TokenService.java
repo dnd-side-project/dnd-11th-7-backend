@@ -30,14 +30,4 @@ public class TokenService {
     public void deleteRefreshToken(String kakaoId) {
         redisTemplate.delete(kakaoId);
     }
-
-    public Set<String> scanAllKeys() {
-        Set<String> keys = new HashSet<>();
-        Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(ScanOptions.scanOptions().match("*").count(1000).build());
-
-        while (cursor.hasNext()) {
-            keys.add(new String(cursor.next()));
-        }
-        return keys;
-    }
 }
