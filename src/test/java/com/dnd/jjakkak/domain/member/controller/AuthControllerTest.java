@@ -2,6 +2,7 @@ package com.dnd.jjakkak.domain.member.controller;
 
 import com.dnd.jjakkak.config.AbstractRestDocsTest;
 import com.dnd.jjakkak.config.JjakkakMockUser;
+import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
 import com.dnd.jjakkak.domain.member.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,14 +84,18 @@ class AuthControllerTest extends AbstractRestDocsTest {
     @JjakkakMockUser
     void testReissue_InvalidRefreshToken() throws Exception {
 
-        MockCookie refreshToken = new MockCookie("refresh_token", "1a2s2d3f4g");
+        MockCookie refreshCookie = new MockCookie("refresh_token", "1a2s2d3f4g");
         String accessToken = "Bearer mock-access-token";
+        String refreshToken = "1a2s2d3f4g";
 
-        when(authService.reissueAccessToken(anyString()))
-                .thenReturn(accessToken);
+        ReissueResponseDto reissueResponseDto
+                = new ReissueResponseDto(accessToken, refreshToken);
+
+        when(authService.reissueToken(anyString()))
+                .thenReturn(reissueResponseDto);
 
         mockMvc.perform(get("/api/v1/auth/reissue")
-                        .cookie(refreshToken))
+                        .cookie(refreshCookie))
                 .andExpectAll(
                         status().isOk(),
                         header().string("Authorization", accessToken)
