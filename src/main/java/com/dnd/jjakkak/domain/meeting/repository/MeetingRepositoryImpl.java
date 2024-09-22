@@ -148,7 +148,9 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .where(meeting.meetingUuid.eq(uuid))
                 .select(Projections.constructor(MeetingTimeResponseDto.class,
                         meeting.numberOfPeople,
-                        meeting.isAnonymous
+                        meeting.isAnonymous,
+                        meeting.meetingStartDate,
+                        meeting.meetingEndDate
                 ))
                 .fetchOne();
 
