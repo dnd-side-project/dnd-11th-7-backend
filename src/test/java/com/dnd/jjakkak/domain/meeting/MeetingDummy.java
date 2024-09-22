@@ -73,7 +73,10 @@ public class MeetingDummy {
 
         response.addMemberNames(List.of("고래", "상어"));
 
-        MeetingTimeResponseDto responseDto = new MeetingTimeResponseDto(2, false);
+        LocalDate startDate = LocalDate.of(2024, 8, 27);
+        LocalDate endDate = LocalDate.of(2024, 8, 29);
+
+        MeetingTimeResponseDto responseDto = new MeetingTimeResponseDto(2, false, startDate, endDate);
         responseDto.addMeetingTimeList(List.of(response));
 
         return responseDto;

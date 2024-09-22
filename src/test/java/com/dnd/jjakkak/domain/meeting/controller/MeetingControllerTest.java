@@ -162,6 +162,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                         status().isOk(),
                         jsonPath("$.numberOfPeople").value(2),
                         jsonPath("$.isAnonymous").value(false),
+                        jsonPath("$.meetingStartDate").value("2024-08-27"),
+                        jsonPath("$.meetingEndDate").value("2024-08-29"),
                         jsonPath("$.meetingTimeList[0].memberNames.[0]").value("고래"),
                         jsonPath("$.meetingTimeList[0].memberNames.[1]").value("상어"),
                         jsonPath("$.meetingTimeList[0].startTime").value("2024-08-27T10:00:00"),
@@ -174,6 +176,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                         responseFields(
                                 fieldWithPath("numberOfPeople").description("총 인원 수"),
                                 fieldWithPath("isAnonymous").description("익명 여부"),
+                                fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
                                 fieldWithPath("meetingTimeList[].memberNames").description("멤버 이름 리스트"),
                                 fieldWithPath("meetingTimeList[].startTime").description("시작 시간"),
                                 fieldWithPath("meetingTimeList[].endTime").description("종료 시간"),

@@ -53,7 +53,10 @@ public class ScheduleDummy {
 
     public static ScheduleResponseDto scheduleResponseDto() {
 
-        ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto("유저", "sch123");
+        LocalDate meetingStartDate = LocalDate.of(2024, 9, 6);
+        LocalDate meetingEndDate = LocalDate.of(2024, 9, 7);
+
+        ScheduleResponseDto scheduleResponseDto = new ScheduleResponseDto("유저", "sch123", meetingStartDate, meetingEndDate);
 
         DateOfScheduleResponseDto firstDto = new DateOfScheduleResponseDto(LocalDateTime.of(2024, 9, 6, 9, 0, 0), LocalDateTime.of(2024, 9, 6, 12, 0, 0));
         DateOfScheduleResponseDto secondDto = new DateOfScheduleResponseDto(LocalDateTime.of(2024, 9, 7, 12, 0, 0), LocalDateTime.of(2024, 9, 7, 15, 0, 0));
