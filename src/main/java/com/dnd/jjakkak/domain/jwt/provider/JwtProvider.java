@@ -6,7 +6,6 @@ import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -97,20 +96,5 @@ public class JwtProvider {
         } catch (MalformedJwtException e) {
             throw new MalformedTokenException();
         }
-    }
-
-    /**
-     * RefreshToken에서 subject를 추출하는 메소드
-     *
-     * @param jwt String
-     * @return subject
-     */
-    public String getSubjectFromRefreshToken(String jwt) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody();
-        return claims.getSubject();
     }
 }
