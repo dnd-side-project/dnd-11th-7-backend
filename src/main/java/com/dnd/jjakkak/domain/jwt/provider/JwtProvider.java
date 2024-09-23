@@ -3,8 +3,10 @@ package com.dnd.jjakkak.domain.jwt.provider;
 import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
 import com.dnd.jjakkak.domain.jwt.exception.TokenExpiredException;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
+import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -26,12 +28,14 @@ import java.util.Date;
 public class JwtProvider {
 
     private final Key key;
-    private static final int ACCESS_TOKEN_EXPIRATION_DAY = 3;
-    private static final int REFRESH_TOKEN_EXPIRATION_DAY = 7;
+    private final int accessTokenExpirationDay;
+    private final int refreshTokenExpirationDay;
 
-    public JwtProvider(JjakkakProperties jjakkakProperties) {
+    public JwtProvider(JjakkakProperties jjakkakProperties, TokenProperties tokenProperties) {
         String jwtSecret = jjakkakProperties.getJwtSecret();
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        accessTokenExpirationDay = tokenProperties.getAccessTokenExpirationDay();
+        refreshTokenExpirationDay = tokenProperties.getRefreshTokenExpirationDay();
     }
 
     /**
@@ -46,7 +50,7 @@ public class JwtProvider {
      */
     public String createAccessToken(String kakaoId) {
 
-        Date expiredDate = Date.from(Instant.now().plus(ACCESS_TOKEN_EXPIRATION_DAY, ChronoUnit.DAYS));
+        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -65,7 +69,7 @@ public class JwtProvider {
      * @return JWT
      */
     public String createRefreshToken(String kakaoId) {
-        Date expiredDate = Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION_DAY, ChronoUnit.DAYS));
+        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(kakaoId)

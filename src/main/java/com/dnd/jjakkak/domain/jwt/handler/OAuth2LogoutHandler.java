@@ -67,7 +67,7 @@ public class OAuth2LogoutHandler implements LogoutHandler {
         }
 
         return Arrays.stream(cookies)
-                .filter(cookie -> "refresh_tokne".equals(cookie.getName()))
+                .filter(cookie -> "refresh_token".equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);

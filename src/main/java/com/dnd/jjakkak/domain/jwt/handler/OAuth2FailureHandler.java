@@ -1,6 +1,7 @@
 package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
+import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,13 +22,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    private static final String QUERY_PARAM = "redirect";
     private final JjakkakProperties jjakkakProperties;
+    private final TokenProperties tokenProperties;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
 
-        request.getSession().removeAttribute(QUERY_PARAM);
+        request.getSession().removeAttribute(tokenProperties.getQueryParam());
         response.sendRedirect(jjakkakProperties.getFrontUrl() + "/login/failure");
     }
 }

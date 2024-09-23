@@ -4,11 +4,13 @@ import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
+import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -27,21 +29,19 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private static final String REFRESH_TOKEN_NAME = "refresh_token";
-    private static final String QUERY_PARAM = "redirect";
     private final JjakkakProperties jjakkakProperties;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private final TokenProperties tokenProperties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
         Member oauth2User = (Member) authentication.getPrincipal();
 
         String kakaoId = Long.toString(oauth2User.getKakaoId());
         String refreshToken = jwtProvider.createRefreshToken(kakaoId);
 
-        ResponseCookie refreshCookie = createCookie(REFRESH_TOKEN_NAME, refreshToken, 60 * 60 * 24 * 7);
+        ResponseCookie refreshCookie = createCookie(tokenProperties.getRefreshTokenName(), refreshToken, 60 * 60 * 24 * 7);
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
         refreshTokenService.saveRefreshToken(kakaoId, refreshToken);
@@ -60,8 +60,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String baseUrl = jjakkakProperties.getFrontUrl() + "/login/success";
 
         HttpSession session = request.getSession();
-        String redirectParam = (String) session.getAttribute(QUERY_PARAM);
-        session.removeAttribute(QUERY_PARAM);
+        String redirectParam = (String) session.getAttribute(tokenProperties.getQueryParam());
+        session.removeAttribute(tokenProperties.getQueryParam());
 
         return (redirectParam != null)
                 ? baseUrl + "?redirect=" + redirectParam
