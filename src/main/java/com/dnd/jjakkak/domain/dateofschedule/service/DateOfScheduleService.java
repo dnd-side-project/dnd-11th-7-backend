@@ -99,12 +99,13 @@ public class DateOfScheduleService {
                 .orElseThrow(ScheduleNotFoundException::new);
 
         // dateOfSchedule 생성
+        // TODO: rank 값 추후에 변경해줘야 함!
         requestDto.forEach(dto -> {
             DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
                     .schedule(schedule)
                     .dateOfScheduleStart(dto.getStartTime())
                     .dateOfScheduleEnd(dto.getEndTime())
-                    .dateOfScheduleRank(dto.getRank())
+                    .dateOfScheduleRank(1)
                     .build();
 
             dateOfScheduleRepository.save(dateOfSchedule);
