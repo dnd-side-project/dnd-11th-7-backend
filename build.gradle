@@ -65,6 +65,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    // logback appender discord
     implementation 'com.github.napstr:logback-discord-appender:1.0.0'
 }
 
