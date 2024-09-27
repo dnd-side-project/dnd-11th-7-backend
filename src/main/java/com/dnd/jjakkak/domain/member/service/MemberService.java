@@ -69,6 +69,7 @@ public class MemberService {
     /**
      * 매주 월요일 자정에 탈퇴 처리된 이용자 하드 삭제
      */
+    @Transactional
     @Scheduled(cron = "0 0 0 ? * MON")
     public void deletedMemberAllDeleted() {
         memberRepository.deleteAllByIsDeleteTrue();
