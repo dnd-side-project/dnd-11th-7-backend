@@ -47,13 +47,16 @@ public class MeetingMemberService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        MeetingMember meetingMember = MeetingMember.builder()
-                .pk(pk)
-                .member(member)
-                .meeting(schedule.getMeeting())
-                .build();
+        // 이미 리더는 모임을 생성할 때 회원으로 추가되어 있으므로 제외
+        if (!schedule.getMeeting().getMeetingLeaderId().equals(memberId)) {
+            MeetingMember meetingMember = MeetingMember.builder()
+                    .pk(pk)
+                    .member(member)
+                    .meeting(schedule.getMeeting())
+                    .build();
 
-        meetingMemberRepository.save(meetingMember);
+            meetingMemberRepository.save(meetingMember);
+        }
     }
 
     /**

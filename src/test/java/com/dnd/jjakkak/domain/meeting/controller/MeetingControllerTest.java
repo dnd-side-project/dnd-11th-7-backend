@@ -162,6 +162,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                         status().isOk(),
                         jsonPath("$.numberOfPeople").value(2),
                         jsonPath("$.isAnonymous").value(false),
+                        jsonPath("$.meetingStartDate").value("2024-08-27"),
+                        jsonPath("$.meetingEndDate").value("2024-08-29"),
                         jsonPath("$.meetingTimeList[0].memberNames.[0]").value("고래"),
                         jsonPath("$.meetingTimeList[0].memberNames.[1]").value("상어"),
                         jsonPath("$.meetingTimeList[0].startTime").value("2024-08-27T10:00:00"),
@@ -174,6 +176,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                         responseFields(
                                 fieldWithPath("numberOfPeople").description("총 인원 수"),
                                 fieldWithPath("isAnonymous").description("익명 여부"),
+                                fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
                                 fieldWithPath("meetingTimeList[].memberNames").description("멤버 이름 리스트"),
                                 fieldWithPath("meetingTimeList[].startTime").description("시작 시간"),
                                 fieldWithPath("meetingTimeList[].endTime").description("종료 시간"),
@@ -197,23 +201,23 @@ class MeetingControllerTest extends AbstractRestDocsTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.numberOfPeople").value(2),
-                        jsonPath("$.anonymousStatus").value(false),
+                        jsonPath("$.isAnonymous").value(false),
                         jsonPath("$.participantInfoList.[0].nickname").value("고래"),
-                        jsonPath("$.participantInfoList.[0].votedStatus").value(true),
-                        jsonPath("$.participantInfoList.[0].leaderStatus").value(true),
+                        jsonPath("$.participantInfoList.[0].isAssigned").value(true),
+                        jsonPath("$.participantInfoList.[0].isLeader").value(true),
                         jsonPath("$.participantInfoList.[1].nickname").value("상어"),
-                        jsonPath("$.participantInfoList.[1].votedStatus").value(true),
-                        jsonPath("$.participantInfoList.[1].leaderStatus").value(false))
+                        jsonPath("$.participantInfoList.[1].isAssigned").value(true),
+                        jsonPath("$.participantInfoList.[1].isLeader").value(false))
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
                         ),
                         responseFields(
                                 fieldWithPath("numberOfPeople").description("참석자 수"),
-                                fieldWithPath("anonymousStatus").description("익명 여부"),
+                                fieldWithPath("isAnonymous").description("익명 여부"),
                                 fieldWithPath("participantInfoList.[].nickname").description("참석자 닉네임"),
-                                fieldWithPath("participantInfoList.[].votedStatus").description("투표 여부"),
-                                fieldWithPath("participantInfoList.[].leaderStatus").description("리더 여부")
+                                fieldWithPath("participantInfoList.[].isAssigned").description("일정 할당 여부"),
+                                fieldWithPath("participantInfoList.[].isLeader").description("참석자 리더 여부")
                         ))
                 );
     }

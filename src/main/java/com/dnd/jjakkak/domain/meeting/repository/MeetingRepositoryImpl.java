@@ -10,6 +10,7 @@ import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.entity.QMeeting;
 import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meetingcategory.entity.QMeetingCategory;
+import com.dnd.jjakkak.domain.member.entity.QMember;
 import com.dnd.jjakkak.domain.schedule.entity.QSchedule;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -148,7 +149,9 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .where(meeting.meetingUuid.eq(uuid))
                 .select(Projections.constructor(MeetingTimeResponseDto.class,
                         meeting.numberOfPeople,
-                        meeting.isAnonymous
+                        meeting.isAnonymous,
+                        meeting.meetingStartDate,
+                        meeting.meetingEndDate
                 ))
                 .fetchOne();
 
@@ -179,7 +182,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .select(Projections.constructor(MeetingParticipantResponseDto.ParticipantInfo.class,
                         schedule.scheduleNickname,
                         schedule.isAssigned,
-                        meeting.meetingLeaderId.eq(schedule.member.memberId)
+                        schedule.member.memberId.eq(meeting.meetingLeaderId)
                 ))
                 .fetch();
 
@@ -194,14 +197,16 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
     @Override
     public boolean existsByMemberIdAndMeetingUuid(Long memberId, String meetingUuid) {
 
-        QMeeting meeting = QMeeting.meeting;
         QSchedule schedule = QSchedule.schedule;
+        QMeeting meeting = QMeeting.meeting;
+        QMember member = QMember.member;
 
         return from(schedule)
                 .join(schedule.meeting, meeting)
+                .join(schedule.member, member)
                 .where(meeting.meetingUuid.eq(meetingUuid)
-                        .and(schedule.member.memberId.eq(memberId)))
-                .select(schedule.count())
-                .fetchOne() > 0;
+                        .and(member.memberId.eq(memberId)))
+                .fetchCount() > 0;
+
     }
 }

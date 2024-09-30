@@ -245,7 +245,7 @@ class MeetingServiceTest {
 
         assertAll(
                 () -> assertEquals(expected.getNumberOfPeople(), actual.getNumberOfPeople()),
-                () -> assertEquals(expected.isAnonymousStatus(), actual.isAnonymousStatus())
+                () -> assertEquals(expected.getIsAnonymous(), actual.getIsAnonymous())
         );
 
         verify(meetingRepository, times(1)).getParticipant(uuid);

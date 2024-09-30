@@ -187,6 +187,8 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                         status().isOk(),
                         jsonPath("scheduleNickname").value("유저"),
                         jsonPath("scheduleUuid").value("sch123"),
+                        jsonPath("meetingStartDate").value("2024-09-06"),
+                        jsonPath("meetingEndDate").value("2024-09-07"),
                         jsonPath("dateOfScheduleList.[0].startTime").value("2024-09-06T09:00:00"),
                         jsonPath("dateOfScheduleList.[0].endTime").value("2024-09-06T12:00:00"),
                         jsonPath("dateOfScheduleList.[1].startTime").value("2024-09-07T12:00:00"),
@@ -199,6 +201,8 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                         responseFields(
                                 fieldWithPath("scheduleNickname").description("일정을 등록한 유저 닉네임"),
                                 fieldWithPath("scheduleUuid").description("일정 UUID"),
+                                fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
                                 fieldWithPath("dateOfScheduleList").description("일정 목록"),
                                 fieldWithPath("dateOfScheduleList.[].startTime").description("일정 시작 시간"),
                                 fieldWithPath("dateOfScheduleList.[].endTime").description("일정 종료 시간")
@@ -248,12 +252,14 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                         .param("scheduleUuid", SCHEDULE_UUID))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("scheduleNickname").value("유저"),
-                        jsonPath("scheduleUuid").value("sch123"),
-                        jsonPath("dateOfScheduleList.[0].startTime").value("2024-09-06T09:00:00"),
-                        jsonPath("dateOfScheduleList.[0].endTime").value("2024-09-06T12:00:00"),
-                        jsonPath("dateOfScheduleList.[1].startTime").value("2024-09-07T12:00:00"),
-                        jsonPath("dateOfScheduleList.[1].endTime").value("2024-09-07T15:00:00")
+                        jsonPath("$.scheduleNickname").value("유저"),
+                        jsonPath("$.scheduleUuid").value("sch123"),
+                        jsonPath("$.meetingStartDate").value("2024-09-06"),
+                        jsonPath("$.meetingEndDate").value("2024-09-07"),
+                        jsonPath("$.dateOfScheduleList.[0].startTime").value("2024-09-06T09:00:00"),
+                        jsonPath("$.dateOfScheduleList.[0].endTime").value("2024-09-06T12:00:00"),
+                        jsonPath("$.dateOfScheduleList.[1].startTime").value("2024-09-07T12:00:00"),
+                        jsonPath("$.dateOfScheduleList.[1].endTime").value("2024-09-07T15:00:00")
                 )
                 .andDo(restDocs.document(
                         pathParameters(
@@ -265,6 +271,8 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                         responseFields(
                                 fieldWithPath("scheduleNickname").description("일정을 등록한 유저 닉네임"),
                                 fieldWithPath("scheduleUuid").description("일정 UUID"),
+                                fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
                                 fieldWithPath("dateOfScheduleList").description("일정 목록"),
                                 fieldWithPath("dateOfScheduleList.[].startTime").description("일정 시작 시간"),
                                 fieldWithPath("dateOfScheduleList.[].endTime").description("일정 종료 시간")

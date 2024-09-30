@@ -23,26 +23,24 @@ public class MeetingMyPageResponseDto {
     private final String meetingName;
     private final LocalDate meetingStartDate;
     private final LocalDate meetingEndDate;
-    private final LocalDateTime voteEndDate;
+    private final LocalDateTime dueDateTime;
     private final Integer numberOfPeople;
     private final Boolean isAnonymous;
-    private final String leaderName;
 
     @Builder
     public MeetingMyPageResponseDto(Long meetingId, String meetingName, String meetingUuid,
                                     LocalDate meetingStartDate, LocalDate meetingEndDate,
-                                    LocalDateTime voteEndDate, Integer numberOfPeople,
-                                    Boolean isAnonymous, String leaderName) {
+                                    LocalDateTime dueDateTime, Integer numberOfPeople,
+                                    Boolean isAnonymous) {
         this.categoryNames = new ArrayList<>();
         this.meetingId = meetingId;
         this.meetingName = meetingName;
         this.meetingUuid = meetingUuid;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
-        this.voteEndDate = voteEndDate;
+        this.dueDateTime = dueDateTime;
         this.numberOfPeople = numberOfPeople;
         this.isAnonymous = isAnonymous;
-        this.leaderName = leaderName;
     }
 
     public void addCategoryNames(List<String> categoryNames) {

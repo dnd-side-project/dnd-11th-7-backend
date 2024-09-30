@@ -73,7 +73,10 @@ public class MeetingDummy {
 
         response.addMemberNames(List.of("고래", "상어"));
 
-        MeetingTimeResponseDto responseDto = new MeetingTimeResponseDto(2, false);
+        LocalDate startDate = LocalDate.of(2024, 8, 27);
+        LocalDate endDate = LocalDate.of(2024, 8, 29);
+
+        MeetingTimeResponseDto responseDto = new MeetingTimeResponseDto(2, false, startDate, endDate);
         responseDto.addMeetingTimeList(List.of(response));
 
         return responseDto;
@@ -84,7 +87,7 @@ public class MeetingDummy {
 
         MeetingParticipantResponseDto response = MeetingParticipantResponseDto.builder()
                 .numberOfPeople(2)
-                .anonymousStatus(false)
+                .isAnonymous(false)
                 .build();
 
         MeetingParticipantResponseDto.ParticipantInfo whale
@@ -106,10 +109,9 @@ public class MeetingDummy {
                 .meetingUuid("123ABC")
                 .meetingStartDate(LocalDate.of(2024, 8, 27))
                 .meetingEndDate(LocalDate.of(2024, 8, 29))
-                .voteEndDate(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
+                .dueDateTime(LocalDateTime.of(2024, 8, 26, 23, 59, 59))
                 .numberOfPeople(6)
                 .isAnonymous(false)
-                .leaderName("승조")
                 .build();
 
         responseDto.addCategoryNames(List.of("팀플", "스터디", "회의"));

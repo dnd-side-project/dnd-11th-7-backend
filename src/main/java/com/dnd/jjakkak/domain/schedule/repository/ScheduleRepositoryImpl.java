@@ -2,6 +2,7 @@ package com.dnd.jjakkak.domain.schedule.repository;
 
 import com.dnd.jjakkak.domain.dateofschedule.dto.response.DateOfScheduleResponseDto;
 import com.dnd.jjakkak.domain.dateofschedule.entity.QDateOfSchedule;
+import com.dnd.jjakkak.domain.meeting.entity.QMeeting;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
 import com.dnd.jjakkak.domain.schedule.entity.QSchedule;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
@@ -60,14 +61,18 @@ public class ScheduleRepositoryImpl extends QuerydslRepositorySupport implements
      */
     @Override
     public ScheduleResponseDto findScheduleWithDateOfSchedule(Long scheduleId) {
+        QMeeting meeting = QMeeting.meeting;
         QSchedule schedule = QSchedule.schedule;
         QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
 
         ScheduleResponseDto responseDto = from(schedule)
+                .join(schedule.meeting, meeting)
                 .where(schedule.scheduleId.eq(scheduleId))
                 .select(Projections.constructor(ScheduleResponseDto.class,
                         schedule.scheduleNickname,
-                        schedule.scheduleUuid
+                        schedule.scheduleUuid,
+                        meeting.meetingStartDate,
+                        meeting.meetingEndDate
                 ))
                 .fetchOne();
 
