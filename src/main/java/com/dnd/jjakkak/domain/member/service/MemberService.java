@@ -7,7 +7,6 @@ import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +44,8 @@ public class MemberService {
     /**
      * 회원의 닉네임을 수정합니다.
      *
-     * @param memberId 회원 ID
-     * @param requestDto      닉네임 수정 요청 DTO
+     * @param memberId   회원 ID
+     * @param requestDto 닉네임 수정 요청 DTO
      */
     @Transactional
     public void updateNickname(Long memberId, MemberUpdateNicknameRequestDto requestDto) {
@@ -65,14 +64,4 @@ public class MemberService {
     public void deleteMember(Long memberId) {
         memberRepository.deleteById(memberId);
     }
-
-    /**
-     * 매주 월요일 자정에 탈퇴 처리된 이용자 하드 삭제
-     */
-    @Transactional
-    @Scheduled(cron = "0 0 0 ? * MON")
-    public void deletedMemberAllDeleted() {
-        memberRepository.deleteAllByIsDeleteTrue();
-    }
-
 }
