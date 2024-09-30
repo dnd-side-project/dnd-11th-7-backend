@@ -9,7 +9,6 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
-import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingUnauthorizedException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
@@ -22,10 +21,13 @@ import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
+import com.dnd.jjakkak.global.common.PagedResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -164,13 +166,13 @@ public class MeetingService {
      * @return 정렬된 시간 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public MeetingTimeResponseDto getMeetingTimes(String uuid, MeetingSort sort) {
+    public PagedResponse<MeetingTimeResponseDto> getMeetingTimes(String uuid, Pageable pageable, LocalDateTime requestTime) {
 
         if (!meetingRepository.existsByMeetingUuid(uuid)) {
             throw new MeetingNotFoundException();
         }
 
-        return meetingRepository.getMeetingTimes(uuid, sort);
+        return meetingRepository.getMeetingTimes(uuid, pageable, requestTime);
     }
 
     /**

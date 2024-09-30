@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * 일정 엔티티 클래스입니다.
  *
@@ -49,6 +51,9 @@ public class Schedule {
     @Column(name = "is_assigned", nullable = false)
     private Boolean isAssigned;
 
+    @Column(name = "assigned_at")
+    private LocalDateTime assignedAt;
+
     @Builder
     public Schedule(Meeting meeting, Member member, String scheduleNickname, String scheduleUuid) {
         this.meeting = meeting;
@@ -82,5 +87,14 @@ public class Schedule {
      */
     public void scheduleAssign() {
         this.isAssigned = Boolean.TRUE;
+    }
+
+    /**
+     * 일정을 할당한 시점을 변경하는 메서드입니다.
+     *
+     * @param assignedAt 할당 시점
+     */
+    public void changeAssignedAt(LocalDateTime assignedAt) {
+        this.assignedAt = assignedAt;
     }
 }

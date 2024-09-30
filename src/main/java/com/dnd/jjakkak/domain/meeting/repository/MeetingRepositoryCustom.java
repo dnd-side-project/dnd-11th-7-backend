@@ -3,8 +3,11 @@ package com.dnd.jjakkak.domain.meeting.repository;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
-import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
+import com.dnd.jjakkak.global.common.PagedResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+
+import java.time.LocalDateTime;
 
 /**
  * 모임 Querydsl 메서드를 정의하는 인터페이스입니다.
@@ -46,7 +49,7 @@ public interface MeetingRepositoryCustom {
      * @param sort 정렬 기준
      * @return 최적의 시간 응답 DTO 리스트
      */
-    MeetingTimeResponseDto getMeetingTimes(String uuid, MeetingSort sort);
+    PagedResponse<MeetingTimeResponseDto> getMeetingTimes(String uuid, Pageable pageable, LocalDateTime requestTime);
 
     /**
      * 모임의 UUID로 참가자를 조회합니다.

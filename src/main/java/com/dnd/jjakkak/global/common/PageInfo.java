@@ -14,14 +14,14 @@ public class PageInfo {
 
     private final int page;
     private final int size;
-    private final int totalElements;
     private final int totalPages;
+    private final int totalElements;
 
     @Builder
     public PageInfo(int page, int size, int totalElements, int totalPages) {
         this.page = page;
         this.size = size;
-        this.totalElements = totalElements;
         this.totalPages = totalPages;
+        this.totalElements = totalElements;
     }
 }
