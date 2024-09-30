@@ -42,7 +42,7 @@ public class AuthService {
 
         refreshTokenService.saveRefreshToken(kakaoId, newRefreshToken);
 
-        return new ReissueResponseDto(newAccessToken, newRefreshToken);
+        return new ReissueResponseDto("Bearer " + newAccessToken, newRefreshToken);
     }
 
     /**
