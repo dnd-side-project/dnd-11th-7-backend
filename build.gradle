@@ -67,6 +67,9 @@ dependencies {
 
     // logback appender discord
     implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

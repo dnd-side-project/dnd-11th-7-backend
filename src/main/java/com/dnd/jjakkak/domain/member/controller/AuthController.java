@@ -1,12 +1,14 @@
 package com.dnd.jjakkak.domain.member.controller;
 
+import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
+import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
 import com.dnd.jjakkak.domain.member.service.AuthService;
-import com.dnd.jjakkak.domain.member.service.BlacklistService;
-import jakarta.servlet.http.HttpServletResponse;
+import com.dnd.jjakkak.global.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthController {
 
     private final AuthService authService;
-    private final BlacklistService blacklistService;
 
     /**
      * Authorization Header 확인 후 로그인 여부를 확인하는 메서드.
@@ -48,23 +49,30 @@ public class AuthController {
     }
 
     /**
-     * Refresh Token을 이용하여 Access Token 재발급하는 메서드.
-     * 이 때 Refresh Token이 이미 블랙리스트라면 예외처리
+     * RT로 AT, RT 재발급, 새로 만들어진 RT는 쿠키로 전달 및 Redis에 새로 저장
+     * 이때 RT가 유효하지 않거나 Redis에 맞지 않을 경우 401
      *
      * @param refreshToken Refresh Token (Cookie)
-     * @param response     HttpServletResponse
-     * @return 200 (OK), Header - Authorization (Bearer Token)
+     * @return 200 (OK), Header - Authorization (Bearer Token), Refresh Token (Cookie)
      */
-    @GetMapping("/reissue")
-    public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken,
-                                             HttpServletResponse response) {
 
-        if (Strings.isEmpty(refreshToken) || blacklistService.isTokenBlacklisted(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @GetMapping("/reissue")
+    public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken) {
+
+        if (Strings.isEmpty(refreshToken)) {
+            throw new UnauthorizedException();
         }
 
-        String newAccessToken = authService.reissueToken(refreshToken);
-        response.setHeader("Authorization", newAccessToken);
-        return ResponseEntity.ok().build();
+        ReissueResponseDto reissuedToken = authService.reissueToken(refreshToken);
+
+        ResponseCookie refreshCookie = CookieUtils.createCookie(
+                "refresh_token",
+                reissuedToken.getRefreshToken(),
+                60 * 60 * 24 * 7);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, reissuedToken.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .build();
     }
 }

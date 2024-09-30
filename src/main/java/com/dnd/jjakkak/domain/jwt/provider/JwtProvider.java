@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.jwt.provider;
 import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
 import com.dnd.jjakkak.domain.jwt.exception.TokenExpiredException;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
+import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +27,14 @@ import java.util.Date;
 public class JwtProvider {
 
     private final Key key;
-    private static final int ACCESS_TOKEN_EXPIRATION_DAY = 3;
-    private static final int REFRESH_TOKEN_EXPIRATION_DAY = 7;
+    private final int accessTokenExpirationDay;
+    private final int refreshTokenExpirationDay;
 
-    public JwtProvider(JjakkakProperties jjakkakProperties) {
+    public JwtProvider(JjakkakProperties jjakkakProperties, TokenProperties tokenProperties) {
         String jwtSecret = jjakkakProperties.getJwtSecret();
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        accessTokenExpirationDay = tokenProperties.getAccessTokenExpirationDay();
+        refreshTokenExpirationDay = tokenProperties.getRefreshTokenExpirationDay();
     }
 
     /**
@@ -46,7 +49,7 @@ public class JwtProvider {
      */
     public String createAccessToken(String kakaoId) {
 
-        Date expiredDate = Date.from(Instant.now().plus(ACCESS_TOKEN_EXPIRATION_DAY, ChronoUnit.DAYS));
+        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -65,7 +68,7 @@ public class JwtProvider {
      * @return JWT
      */
     public String createRefreshToken(String kakaoId) {
-        Date expiredDate = Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION_DAY, ChronoUnit.DAYS));
+        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(kakaoId)
@@ -93,20 +96,5 @@ public class JwtProvider {
         } catch (MalformedJwtException e) {
             throw new MalformedTokenException();
         }
-    }
-
-    /**
-     * RefreshToken에서 subject를 추출하는 메소드
-     *
-     * @param jwt String
-     * @return subject
-     */
-    public String getSubjectFromRefreshToken(String jwt) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody();
-        return claims.getSubject();
     }
 }
