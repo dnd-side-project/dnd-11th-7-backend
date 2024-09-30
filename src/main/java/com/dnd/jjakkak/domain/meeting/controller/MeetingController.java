@@ -63,7 +63,7 @@ public class MeetingController {
     /**
      * 모임 시간을 조회하는 메서드입니다.
      *
-     * @param uuid 조회할 모임 UUID
+     * @param uuid     조회할 모임 UUID
      * @param pageable 페이징 정보 (default: page = 0, size = 10, sort = count)
      * @return 200 (OK), body: 모임 시간 응답 DTO
      */
@@ -83,6 +83,17 @@ public class MeetingController {
         responseDto.getData().setRequestTime(time);
 
         return ResponseEntity.ok(responseDto);
+    }
+
+    /**
+     * 모임의 최적 시간을 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 200 (OK), body: 최적 시간
+     */
+    @GetMapping("/{meetingUuid}/best-time")
+    public ResponseEntity<LocalDateTime> getBestTime(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getBestTime(uuid));
     }
 
     /**

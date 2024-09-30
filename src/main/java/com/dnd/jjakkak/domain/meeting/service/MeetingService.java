@@ -193,6 +193,11 @@ public class MeetingService {
         return meetingRepository.getParticipant(uuid);
     }
 
+    @Transactional(readOnly = true)
+    public LocalDateTime getBestTime(String uuid) {
+        return meetingRepository.getBestTime(uuid);
+    }
+
     /**
      * UUID를 생성하는 메서드입니다.
      *

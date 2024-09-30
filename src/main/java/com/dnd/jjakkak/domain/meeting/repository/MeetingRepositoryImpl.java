@@ -253,4 +253,23 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .fetchCount() > 0;
 
     }
+
+    @Override
+    public LocalDateTime getBestTime(String uuid) {
+
+        QMeeting meeting = QMeeting.meeting;
+        QSchedule schedule = QSchedule.schedule;
+        QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
+
+        return from(dateOfSchedule)
+                .join(dateOfSchedule.schedule, schedule)
+                .join(schedule.meeting, meeting)
+                .where(meeting.meetingUuid.eq(uuid))
+                .groupBy(dateOfSchedule.dateOfScheduleStart, dateOfSchedule.dateOfScheduleEnd)
+                .orderBy(dateOfSchedule.dateOfScheduleRank.count().desc(),
+                        dateOfSchedule.dateOfScheduleRank.avg().asc(),
+                        dateOfSchedule.dateOfScheduleStart.asc())
+                .select(dateOfSchedule.dateOfScheduleStart)
+                .fetchFirst();
+    }
 }

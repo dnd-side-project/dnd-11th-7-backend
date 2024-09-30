@@ -69,4 +69,12 @@ public interface MeetingRepositoryCustom {
      * @return 모임 일정 할당 여부
      */
     boolean existsByMemberIdAndMeetingUuid(Long memberId, String meetingUuid);
+
+    /**
+     * 모임 UUID로 최적의 시간을 조회합니다.
+     *
+     * @param uuid 모임 UUID
+     * @return 최적의 시간
+     */
+    LocalDateTime getBestTime(String uuid);
 }
