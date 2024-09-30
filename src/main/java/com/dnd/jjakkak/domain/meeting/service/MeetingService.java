@@ -158,11 +158,13 @@ public class MeetingService {
         return meetingRepository.getMeetingInfo(uuid);
     }
 
+
     /**
      * 모임의 시간을 조회하는 메서드입니다.
      *
-     * @param uuid 조회할 모임 UUID
-     * @param sort 정렬 기준 (COUNT: 인원 수, LATEST: 최신순)
+     * @param uuid        조회할 모임 UUID
+     * @param pageable    페이지 정보
+     * @param requestTime 요청 시간
      * @return 정렬된 시간 응답 DTO 리스트
      */
     @Transactional(readOnly = true)

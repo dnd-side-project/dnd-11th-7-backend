@@ -64,7 +64,7 @@ public class MeetingController {
      * 모임 시간을 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
-     * @param sort 정렬 기준 (COUNT: 인원 수, LATEST: 최신순)
+     * @param pageable 페이징 정보 (default: page = 0, size = 10, sort = count)
      * @return 200 (OK), body: 모임 시간 응답 DTO
      */
     @GetMapping("/{meetingUuid}/times")
