@@ -2,7 +2,7 @@ package com.dnd.jjakkak.domain.jwt.handler;
 
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
-import com.dnd.jjakkak.domain.member.service.BlacklistService;
+import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
@@ -27,9 +26,8 @@ import java.util.Arrays;
 public class OAuth2LogoutHandler implements LogoutHandler {
 
     private final MemberRepository memberRepository;
-    private final BlacklistService blacklistService;
+    private final RefreshTokenService refreshTokenService;
     private final JwtProvider jwtProvider;
-    private static final Long EXPIRATION_WEEK = 1L;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -50,9 +48,9 @@ public class OAuth2LogoutHandler implements LogoutHandler {
             return;
         }
 
+        refreshTokenService.deleteRefreshToken(kakaoId.toString());
 
         log.debug("logout refreshToken: {}", refreshToken);
-        blacklistService.createBlacklistToken(refreshToken, LocalDateTime.now().plusWeeks(EXPIRATION_WEEK));
         log.debug("logout 성공");
     }
 
@@ -63,8 +61,13 @@ public class OAuth2LogoutHandler implements LogoutHandler {
      * @return Refresh Token
      */
     public String extractRefreshToken(Cookie[] cookies) {
+
+        if (cookies == null) {
+            return null;
+        }
+
         return Arrays.stream(cookies)
-                .filter(cookie -> "refresh_tokne".equals(cookie.getName()))
+                .filter(cookie -> "refresh_token".equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
