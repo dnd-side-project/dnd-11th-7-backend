@@ -132,7 +132,6 @@ public class ScheduleService {
             throw new MeetingNotFoundException();
         }
 
-        schedule.changeAssignedAt(LocalDateTime.now());
         dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
 
@@ -153,7 +152,6 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findByMemberIdAndMeetingUuid(memberId, meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        schedule.changeAssignedAt(LocalDateTime.now());
         dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
 
