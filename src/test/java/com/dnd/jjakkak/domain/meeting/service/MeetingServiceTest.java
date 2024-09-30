@@ -9,7 +9,6 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTime;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
-import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingcategory.repository.MeetingCategoryRepository;
@@ -17,14 +16,17 @@ import com.dnd.jjakkak.domain.meetingmember.service.MeetingMemberService;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
+import com.dnd.jjakkak.global.common.PagedResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -182,26 +184,28 @@ class MeetingServiceTest {
 
         // given
         String uuid = "1234abcd";
-        MeetingTimeResponseDto expected = MeetingDummy.createMeetingTimeResponseDto();
+        PagedResponse<MeetingTimeResponseDto> expected = MeetingDummy.createMeetingTimeResponseDto();
 
-        when(meetingRepository.getMeetingTimes(anyString(), any()))
+        when(meetingRepository.getMeetingTimes(anyString(), any(), any()))
                 .thenReturn(expected);
 
         when(meetingRepository.existsByMeetingUuid(anyString()))
                 .thenReturn(true);
 
         // when
-        MeetingTimeResponseDto actual = meetingService.getMeetingTimes(uuid, MeetingSort.COUNT);
+        Pageable pageable = Pageable.ofSize(10);
+        LocalDateTime now = LocalDateTime.now();
+        PagedResponse<MeetingTimeResponseDto> actual = meetingService.getMeetingTimes(uuid, pageable, now);
 
         // then
         assertAll(
-                () -> assertEquals(expected.getNumberOfPeople(), actual.getNumberOfPeople()),
-                () -> assertEquals(expected.getIsAnonymous(), actual.getIsAnonymous())
+                () -> assertEquals(expected.getData().getNumberOfPeople(), actual.getData().getNumberOfPeople()),
+                () -> assertEquals(expected.getData().getIsAnonymous(), actual.getData().getIsAnonymous())
         );
 
-        assertEquals(expected.getMeetingTimeList().size(), actual.getMeetingTimeList().size());
-        MeetingTime expectedTime = expected.getMeetingTimeList().get(0);
-        MeetingTime actualTime = actual.getMeetingTimeList().get(0);
+        assertEquals(expected.getData().getMeetingTimeList().size(), actual.getData().getMeetingTimeList().size());
+        MeetingTime expectedTime = expected.getData().getMeetingTimeList().get(0);
+        MeetingTime actualTime = actual.getData().getMeetingTimeList().get(0);
 
         assertAll(
                 () -> assertEquals(expectedTime.getMemberNames(), actualTime.getMemberNames()),
@@ -210,7 +214,7 @@ class MeetingServiceTest {
                 () -> assertEquals(expectedTime.getRank(), actualTime.getRank())
         );
 
-        verify(meetingRepository, times(1)).getMeetingTimes(uuid, MeetingSort.COUNT);
+        verify(meetingRepository, times(1)).getMeetingTimes(uuid, pageable, now);
         verify(meetingRepository, times(1)).existsByMeetingUuid(uuid);
     }
 
@@ -225,7 +229,7 @@ class MeetingServiceTest {
 
         // expected
         assertThrows(MeetingNotFoundException.class,
-                () -> meetingService.getMeetingTimes(uuid, MeetingSort.COUNT));
+                () -> meetingService.getMeetingTimes(uuid, Pageable.ofSize(10), LocalDateTime.now()));
     }
 
     @Test
