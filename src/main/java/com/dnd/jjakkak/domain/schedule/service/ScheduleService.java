@@ -26,8 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.eclipse.jdt.internal.compiler.problem.ProblemSeverities.Optional;
-
 /**
  * 일정 서비스 클래스입니다.
  *

@@ -93,7 +93,7 @@ public class ScheduleController {
      * @param memberId    요청 회원 ID
      * @return 회원의 일정 작성 여부
      */
-    @GetMapping("/check-schedule-write")
+    @GetMapping("/check")
     public ResponseEntity<Boolean> getMemberScheduleWrite(@PathVariable("meetingUuid") String meetingUuid,
                                                           @AuthenticationPrincipal Long memberId){
         return ResponseEntity.ok(scheduleService.getMemberScheduleWrite(meetingUuid, memberId));
