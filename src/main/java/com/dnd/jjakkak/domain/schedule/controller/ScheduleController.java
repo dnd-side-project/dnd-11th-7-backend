@@ -87,6 +87,19 @@ public class ScheduleController {
     }
 
     /**
+     * 회원의 일정 작성 여부 확인 메서드입니다.
+     *
+     * @param meetingUuid 모임 UUID
+     * @param memberId    요청 회원 ID
+     * @return 회원의 일정 작성 여부
+     */
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> getMemberScheduleWrite(@PathVariable("meetingUuid") String meetingUuid,
+                                                          @AuthenticationPrincipal Long memberId){
+        return ResponseEntity.ok(scheduleService.getMemberScheduleWrite(meetingUuid, memberId));
+    }
+
+    /**
      * 비회원의 일정을 수정하는 메서드입니다.
      *
      * @param scheduleUuid 일정 ID
