@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -200,6 +201,20 @@ public class ScheduleService {
 
         return scheduleRepository.findScheduleWithDateOfSchedule(schedule.getScheduleId());
     }
+
+    /**
+     * 회원의 일정 작성 여부 확인 메서드입니다.
+     *
+     * @param meetingUuid 모임 UUID
+     * @param memberId    요청 회원 ID
+     * @return 회원의 일정 작성 여부
+     */
+    @Transactional(readOnly = true)
+    public Boolean getMemberScheduleWrite(String meetingUuid, Long memberId){
+        Optional<Schedule> schedule = scheduleRepository.findByMemberIdAndMeetingUuid(memberId, meetingUuid);
+        return schedule.isPresent();
+    }
+
 
     /**
      * UUID 생성 메서드입니다.
