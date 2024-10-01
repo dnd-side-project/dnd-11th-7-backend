@@ -3,6 +3,8 @@ package com.dnd.jjakkak.domain.meeting;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.*;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.global.common.PageInfo;
+import com.dnd.jjakkak.global.common.PagedResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -64,7 +66,7 @@ public class MeetingDummy {
         return responseDto;
     }
 
-    public static MeetingTimeResponseDto createMeetingTimeResponseDto() {
+    public static PagedResponse<MeetingTimeResponseDto> createMeetingTimeResponseDto() {
         MeetingTime response = MeetingTime.builder()
                 .startTime(LocalDateTime.of(2024, 8, 27, 10, 0))
                 .endTime(LocalDateTime.of(2024, 8, 27, 12, 0))
@@ -79,7 +81,9 @@ public class MeetingDummy {
         MeetingTimeResponseDto responseDto = new MeetingTimeResponseDto(2, false, startDate, endDate);
         responseDto.addMeetingTimeList(List.of(response));
 
-        return responseDto;
+        PageInfo pageInfo = new PageInfo(1, 1, 1, 1);
+
+        return new PagedResponse<>(responseDto, pageInfo);
     }
 
 

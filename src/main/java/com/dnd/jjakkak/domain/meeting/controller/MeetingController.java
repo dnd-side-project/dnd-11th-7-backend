@@ -5,16 +5,19 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
-import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
+import com.dnd.jjakkak.global.common.PagedResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -60,16 +63,37 @@ public class MeetingController {
     /**
      * 모임 시간을 조회하는 메서드입니다.
      *
-     * @param uuid 조회할 모임 UUID
-     * @param sort 정렬 기준 (COUNT: 인원 수, LATEST: 최신순)
+     * @param uuid     조회할 모임 UUID
+     * @param pageable 페이징 정보 (default: page = 0, size = 10, sort = count)
      * @return 200 (OK), body: 모임 시간 응답 DTO
      */
     @GetMapping("/{meetingUuid}/times")
-    public ResponseEntity<MeetingTimeResponseDto> getMeetingTimes(
+    public ResponseEntity<PagedResponse<MeetingTimeResponseDto>> getMeetingTimes(
             @PathVariable("meetingUuid") String uuid,
-            @RequestParam(value = "sort", defaultValue = "COUNT") MeetingSort sort) {
+            @PageableDefault(sort = "count") Pageable pageable,
+            @RequestParam(value = "request_time", required = false) String requestTime) {
 
-        return ResponseEntity.ok(meetingService.getMeetingTimes(uuid, sort));
+        LocalDateTime time = LocalDateTime.now();
+
+        if (requestTime != null) {
+            time = LocalDateTime.parse(requestTime);
+        }
+
+        PagedResponse<MeetingTimeResponseDto> responseDto = meetingService.getMeetingTimes(uuid, pageable, time);
+        responseDto.getData().setRequestTime(time);
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    /**
+     * 모임의 최적 시간을 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 200 (OK), body: 최적 시간
+     */
+    @GetMapping("/{meetingUuid}/best-time")
+    public ResponseEntity<LocalDateTime> getBestTime(@PathVariable("meetingUuid") String uuid) {
+        return ResponseEntity.ok(meetingService.getBestTime(uuid));
     }
 
     /**

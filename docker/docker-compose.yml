@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: jjakkak-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: jjakkak
+      MYSQL_ROOT_PASSWORD: 1234
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+
+  redis:
+    image: redis:latest
+    container_name: jjakkak-redis
+    restart: always
+    ports:
+      - "6379:6379"

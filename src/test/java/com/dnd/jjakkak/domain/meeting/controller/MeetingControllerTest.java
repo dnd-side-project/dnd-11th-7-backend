@@ -7,6 +7,7 @@ import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
 import com.dnd.jjakkak.domain.meeting.service.MeetingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -22,8 +24,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +44,8 @@ class MeetingControllerTest extends AbstractRestDocsTest {
 
     @Autowired
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    @Autowired
+    private ParameterNamesModule parameterNamesModule;
 
 
     @Test
@@ -151,37 +154,49 @@ class MeetingControllerTest extends AbstractRestDocsTest {
     void getBestTime_success() throws Exception {
 
         String meetingUuid = "123ABC";
-        when(meetingService.getMeetingTimes(anyString(), any()))
+        when(meetingService.getMeetingTimes(anyString(), any(), any()))
                 .thenReturn(MeetingDummy.createMeetingTimeResponseDto());
+
+        String now = LocalDateTime.now().toString();
 
         mockMvc.perform(get("/api/v1/meetings/{meetingUuid}/times", meetingUuid)
                         .param("sort", "COUNT")
+                        .param("request_time", now)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpectAll(
                         status().isOk(),
-                        jsonPath("$.numberOfPeople").value(2),
-                        jsonPath("$.isAnonymous").value(false),
-                        jsonPath("$.meetingStartDate").value("2024-08-27"),
-                        jsonPath("$.meetingEndDate").value("2024-08-29"),
-                        jsonPath("$.meetingTimeList[0].memberNames.[0]").value("고래"),
-                        jsonPath("$.meetingTimeList[0].memberNames.[1]").value("상어"),
-                        jsonPath("$.meetingTimeList[0].startTime").value("2024-08-27T10:00:00"),
-                        jsonPath("$.meetingTimeList[0].endTime").value("2024-08-27T12:00:00"),
-                        jsonPath("$.meetingTimeList[0].rank").value(1.0))
+                        jsonPath("$.data.numberOfPeople").value(2),
+                        jsonPath("$.data.isAnonymous").value(false),
+                        jsonPath("$.data.meetingStartDate").value("2024-08-27"),
+                        jsonPath("$.data.meetingEndDate").value("2024-08-29"),
+                        jsonPath("$.data.meetingTimeList[0].memberNames.[0]").value("고래"),
+                        jsonPath("$.data.meetingTimeList[0].memberNames.[1]").value("상어"),
+                        jsonPath("$.data.meetingTimeList[0].startTime").value("2024-08-27T10:00:00"),
+                        jsonPath("$.data.meetingTimeList[0].endTime").value("2024-08-27T12:00:00"),
+                        jsonPath("$.data.meetingTimeList[0].rank").value(1.0))
                 .andDo(restDocs.document(
                         pathParameters(
                                 parameterWithName("meetingUuid").description("모임 UUID")
                         ),
+                        queryParameters(
+                                parameterWithName("request_time").description("요청 시간"),
+                                parameterWithName("sort").description("정렬 기준 (COUNT, RANK)")
+                        ),
                         responseFields(
-                                fieldWithPath("numberOfPeople").description("총 인원 수"),
-                                fieldWithPath("isAnonymous").description("익명 여부"),
-                                fieldWithPath("meetingStartDate").description("모임 시작 날짜"),
-                                fieldWithPath("meetingEndDate").description("모임 종료 날짜"),
-                                fieldWithPath("meetingTimeList[].memberNames").description("멤버 이름 리스트"),
-                                fieldWithPath("meetingTimeList[].startTime").description("시작 시간"),
-                                fieldWithPath("meetingTimeList[].endTime").description("종료 시간"),
-                                fieldWithPath("meetingTimeList[].rank").description("우선순위 (오름차순)")
+                                fieldWithPath("data.numberOfPeople").description("총 인원 수"),
+                                fieldWithPath("data.isAnonymous").description("익명 여부"),
+                                fieldWithPath("data.meetingStartDate").description("모임 시작 날짜"),
+                                fieldWithPath("data.meetingEndDate").description("모임 종료 날짜"),
+                                fieldWithPath("data.requestTime").description("요청 시간"),
+                                fieldWithPath("data.meetingTimeList[].memberNames").description("멤버 이름 리스트"),
+                                fieldWithPath("data.meetingTimeList[].startTime").description("시작 시간"),
+                                fieldWithPath("data.meetingTimeList[].endTime").description("종료 시간"),
+                                fieldWithPath("data.meetingTimeList[].rank").description("우선순위 (오름차순)"),
+                                fieldWithPath("pageInfo.page").description("현재 페이지"),
+                                fieldWithPath("pageInfo.size").description("페이지 크기"),
+                                fieldWithPath("pageInfo.totalElements").description("총 요소 수"),
+                                fieldWithPath("pageInfo.totalPages").description("총 페이지 수")
                         ))
                 );
     }

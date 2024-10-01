@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -77,6 +78,8 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingUuid(meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
+        schedule.changeAssignedAt(LocalDateTime.now());
+
         validateAndAssignSchedule(requestDto, schedule);
 
         return ScheduleAssignResponseDto.builder()
@@ -107,6 +110,7 @@ public class ScheduleService {
 
         schedule.assignMember(member);
         schedule.updateScheduleNickname(member.getMemberNickname());
+        schedule.changeAssignedAt(LocalDateTime.now());
         validateAndAssignSchedule(requestDto, schedule);
 
         meetingMemberService.createMeetingMemberBySchedule(schedule.getScheduleId(), memberId);
@@ -169,6 +173,7 @@ public class ScheduleService {
             throw new MeetingNotFoundException();
         }
 
+        schedule.changeAssignedAt(LocalDateTime.now());
         return scheduleRepository.findScheduleWithDateOfSchedule(schedule.getScheduleId());
     }
 

@@ -16,6 +16,7 @@ public class SecurityEndpointPaths {
             "/api/v1/meetings/*/participants",
             "/api/v1/meetings/*/schedules/guests/**",
             "/api/v1/meetings/*/schedules/*",
+            "/api/v1/meetings/*/best-time",
     };
 
     public static final String[] USER_LIST = {

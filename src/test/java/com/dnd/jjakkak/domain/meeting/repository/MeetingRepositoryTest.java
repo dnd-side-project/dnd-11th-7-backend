@@ -7,16 +7,18 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTime;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
-import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meetingcategory.entity.MeetingCategory;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.schedule.entity.Schedule;
+import com.dnd.jjakkak.global.common.PageInfo;
+import com.dnd.jjakkak.global.common.PagedResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
@@ -167,12 +169,16 @@ class MeetingRepositoryTest {
     @DisplayName("모임 시간 조회 - COUNT 기준 정렬")
     void getMeetingTimes_defaultSort() {
 
+        LocalDateTime now = LocalDateTime.now();
+
         // given
         Schedule schedule1 = Schedule.builder()
                 .meeting(testMeeting)
                 .scheduleNickname("멤버1")
                 .scheduleUuid("123abc")
                 .build();
+
+        schedule1.changeAssignedAt(now);
 
         em.persist(schedule1);
 
@@ -200,6 +206,8 @@ class MeetingRepositoryTest {
                 .scheduleUuid("456def")
                 .build();
 
+        schedule2.changeAssignedAt(now);
+
         em.persist(schedule2);
 
         DateOfSchedule dateOfSchedule3 = DateOfSchedule.builder()
@@ -216,18 +224,30 @@ class MeetingRepositoryTest {
         String uuid = "123abc";
 
         // when
-        MeetingTimeResponseDto actual = meetingRepository.getMeetingTimes(uuid, MeetingSort.COUNT);
+        Pageable pageable = Pageable.ofSize(10);
+        PagedResponse<MeetingTimeResponseDto> actual = meetingRepository.getMeetingTimes(uuid, pageable, LocalDateTime.now());
 
         // then
-        assertEquals(2, actual.getMeetingTimeList().size());
 
-        MeetingTime primary = actual.getMeetingTimeList().get(0);
+        PageInfo pageInfo = actual.getPageInfo();
+        assertAll(
+                () -> assertEquals(2, pageInfo.getTotalElements()),
+                () -> assertEquals(1, pageInfo.getTotalPages())
+        );
+
+        MeetingTimeResponseDto data = actual.getData();
+        assertAll(
+                () -> assertEquals(2, data.getMeetingTimeList().size())
+        );
+
+
+        MeetingTime primary = data.getMeetingTimeList().get(0);
         assertAll(
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleStart(), primary.getStartTime()),
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleEnd(), primary.getEndTime())
         );
 
-        MeetingTime secondary = actual.getMeetingTimeList().get(1);
+        MeetingTime secondary = data.getMeetingTimeList().get(1);
         assertAll(
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleStart(), secondary.getStartTime()),
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleEnd(), secondary.getEndTime())
@@ -239,6 +259,7 @@ class MeetingRepositoryTest {
     @DisplayName("모임 시간 조회 - LATEST 기준 정렬")
     void getMeetingTimes_latestSort() {
         // given
+        LocalDateTime now = LocalDateTime.now();
 
         Schedule schedule1 = Schedule.builder()
                 .meeting(testMeeting)
@@ -246,6 +267,7 @@ class MeetingRepositoryTest {
                 .scheduleUuid("123abc")
                 .build();
 
+        schedule1.changeAssignedAt(now);
 
         DateOfSchedule dateOfSchedule1 = DateOfSchedule.builder()
                 .schedule(schedule1)
@@ -263,6 +285,8 @@ class MeetingRepositoryTest {
                 .scheduleUuid("456def")
                 .build();
 
+        schedule2.changeAssignedAt(now);
+
         DateOfSchedule dateOfSchedule2 = DateOfSchedule.builder()
                 .schedule(schedule2)
                 .dateOfScheduleRank(2)
@@ -278,18 +302,26 @@ class MeetingRepositoryTest {
         String uuid = "123abc";
 
         // when
-        MeetingTimeResponseDto actual = meetingRepository.getMeetingTimes(uuid, MeetingSort.LATEST);
+        Pageable pageable = Pageable.ofSize(10);
+        PagedResponse<MeetingTimeResponseDto> actual = meetingRepository.getMeetingTimes(uuid, pageable, LocalDateTime.now());
 
         // then
-        assertEquals(2, actual.getMeetingTimeList().size());
+        PageInfo pageInfo = actual.getPageInfo();
+        assertAll(
+                () -> assertEquals(2, pageInfo.getTotalElements()),
+                () -> assertEquals(1, pageInfo.getTotalPages())
+        );
 
-        MeetingTime primary = actual.getMeetingTimeList().get(0);
+        MeetingTimeResponseDto data = actual.getData();
+        assertEquals(2, data.getMeetingTimeList().size());
+
+        MeetingTime primary = data.getMeetingTimeList().get(0);
         assertAll(
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleStart(), primary.getStartTime()),
                 () -> assertEquals(dateOfSchedule2.getDateOfScheduleEnd(), primary.getEndTime())
         );
 
-        MeetingTime secondary = actual.getMeetingTimeList().get(1);
+        MeetingTime secondary = data.getMeetingTimeList().get(1);
         assertAll(
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleStart(), secondary.getStartTime()),
                 () -> assertEquals(dateOfSchedule1.getDateOfScheduleEnd(), secondary.getEndTime())
@@ -328,7 +360,6 @@ class MeetingRepositoryTest {
         em.persist(schedule2);
 
         em.flush();
-        // em.clear();  // clear를 사용하면 엔티티가 detached 상태가 되므로 주의 필요
 
         String uuid = "123abc";
 

@@ -9,7 +9,6 @@ import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
 import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
-import com.dnd.jjakkak.domain.meeting.enums.MeetingSort;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingUnauthorizedException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
@@ -22,10 +21,13 @@ import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
+import com.dnd.jjakkak.global.common.PagedResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -156,21 +158,23 @@ public class MeetingService {
         return meetingRepository.getMeetingInfo(uuid);
     }
 
+
     /**
      * 모임의 시간을 조회하는 메서드입니다.
      *
-     * @param uuid 조회할 모임 UUID
-     * @param sort 정렬 기준 (COUNT: 인원 수, LATEST: 최신순)
+     * @param uuid        조회할 모임 UUID
+     * @param pageable    페이지 정보
+     * @param requestTime 요청 시간
      * @return 정렬된 시간 응답 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public MeetingTimeResponseDto getMeetingTimes(String uuid, MeetingSort sort) {
+    public PagedResponse<MeetingTimeResponseDto> getMeetingTimes(String uuid, Pageable pageable, LocalDateTime requestTime) {
 
         if (!meetingRepository.existsByMeetingUuid(uuid)) {
             throw new MeetingNotFoundException();
         }
 
-        return meetingRepository.getMeetingTimes(uuid, sort);
+        return meetingRepository.getMeetingTimes(uuid, pageable, requestTime);
     }
 
     /**
@@ -187,6 +191,11 @@ public class MeetingService {
         }
 
         return meetingRepository.getParticipant(uuid);
+    }
+
+    @Transactional(readOnly = true)
+    public LocalDateTime getBestTime(String uuid) {
+        return meetingRepository.getBestTime(uuid);
     }
 
     /**
