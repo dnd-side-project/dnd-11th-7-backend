@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.schedule.service;
 import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateRequestDto;
 import com.dnd.jjakkak.domain.dateofschedule.service.DateOfScheduleService;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.domain.meeting.exception.MeetingAlreadyEndedException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingFullException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
@@ -78,14 +79,17 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingUuid(meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        schedule.changeAssignedAt(LocalDateTime.now());
+        // 모임의 일정 마감시간 이후 요청일 경우 예외 처리
+        LocalDateTime now = checkMeetingEnded(schedule.getMeeting());
 
+        schedule.changeAssignedAt(now);
         validateAndAssignSchedule(requestDto, schedule);
 
         return ScheduleAssignResponseDto.builder()
                 .scheduleUuid(schedule.getScheduleUuid())
                 .build();
     }
+
 
     /**
      * 회원 일정 할당 메서드입니다.
@@ -110,7 +114,11 @@ public class ScheduleService {
 
         schedule.assignMember(member);
         schedule.updateScheduleNickname(member.getMemberNickname());
-        schedule.changeAssignedAt(LocalDateTime.now());
+
+        // 모임의 일정 마감시간 이후 요청일 경우 예외 처리
+        LocalDateTime now = checkMeetingEnded(schedule.getMeeting());
+
+        schedule.changeAssignedAt(now);
         validateAndAssignSchedule(requestDto, schedule);
 
         meetingMemberService.createMeetingMemberBySchedule(schedule.getScheduleId(), memberId);
@@ -129,9 +137,14 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findByScheduleUuid(scheduleUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        if (!(schedule.getMeeting().getMeetingUuid().equals(meetingUuid))) {
+        Meeting meeting = schedule.getMeeting();
+
+        checkMeetingEnded(meeting);
+
+        if (!(meeting.getMeetingUuid().equals(meetingUuid))) {
             throw new MeetingNotFoundException();
         }
+
 
         dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
@@ -152,6 +165,9 @@ public class ScheduleService {
 
         Schedule schedule = scheduleRepository.findByMemberIdAndMeetingUuid(memberId, meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
+
+        Meeting meeting = schedule.getMeeting();
+        checkMeetingEnded(meeting);
 
         dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
@@ -210,7 +226,7 @@ public class ScheduleService {
      * @return 회원의 일정 작성 여부
      */
     @Transactional(readOnly = true)
-    public Boolean getMemberScheduleWrite(String meetingUuid, Long memberId){
+    public Boolean getMemberScheduleWrite(String meetingUuid, Long memberId) {
         Optional<Schedule> schedule = scheduleRepository.findByMemberIdAndMeetingUuid(memberId, meetingUuid);
         return schedule.isPresent();
     }
@@ -260,5 +276,19 @@ public class ScheduleService {
         schedule.scheduleAssign();
     }
 
+    /**
+     * 모임의 일정 마감시간 이후 요청일 경우 예외 처리
+     *
+     * @param meeting 모임 일정
+     * @return 현재 시간
+     */
+    private LocalDateTime checkMeetingEnded(Meeting meeting) {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.isAfter(meeting.getDueDateTime())) {
+            throw new MeetingAlreadyEndedException();
+        }
+        return now;
+    }
 
 }

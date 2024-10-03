@@ -3,6 +3,7 @@ package com.dnd.jjakkak.domain.schedule.service;
 import com.dnd.jjakkak.domain.dateofschedule.service.DateOfScheduleService;
 import com.dnd.jjakkak.domain.meeting.MeetingDummy;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
+import com.dnd.jjakkak.domain.meeting.exception.MeetingAlreadyEndedException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.repository.MeetingRepository;
 import com.dnd.jjakkak.domain.meetingmember.service.MeetingMemberService;
@@ -89,6 +90,22 @@ class ScheduleServiceTest {
         assertThrows(ScheduleNotFoundException.class,
                 () -> scheduleService.assignScheduleToGuest(MEETING_UUID, requestDto));
 
+        verify(scheduleRepository, times(1)).findNotAssignedScheduleByMeetingUuid(MEETING_UUID);
+    }
+
+    @Test
+    @DisplayName("비회원 일정 할당 - 실패(모임의 일정 마감시간 이후 요청)")
+    void assign_schedule_to_guest_fail_after_meeting_end() {
+
+        // given
+        when(scheduleRepository.findNotAssignedScheduleByMeetingUuid(MEETING_UUID))
+                .thenReturn(Optional.of(ScheduleDummy.invalidTimeSchedule()));
+
+        // when
+        assertThrows(MeetingAlreadyEndedException.class,
+                () -> scheduleService.assignScheduleToGuest(MEETING_UUID, ScheduleDummy.assignRequestDto()));
+
+        // then
         verify(scheduleRepository, times(1)).findNotAssignedScheduleByMeetingUuid(MEETING_UUID);
     }
 
@@ -184,6 +201,33 @@ class ScheduleServiceTest {
     }
 
     @Test
+    @DisplayName("회원 일정 할당 - 실패 (모임의 일정 마감시간 이후 요청)")
+    void assign_schedule_to_member_fail_after_meeting_end() {
+
+        // given
+        when(scheduleRepository.findNotAssignedScheduleByMeetingUuid(MEETING_UUID))
+                .thenReturn(Optional.of(ScheduleDummy.invalidTimeSchedule()));
+
+        Member member = Member.builder()
+                .memberNickname("정승조")
+                .kakaoId(123L)
+                .build();
+
+        ReflectionTestUtils.setField(member, "memberId", 1L);
+
+        when(memberRepository.findById(anyLong()))
+                .thenReturn(Optional.of(member));
+
+        ScheduleAssignRequestDto requestDto = ScheduleDummy.assignRequestDto();
+
+        // when & then
+        assertThrows(MeetingAlreadyEndedException.class,
+                () -> scheduleService.assignScheduleToMember(1L, MEETING_UUID, requestDto));
+
+        verify(scheduleRepository, times(1)).findNotAssignedScheduleByMeetingUuid(MEETING_UUID);
+    }
+
+    @Test
     @DisplayName("회원 일정 할당 - 성공")
     void assign_schedule_to_member_success() {
 
@@ -227,6 +271,22 @@ class ScheduleServiceTest {
         // then
         verify(scheduleRepository, times(1)).findByScheduleUuid(anyString());
         verify(dateOfScheduleService, times(1)).updateDateList(anyLong(), any());
+    }
+
+    @Test
+    @DisplayName("일정 수정 - 실패 (모임의 일정 마감시간 이후 요청)")
+    void update_schedule_fail_after_meeting_end() {
+
+        // given
+        when(scheduleRepository.findByScheduleUuid(any()))
+                .thenReturn(Optional.of(ScheduleDummy.invalidTimeSchedule()));
+
+        // when & then
+        assertThrows(MeetingAlreadyEndedException.class,
+                () -> scheduleService.updateGuestSchedule(MEETING_UUID, SCHEDULE_UUID, ScheduleDummy.updateRequestDto()));
+
+        verify(scheduleRepository, times(1)).findByScheduleUuid(anyString());
+        verify(dateOfScheduleService, times(0)).updateDateList(anyLong(), any());
     }
 
     @Test
