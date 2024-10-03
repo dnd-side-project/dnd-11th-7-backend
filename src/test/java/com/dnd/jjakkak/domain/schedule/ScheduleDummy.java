@@ -99,7 +99,33 @@ public class ScheduleDummy {
                 .meetingEndDate(LocalDate.of(2024, 9, 7))
                 .numberOfPeople(6)
                 .isAnonymous(false)
-                .dueDateTime(LocalDateTime.of(2024, 9, 5, 12, 0, 0))
+                .dueDateTime(LocalDateTime.of(2099, 12, 31, 12, 0, 0))
+                .meetingLeaderId(1L)
+                .meetingUuid("met123")
+                .build();
+
+        ReflectionTestUtils.setField(meeting, "meetingId", 1L);
+
+        Schedule schedule = Schedule.builder()
+                .meeting(meeting)
+                .scheduleUuid("sch123")
+                .scheduleNickname("유저")
+                .build();
+
+        ReflectionTestUtils.setField(schedule, "scheduleId", 1L);
+
+        return schedule;
+    }
+
+    public static Schedule invalidTimeSchedule() {
+
+        Meeting meeting = Meeting.builder()
+                .meetingName("세븐일레븐")
+                .meetingStartDate(LocalDate.of(2024, 9, 6))
+                .meetingEndDate(LocalDate.of(2024, 9, 7))
+                .numberOfPeople(6)
+                .isAnonymous(false)
+                .dueDateTime(LocalDateTime.of(2024, 9, 13, 12, 0, 0))
                 .meetingLeaderId(1L)
                 .meetingUuid("met123")
                 .build();
