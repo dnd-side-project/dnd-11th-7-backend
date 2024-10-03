@@ -80,11 +80,7 @@ public class ScheduleService {
                 .orElseThrow(ScheduleNotFoundException::new);
 
         // 모임의 일정 마감시간 이후 요청일 경우 예외 처리
-        LocalDateTime now = LocalDateTime.now();
-
-        if (now.isAfter(schedule.getMeeting().getDueDateTime())) {
-            throw new MeetingAlreadyEndedException();
-        }
+        LocalDateTime now = checkMeetingEnded(schedule.getMeeting());
 
         schedule.changeAssignedAt(now);
         validateAndAssignSchedule(requestDto, schedule);
@@ -93,6 +89,7 @@ public class ScheduleService {
                 .scheduleUuid(schedule.getScheduleUuid())
                 .build();
     }
+
 
     /**
      * 회원 일정 할당 메서드입니다.
@@ -119,10 +116,7 @@ public class ScheduleService {
         schedule.updateScheduleNickname(member.getMemberNickname());
 
         // 모임의 일정 마감시간 이후 요청일 경우 예외 처리
-        LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(schedule.getMeeting().getDueDateTime())) {
-            throw new MeetingAlreadyEndedException();
-        }
+        LocalDateTime now = checkMeetingEnded(schedule.getMeeting());
 
         schedule.changeAssignedAt(now);
         validateAndAssignSchedule(requestDto, schedule);
@@ -145,10 +139,7 @@ public class ScheduleService {
 
         Meeting meeting = schedule.getMeeting();
 
-        LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(meeting.getDueDateTime())) {
-            throw new MeetingAlreadyEndedException();
-        }
+        checkMeetingEnded(meeting);
 
         if (!(meeting.getMeetingUuid().equals(meetingUuid))) {
             throw new MeetingNotFoundException();
@@ -176,10 +167,7 @@ public class ScheduleService {
                 .orElseThrow(ScheduleNotFoundException::new);
 
         Meeting meeting = schedule.getMeeting();
-        LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(meeting.getDueDateTime())) {
-            throw new MeetingAlreadyEndedException();
-        }
+        checkMeetingEnded(meeting);
 
         dateOfScheduleService.updateDateList(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
     }
@@ -288,5 +276,19 @@ public class ScheduleService {
         schedule.scheduleAssign();
     }
 
+    /**
+     * 모임의 일정 마감시간 이후 요청일 경우 예외 처리
+     *
+     * @param meeting 모임 일정
+     * @return 현재 시간
+     */
+    private LocalDateTime checkMeetingEnded(Meeting meeting) {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.isAfter(meeting.getDueDateTime())) {
+            throw new MeetingAlreadyEndedException();
+        }
+        return now;
+    }
 
 }
