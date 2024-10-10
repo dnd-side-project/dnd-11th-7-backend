@@ -94,7 +94,6 @@ public class MeetingService {
         }
 
         // 모임 생성 시 인원 수 만큼 기본 일정을 생성합니다.
-        // TODO: 개선할 수 있는 방법 찾아보기
         for (int i = 0; i < meeting.getNumberOfPeople(); i++) {
             scheduleService.createDefaultSchedule(meeting);
         }
@@ -193,9 +192,27 @@ public class MeetingService {
         return meetingRepository.getParticipant(uuid);
     }
 
+    /**
+     * 모임의 최적 시간을 조회합니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 모임의 최적 시간 1개
+     */
     @Transactional(readOnly = true)
     public LocalDateTime getBestTime(String uuid) {
         return meetingRepository.getBestTime(uuid);
+    }
+
+
+    /**
+     * 모임의 전체 일정을 조회합니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 모임의 전체 일정 응답 DTO
+     */
+    @Transactional(readOnly = true)
+    public MeetingTimeResponseDto getMeetingAllTimes(String uuid) {
+        return meetingRepository.getMeetingAllTimes(uuid);
     }
 
     /**

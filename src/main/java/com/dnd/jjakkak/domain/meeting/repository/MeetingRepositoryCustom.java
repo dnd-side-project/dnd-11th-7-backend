@@ -77,4 +77,12 @@ public interface MeetingRepositoryCustom {
      * @return 최적의 시간
      */
     LocalDateTime getBestTime(String uuid);
+
+    /**
+     * 모임의 UUID로 전체 일정을 조회합니다.
+     *
+     * @param uuid 모임 UUId
+     * @return 모임 시간 응답 DTO
+     */
+    MeetingTimeResponseDto getMeetingAllTimes(String uuid);
 }
