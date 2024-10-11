@@ -15,7 +15,6 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -24,6 +23,7 @@ import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,41 +39,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
 
+    /**
+     * 화이트 리스트에 포함된 요청은 필터링하지 않습니다.
+     */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 
-        String path = request.getRequestURI();
-
-        if (isPathInUserList(path)) {
-            String token = parseBearerToken(request);
-
-            if (token == null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            String kakaoId = jwtProvider.validateToken(token);
-            if (Strings.isEmpty(kakaoId)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            authenticateUser(kakaoId, request);
-        }
-
-        filterChain.doFilter(request, response);
+        return Arrays.stream(SecurityEndpointPaths.WHITE_LIST)
+                .anyMatch(path ->
+                        PatternMatchUtils.simpleMatch(path, request.getRequestURI()));
     }
 
     /**
-     * 요청 URI가 유저 리스트에 포함되어 있는지 확인합니다.
-     *
-     * @param path 요청 URI
-     * @return 유저 리스트에 포함되어 있으면 true, 아니면 false
+     * 요청에 대해 JWT 인증을 수행합니다.
      */
-    private boolean isPathInUserList(String path) {
-        return PatternMatchUtils.simpleMatch(SecurityEndpointPaths.USER_LIST, path);
-    }
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String token = parseBearerToken(request);
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String kakaoId = jwtProvider.validateToken(token);
+        if (Strings.isEmpty(kakaoId)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        authenticateUser(kakaoId, request);
+        filterChain.doFilter(request, response);
+    }
 
     /**
      * Authorization 헤더에서 Bearer Token을 추출합니다.
@@ -105,11 +102,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         AbstractAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(member.getMemberId(), null, authorities);
         WebAuthenticationDetails authDetails = new WebAuthenticationDetailsSource().buildDetails(request);
-
         authToken.setDetails(authDetails);
 
-        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-        securityContext.setAuthentication(authToken);
-        SecurityContextHolder.setContext(securityContext);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 }
