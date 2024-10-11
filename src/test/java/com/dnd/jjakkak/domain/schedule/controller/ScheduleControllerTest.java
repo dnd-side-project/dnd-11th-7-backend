@@ -4,6 +4,7 @@ import com.dnd.jjakkak.config.AbstractRestDocsTest;
 import com.dnd.jjakkak.config.JjakkakMockUser;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.schedule.ScheduleDummy;
+import com.dnd.jjakkak.domain.schedule.facade.ScheduleFacade;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +39,9 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
 
     @MockBean
     ScheduleService scheduleService;
+
+    @MockBean
+    ScheduleFacade scheduleFacade;
 
     @Autowired
     ObjectMapper objectMapper;
