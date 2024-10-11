@@ -12,11 +12,10 @@ public class SecurityEndpointPaths {
             "/api/v1/auth/oauth/**",
             "/api/v1/auth/**",
             "/api/v1/meetings/*/info",
-            "/api/v1/meetings/*/times",
+            "/api/v1/meetings/*/times/**",
             "/api/v1/meetings/*/participants",
             "/api/v1/meetings/*/schedules/guests/**",
-            "/api/v1/meetings/*/schedules/*",
-            "/api/v1/meetings/*/best-time",
+            "/api/v1/meetings/*/schedules/*"
     };
 
     public static final String[] USER_LIST = {

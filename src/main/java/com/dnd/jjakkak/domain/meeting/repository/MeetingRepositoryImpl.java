@@ -110,7 +110,6 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
     @Override
     public PagedResponse<MeetingTimeResponseDto> getMeetingTimes(String uuid, Pageable pageable, LocalDateTime requestTime) {
 
-        // TODO : 성능 개선 필요해보임
         QMeeting meeting = QMeeting.meeting;
         QSchedule schedule = QSchedule.schedule;
         QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
@@ -271,5 +270,57 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                         dateOfSchedule.dateOfScheduleStart.asc())
                 .select(dateOfSchedule.dateOfScheduleStart)
                 .fetchFirst();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MeetingTimeResponseDto getMeetingAllTimes(String uuid) {
+
+        QMeeting meeting = QMeeting.meeting;
+        QSchedule schedule = QSchedule.schedule;
+        QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
+
+        // 빠른 시간 순으로 조회
+        List<MeetingTime> meetingTimeList = from(dateOfSchedule)
+                .join(dateOfSchedule.schedule, schedule)
+                .join(schedule.meeting, meeting)
+                .where(meeting.meetingUuid.eq(uuid))
+                .groupBy(dateOfSchedule.dateOfScheduleStart, dateOfSchedule.dateOfScheduleEnd)
+                .orderBy(dateOfSchedule.dateOfScheduleStart.asc())
+                .select(Projections.constructor(MeetingTime.class,
+                        dateOfSchedule.dateOfScheduleStart,
+                        dateOfSchedule.dateOfScheduleEnd,
+                        dateOfSchedule.dateOfScheduleRank.avg()
+                ))
+                .fetch();
+
+        for (MeetingTime meetingTime : meetingTimeList) {
+            List<String> nicknames = from(dateOfSchedule)
+                    .join(dateOfSchedule.schedule, schedule)
+                    .join(schedule.meeting, meeting)
+                    .where(meeting.meetingUuid.eq(uuid)
+                            .and(dateOfSchedule.dateOfScheduleStart.eq(meetingTime.getStartTime()))
+                            .and(dateOfSchedule.dateOfScheduleEnd.eq(meetingTime.getEndTime())))
+                    .select(schedule.scheduleNickname)
+                    .fetch();
+
+            meetingTime.addMemberNames(nicknames);
+        }
+
+        MeetingTimeResponseDto responseDto = from(meeting)
+                .where(meeting.meetingUuid.eq(uuid))
+                .select(Projections.constructor(MeetingTimeResponseDto.class,
+                        meeting.numberOfPeople,
+                        meeting.isAnonymous,
+                        meeting.meetingStartDate,
+                        meeting.meetingEndDate
+                ))
+                .fetchOne();
+
+        responseDto.addMeetingTimeList(meetingTimeList);
+
+        return responseDto;
     }
 }

@@ -65,7 +65,7 @@ public class MeetingController {
      *
      * @param uuid     조회할 모임 UUID
      * @param pageable 페이징 정보 (default: page = 0, size = 10, sort = count)
-     * @return 200 (OK), body: 모임 시간 응답 DTO
+     * @return 200 (OK), body: 모임 시간 응답 DTO (페이징 처리)
      */
     @GetMapping("/{meetingUuid}/times")
     public ResponseEntity<PagedResponse<MeetingTimeResponseDto>> getMeetingTimes(
@@ -86,12 +86,25 @@ public class MeetingController {
     }
 
     /**
+     * 모임의 전체 일정을 조회하는 메서드입니다.
+     *
+     * @param uuid 조회할 모임 UUID
+     * @return 200 (OK), body: 모임 시간 응답 DTO
+     */
+    @GetMapping("/{meetingUuid}/times/all")
+    public ResponseEntity<MeetingTimeResponseDto> getMeetingAllTimes(@PathVariable("meetingUuid") String uuid) {
+
+        MeetingTimeResponseDto responseDto = meetingService.getMeetingAllTimes(uuid);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    /**
      * 모임의 최적 시간을 조회하는 메서드입니다.
      *
      * @param uuid 조회할 모임 UUID
      * @return 200 (OK), body: 최적 시간
      */
-    @GetMapping("/{meetingUuid}/best-time")
+    @GetMapping("/{meetingUuid}/times/best")
     public ResponseEntity<LocalDateTime> getBestTime(@PathVariable("meetingUuid") String uuid) {
         return ResponseEntity.ok(meetingService.getBestTime(uuid));
     }
