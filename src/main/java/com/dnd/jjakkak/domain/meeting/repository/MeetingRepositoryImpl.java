@@ -282,7 +282,7 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         QSchedule schedule = QSchedule.schedule;
         QDateOfSchedule dateOfSchedule = QDateOfSchedule.dateOfSchedule;
 
-        // 우선순위 순으로 최적 시간 조회
+        // 빠른 시간 순으로 조회
         List<MeetingTime> meetingTimeList = from(dateOfSchedule)
                 .join(dateOfSchedule.schedule, schedule)
                 .join(schedule.meeting, meeting)
