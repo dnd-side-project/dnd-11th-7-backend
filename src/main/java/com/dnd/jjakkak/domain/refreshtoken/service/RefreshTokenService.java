@@ -1,8 +1,8 @@
 package com.dnd.jjakkak.domain.refreshtoken.service;
 
+import com.dnd.jjakkak.domain.redis.RedisRepository;
 import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -17,8 +17,8 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private final RedisTemplate<String, String> redisTemplate;
     private final TokenProperties tokenProperties;
+    private final RedisRepository redisRepository;
 
     /**
      * Kakao ID로 RT를 조회하는 메서드.
@@ -27,7 +27,7 @@ public class RefreshTokenService {
      * @return 저장되어있는 RT 값
      */
     public String findByKakaoId(String kakaoId) {
-        return redisTemplate.opsForValue().get(kakaoId);
+        return redisRepository.findByKey(kakaoId);
     }
 
 
@@ -38,7 +38,8 @@ public class RefreshTokenService {
      * @param refreshToken 저장할 RT 값
      */
     public void saveRefreshToken(String kakaoId, String refreshToken) {
-        redisTemplate.opsForValue().set(kakaoId, refreshToken, Duration.ofDays(tokenProperties.getRefreshTokenExpirationDay()));
+        Duration expiration = Duration.ofDays(tokenProperties.getRefreshTokenExpirationDay());
+        redisRepository.save(kakaoId, refreshToken, expiration);
     }
 
 
@@ -48,8 +49,6 @@ public class RefreshTokenService {
      * @param kakaoId 회원의 카카오 ID
      */
     public void deleteRefreshToken(String kakaoId) {
-        redisTemplate.delete(kakaoId);
+        redisRepository.delete(kakaoId);
     }
-
-
 }
