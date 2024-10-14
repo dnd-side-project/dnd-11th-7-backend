@@ -21,10 +21,10 @@ public interface MeetingRepositoryCustom {
     /**
      * 모임의 인원이 꽉 찼는지 확인합니다.
      *
-     * @param meetingId 모임 ID
+     * @param meetingUuid 모임 UUID
      * @return 모임의 인원이 꽉 찼는지 여부
      */
-    boolean checkMeetingFull(Long meetingId);
+    boolean checkMeetingFull(String meetingUuid);
 
     /**
      * 모임이 익명인지 확인합니다.

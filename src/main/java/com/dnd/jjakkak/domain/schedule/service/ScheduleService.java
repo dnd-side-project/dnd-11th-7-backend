@@ -75,6 +75,13 @@ public class ScheduleService {
     @Transactional
     public ScheduleAssignResponseDto assignScheduleToGuest(String meetingUuid, ScheduleAssignRequestDto requestDto) {
 
+
+        // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
+        if (meetingRepository.checkMeetingFull(meetingUuid)) {
+            throw new MeetingFullException();
+        }
+
+
         // meetingId로 할당되지 않은 schedule 조회
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingUuid(meetingUuid)
                 .orElseThrow(ScheduleNotFoundException::new);
@@ -100,6 +107,11 @@ public class ScheduleService {
      */
     @Transactional
     public void assignScheduleToMember(Long memberId, String meetingUuid, ScheduleAssignRequestDto requestDto) {
+
+        // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
+        if (meetingRepository.checkMeetingFull(meetingUuid)) {
+            throw new MeetingFullException();
+        }
 
         // meetingId로 할당되지 않은 schedule 조회
         Member member = memberRepository.findById(memberId)
@@ -257,11 +269,6 @@ public class ScheduleService {
         // 이미 할당된 일정인가? (409 Conflict)
         if (Boolean.TRUE.equals(schedule.getIsAssigned())) {
             throw new ScheduleAlreadyAssignedException();
-        }
-
-        // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
-        if (meetingRepository.checkMeetingFull(schedule.getMeeting().getMeetingId())) {
-            throw new MeetingFullException();
         }
 
         // 닉네임 변경

@@ -39,17 +39,17 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
      * {@inheritDoc}
      */
     @Override
-    public boolean checkMeetingFull(Long meetingId) {
+    public boolean checkMeetingFull(String meetingUuid) {
         QMeeting meeting = QMeeting.meeting;
         QSchedule schedule = QSchedule.schedule;
 
         Integer maxPeople = from(meeting)
-                .where(meeting.meetingId.eq(meetingId))
+                .where(meeting.meetingUuid.eq(meetingUuid))
                 .select(meeting.numberOfPeople)
                 .fetchOne();
 
         Long currentPeople = from(schedule)
-                .where(schedule.meeting.meetingId.eq(meetingId)
+                .where(schedule.meeting.meetingUuid.eq(meetingUuid)
                         .and(schedule.isAssigned.isTrue()))
                 .select(schedule.scheduleId.count())
                 .fetchOne();

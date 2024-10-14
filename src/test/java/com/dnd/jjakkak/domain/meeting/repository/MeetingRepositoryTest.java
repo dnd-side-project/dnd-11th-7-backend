@@ -126,7 +126,7 @@ class MeetingRepositoryTest {
         em.persist(schedule2);
 
         // when
-        boolean isFull = meetingRepository.checkMeetingFull(testMeeting.getMeetingId());
+        boolean isFull = meetingRepository.checkMeetingFull(testMeeting.getMeetingUuid());
 
         // then
         assertFalse(isFull);
