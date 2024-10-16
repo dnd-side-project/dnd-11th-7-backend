@@ -17,7 +17,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @author 류태웅
  * @version 2024. 10. 15.
  */
-
 @RequiredArgsConstructor
 @Configuration
 @EnableRedisRepositories

@@ -73,7 +73,7 @@ public class ScheduleService {
      * @param requestDto  일정 할당 요청 DTO
      * @return 일정 할당 응답 DTO (UUID)
      */
-    @RedissonLock(value = "#meetingUuid")
+    @RedissonLock(key = "#meetingUuid")
     public ScheduleAssignResponseDto assignScheduleToGuest(String meetingUuid, ScheduleAssignRequestDto requestDto) {
         // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
         if (meetingRepository.checkMeetingFull(meetingUuid)) {
@@ -103,7 +103,7 @@ public class ScheduleService {
      * @param meetingUuid 모임 UUID
      * @param requestDto  일정 할당 요청 DTO
      */
-    @RedissonLock(value = "#meetingUuid")
+    @RedissonLock(key = "#meetingUuid")
     public void assignScheduleToMember(Long memberId, String meetingUuid, ScheduleAssignRequestDto requestDto) {
 
         // 이미 모임의 인원이 다 찼는가? (400 Bad Request)

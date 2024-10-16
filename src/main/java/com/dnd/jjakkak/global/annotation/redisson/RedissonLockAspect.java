@@ -15,12 +15,11 @@ import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redisson AOP Aspect입니다.
+ * Redisson Lock Aspect 클래스입니다.
  *
- * @author 류태웅
+ * @author 류태웅, 정승조
  * @version 2024. 10. 15.
  */
-
 @Slf4j
 @Aspect
 @Component
@@ -29,31 +28,35 @@ public class RedissonLockAspect {
     private final RedissonClient redissonClient;
     private final TransactionAspect transactionAspect;
 
-    @Around("@annotation(RedissonLock)")
-    public Object redissonLock(ProceedingJoinPoint joinPoint) throws Throwable{
+    /**
+     * '@RedissonLock' 어노테이션을 사용한 메서드에 대한 Advice.
+     */
+    @Around("@annotation(com.dnd.jjakkak.global.annotation.redisson.RedissonLock)")
+    public Object redissonLock(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         RedissonLock annotation = method.getAnnotation(RedissonLock.class);
-        // todo: prefix 변경 필요?
-        String lockKey = "meeting-" + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), annotation.value());
+
+        // todo: prefix 변경 필요 (현재는 모임 관련 로직에서만 사용)
+        String lockKey = "meeting-" + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), annotation.key());
 
         RLock lock = redissonClient.getLock(lockKey);
-
-        try{
+        try {
             boolean lockable = lock.tryLock(annotation.waitTime(), annotation.leaseTime(), TimeUnit.MILLISECONDS);
-            if(!lockable){
-                log.info("{} : 락 획득 실패", lockKey);
+
+            if (!lockable) {
                 throw new IllegalArgumentException();
             }
-            log.info("{} : 로직 수행", lockKey);
+
             return transactionAspect.proceed(joinPoint);
-        } catch (InterruptedException e){
-            log.error("{} : 락 에러 발생", lockKey);
-            throw e;
+        } catch (InterruptedException e) {
+            // todo : 재시도 로직이 필요한가?
+            log.error("Redisson Lock Exception", e);
+            throw new RuntimeException();
         } finally {
-            log.info("{} : 락 해제", lockKey);
-            // lock 객체가 제대로 생성되었을 경우에만 unlock
-            if(lock != null && lock.isHeldByCurrentThread()) lock.unlock();
+            if (lock != null && lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
     }
 }
