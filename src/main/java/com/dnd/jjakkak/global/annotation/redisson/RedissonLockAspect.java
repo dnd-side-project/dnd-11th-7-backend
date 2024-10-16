@@ -34,7 +34,8 @@ public class RedissonLockAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         RedissonLock annotation = method.getAnnotation(RedissonLock.class);
-        String lockKey = method.getName() + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), annotation.value());
+        // todo: prefix 변경 필요?
+        String lockKey = "meeting-" + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), annotation.value());
 
         RLock lock = redissonClient.getLock(lockKey);
 
