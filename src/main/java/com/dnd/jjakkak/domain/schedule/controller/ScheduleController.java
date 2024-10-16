@@ -4,7 +4,6 @@ import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleAssignRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.request.ScheduleUpdateRequestDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleAssignResponseDto;
 import com.dnd.jjakkak.domain.schedule.dto.response.ScheduleResponseDto;
-import com.dnd.jjakkak.domain.schedule.facade.ScheduleFacade;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-    private final ScheduleFacade scheduleFacade;
 
     /**
      * 회원의 일정을 모임에 할당하는 메서드입니다.
@@ -38,8 +36,7 @@ public class ScheduleController {
     public ResponseEntity<Void> assignScheduleToMember(@PathVariable("meetingUuid") String meetingUuid,
                                                        @AuthenticationPrincipal Long memberId,
                                                        @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
-
-        scheduleFacade.assignScheduleToMember(memberId, meetingUuid, requestDto);
+        scheduleService.assignScheduleToMember(memberId, meetingUuid, requestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -53,8 +50,8 @@ public class ScheduleController {
     @PostMapping("/guests")
     public ResponseEntity<ScheduleAssignResponseDto> assignScheduleToGuest(@PathVariable("meetingUuid") String meetingUuid,
                                                                            @Valid @RequestBody ScheduleAssignRequestDto requestDto) {
+        ScheduleAssignResponseDto responseDto = scheduleService.assignScheduleToGuest(meetingUuid, requestDto);
 
-        ScheduleAssignResponseDto responseDto = scheduleFacade.assignScheduleToGuest(meetingUuid, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 

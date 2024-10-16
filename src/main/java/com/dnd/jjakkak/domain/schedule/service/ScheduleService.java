@@ -20,6 +20,7 @@ import com.dnd.jjakkak.domain.schedule.exception.InvalidScheduleUuidException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleAlreadyAssignedException;
 import com.dnd.jjakkak.domain.schedule.exception.ScheduleNotFoundException;
 import com.dnd.jjakkak.domain.schedule.repository.ScheduleRepository;
+import com.dnd.jjakkak.global.annotation.redisson.RedissonLock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,15 +73,12 @@ public class ScheduleService {
      * @param requestDto  일정 할당 요청 DTO
      * @return 일정 할당 응답 DTO (UUID)
      */
-    @Transactional
+    @RedissonLock(key = "#meetingUuid")
     public ScheduleAssignResponseDto assignScheduleToGuest(String meetingUuid, ScheduleAssignRequestDto requestDto) {
-
-
         // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
         if (meetingRepository.checkMeetingFull(meetingUuid)) {
             throw new MeetingFullException();
         }
-
 
         // meetingId로 할당되지 않은 schedule 조회
         Schedule schedule = scheduleRepository.findNotAssignedScheduleByMeetingUuid(meetingUuid)
@@ -105,7 +103,7 @@ public class ScheduleService {
      * @param meetingUuid 모임 UUID
      * @param requestDto  일정 할당 요청 DTO
      */
-    @Transactional
+    @RedissonLock(key = "#meetingUuid")
     public void assignScheduleToMember(Long memberId, String meetingUuid, ScheduleAssignRequestDto requestDto) {
 
         // 이미 모임의 인원이 다 찼는가? (400 Bad Request)
