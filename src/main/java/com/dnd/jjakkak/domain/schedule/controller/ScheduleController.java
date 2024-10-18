@@ -77,9 +77,9 @@ public class ScheduleController {
      * @param scheduleUuid 일정 UUID (비회원)
      * @return 200 (OK), body: 일정 응답 DTO
      */
-    @GetMapping("/guests")
+    @GetMapping("/guests/{scheduleUuid}")
     public ResponseEntity<ScheduleResponseDto> getGuestSchedule(@PathVariable("meetingUuid") String meetingUuid,
-                                                                @RequestParam("scheduleUuid") String scheduleUuid) {
+                                                                @PathVariable("scheduleUuid") String scheduleUuid) {
 
         ScheduleResponseDto responseDto = scheduleService.getGuestSchedule(meetingUuid, scheduleUuid);
         return ResponseEntity.ok(responseDto);
@@ -92,9 +92,10 @@ public class ScheduleController {
      * @param memberId    요청 회원 ID
      * @return 회원의 일정 작성 여부
      */
-    @GetMapping("/check")
+    @GetMapping("/members/check")
     public ResponseEntity<Boolean> getMemberScheduleWrite(@PathVariable("meetingUuid") String meetingUuid,
                                                           @AuthenticationPrincipal Long memberId) {
+
         return ResponseEntity.ok(scheduleService.getMemberScheduleWrite(meetingUuid, memberId));
     }
 
@@ -105,7 +106,7 @@ public class ScheduleController {
      * @param requestDto   일정 수정 요청 DTO
      * @return 200 (OK)
      */
-    @PatchMapping("/{scheduleUuid}")
+    @PatchMapping("/guests/{scheduleUuid}")
     public ResponseEntity<Void> updateGuestSchedule(@PathVariable("meetingUuid") String meetingUuid,
                                                     @PathVariable("scheduleUuid") String scheduleUuid,
                                                     @Valid @RequestBody ScheduleUpdateRequestDto requestDto) {
@@ -122,7 +123,7 @@ public class ScheduleController {
      * @param requestDto  일정 수정 요청 DTO
      * @return 200 (OK)
      */
-    @PatchMapping
+    @PatchMapping("/members")
     public ResponseEntity<Void> updateMemberSchedule(@AuthenticationPrincipal Long memberId,
                                                      @PathVariable("meetingUuid") String meetingUuid,
                                                      @Valid @RequestBody ScheduleUpdateRequestDto requestDto) {
