@@ -18,7 +18,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -220,14 +221,11 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                 .thenThrow(new MeetingNotFoundException());
 
         // expected
-        mockMvc.perform(get(URI + "/guests", MEETING_UUID)
-                        .param("scheduleUuid", SCHEDULE_UUID))
+        mockMvc.perform(get(URI + "/guests/{scheduleUuid}", MEETING_UUID, SCHEDULE_UUID))
                 .andExpect(status().isNotFound())
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("meetingUuid").description("모임 UUID")
-                        ),
-                        queryParameters(
+                                parameterWithName("meetingUuid").description("모임 UUID"),
                                 parameterWithName("scheduleUuid").description("일정 UUID")
                         ),
                         responseFields(
@@ -248,8 +246,7 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                 .thenReturn(ScheduleDummy.scheduleResponseDto());
 
         // expected
-        mockMvc.perform(get(URI + "/guests", MEETING_UUID)
-                        .param("scheduleUuid", SCHEDULE_UUID))
+        mockMvc.perform(get(URI + "/guests/{scheduleUuid}", MEETING_UUID, SCHEDULE_UUID))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.scheduleNickname").value("유저"),
@@ -263,9 +260,7 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
                 )
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("meetingUuid").description("모임 UUID")
-                        ),
-                        queryParameters(
+                                parameterWithName("meetingUuid").description("모임 UUID"),
                                 parameterWithName("scheduleUuid").description("일정 UUID")
                         ),
                         responseFields(
@@ -289,7 +284,7 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
         String json = objectMapper.writeValueAsString(ScheduleDummy.invalidUpdateRequestDto());
 
         // expected
-        mockMvc.perform(patch(URI + "/{scheduleUuid}", MEETING_UUID, SCHEDULE_UUID)
+        mockMvc.perform(patch(URI + "/guests/{scheduleUuid}", MEETING_UUID, SCHEDULE_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
@@ -317,7 +312,7 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
         String json = objectMapper.writeValueAsString(ScheduleDummy.updateRequestDto());
 
         // expected
-        mockMvc.perform(patch(URI + "/{scheduleUuid}", MEETING_UUID, SCHEDULE_UUID)
+        mockMvc.perform(patch(URI + "/guests/{scheduleUuid}", MEETING_UUID, SCHEDULE_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
@@ -344,7 +339,7 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
         String json = objectMapper.writeValueAsString(ScheduleDummy.invalidUpdateRequestDto());
 
         // expected
-        mockMvc.perform(patch(URI, MEETING_UUID)
+        mockMvc.perform(patch(URI + "/members", MEETING_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
@@ -370,7 +365,7 @@ class ScheduleControllerTest extends AbstractRestDocsTest {
         String json = objectMapper.writeValueAsString(ScheduleDummy.updateRequestDto());
 
         // expected
-        mockMvc.perform(patch(URI, MEETING_UUID)
+        mockMvc.perform(patch(URI + "/members", MEETING_UUID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())

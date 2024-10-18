@@ -75,9 +75,6 @@ include::{snippets}/schedule-controller-test/member_schedule_get_fail/http-respo
 include::{snippets}/schedule-controller-test/guest_schedule_get_success/http-request.adoc[]
 include::{snippets}/schedule-controller-test/guest_schedule_get_success/path-parameters.adoc[]
 
-.Query Parameters
-include::{snippets}/schedule-controller-test/guest_schedule_get_success/query-parameters.adoc[]
-
 .HTTP Response
 include::{snippets}/schedule-controller-test/guest_schedule_get_success/http-response.adoc[]
 
@@ -86,9 +83,6 @@ include::{snippets}/schedule-controller-test/guest_schedule_get_success/http-res
 .HTTP Request
 include::{snippets}/schedule-controller-test/guest_schedule_get_fail/http-request.adoc[]
 include::{snippets}/schedule-controller-test/guest_schedule_get_fail/path-parameters.adoc[]
-
-.Query Parameters
-include::{snippets}/schedule-controller-test/guest_schedule_get_fail/query-parameters.adoc[]
 
 .HTTP Response
 include::{snippets}/schedule-controller-test/guest_schedule_get_fail/http-response.adoc[]
