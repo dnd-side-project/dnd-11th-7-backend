@@ -37,52 +37,40 @@ public class DateOfScheduleService {
      * @param requestDto 일정 날짜 생성 요청 DTO
      */
     @Transactional
-    public void createDateOfSchedule(Long scheduleId, DateOfScheduleCreateRequestDto requestDto) {
+    public void createDateOfSchedule(Long scheduleId, List<DateOfScheduleCreateRequestDto> requestDto) {
 
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(ScheduleNotFoundException::new);
 
         validateDateOfSchedule(schedule, requestDto);
 
-        LocalDateTime startTime = requestDto.getStartTime();
-        LocalDateTime endTime = requestDto.getEndTime();
+        requestDto.forEach(dto -> {
 
-        // TODO : rank 값을 추후에 변경해야 함.
-        Integer rank = 1;
+            LocalDateTime startTime = dto.getStartTime();
+            LocalDateTime endTime = dto.getEndTime();
 
-        Duration interval = Duration.ofHours(1);
-        while (startTime.isBefore(endTime)) {
-            LocalDateTime nextEndTime = startTime.plus(interval);
+            Duration interval = Duration.ofHours(1);
+            while (startTime.isBefore(endTime)) {
+                LocalDateTime nextEndTime = startTime.plus(interval);
 
-            if (nextEndTime.isAfter(endTime)) {
-                nextEndTime = endTime;
+                if (nextEndTime.isAfter(endTime)) {
+                    nextEndTime = endTime;
+                }
+
+                DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
+                        .schedule(schedule)
+                        .dateOfScheduleStart(startTime)
+                        .dateOfScheduleEnd(nextEndTime)
+                        .dateOfScheduleRank(1)
+                        .build();
+
+                dateOfScheduleRepository.save(dateOfSchedule);
+
+                startTime = nextEndTime;
             }
-
-            DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
-                    .schedule(schedule)
-                    .dateOfScheduleStart(startTime)
-                    .dateOfScheduleEnd(nextEndTime)
-                    .dateOfScheduleRank(rank)
-                    .build();
-
-            dateOfScheduleRepository.save(dateOfSchedule);
-
-            startTime = nextEndTime;
-        }
+        });
     }
 
-    private void validateDateOfSchedule(Schedule schedule, DateOfScheduleCreateRequestDto requestDto) {
-        Meeting meeting = schedule.getMeeting();
-        LocalDate meetingStartDate = meeting.getMeetingStartDate();
-        LocalDate meetingEndDate = meeting.getMeetingEndDate();
-
-        LocalDateTime startTime = requestDto.getStartTime();
-        LocalDateTime endTime = requestDto.getEndTime();
-
-        if (startTime.toLocalDate().isBefore(meetingStartDate) || endTime.toLocalDate().isAfter(meetingEndDate)) {
-            throw new ScheduleDateOutOfMeetingDateException();
-        }
-    }
 
     /**
      * 일정 날짜 리스트를 업데이트하는 메서드입니다. (모든 일정 날짜 삭제 후 새로 생성)
@@ -98,17 +86,49 @@ public class DateOfScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(ScheduleNotFoundException::new);
 
-        // dateOfSchedule 생성
+        validateDateOfSchedule(schedule, requestDto);
+
         // TODO: rank 값 추후에 변경해줘야 함!
         requestDto.forEach(dto -> {
-            DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
-                    .schedule(schedule)
-                    .dateOfScheduleStart(dto.getStartTime())
-                    .dateOfScheduleEnd(dto.getEndTime())
-                    .dateOfScheduleRank(1)
-                    .build();
 
-            dateOfScheduleRepository.save(dateOfSchedule);
+            LocalDateTime startTime = dto.getStartTime();
+            LocalDateTime endTime = dto.getEndTime();
+
+            Duration interval = Duration.ofHours(1);
+            while (startTime.isBefore(endTime)) {
+                LocalDateTime nextEndTime = startTime.plus(interval);
+
+                if (nextEndTime.isAfter(endTime)) {
+                    nextEndTime = endTime;
+                }
+
+                DateOfSchedule dateOfSchedule = DateOfSchedule.builder()
+                        .schedule(schedule)
+                        .dateOfScheduleStart(startTime)
+                        .dateOfScheduleEnd(nextEndTime)
+                        .dateOfScheduleRank(1)
+                        .build();
+
+                dateOfScheduleRepository.save(dateOfSchedule);
+
+                startTime = nextEndTime;
+            }
         });
+    }
+
+    private void validateDateOfSchedule(Schedule schedule, List<DateOfScheduleCreateRequestDto> requestDtos) {
+        Meeting meeting = schedule.getMeeting();
+        LocalDate meetingStartDate = meeting.getMeetingStartDate();
+        LocalDate meetingEndDate = meeting.getMeetingEndDate();
+
+        for (DateOfScheduleCreateRequestDto requestDto : requestDtos) {
+
+            LocalDateTime startTime = requestDto.getStartTime();
+            LocalDateTime endTime = requestDto.getEndTime();
+
+            if (startTime.toLocalDate().isBefore(meetingStartDate) || endTime.toLocalDate().isAfter(meetingEndDate)) {
+                throw new ScheduleDateOutOfMeetingDateException();
+            }
+        }
     }
 }
