@@ -1,6 +1,9 @@
 package com.dnd.jjakkak.global.config.redis;
 
 import lombok.RequiredArgsConstructor;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +26,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     private final RedisProperties redisProperties;
+    private static final String REDISSON_HOST_PREFIX = "redis://";
+
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -42,5 +47,20 @@ public class RedisConfig {
         template.setValueSerializer(new StringRedisSerializer());
         template.setConnectionFactory(redisConnectionFactory());
         return template;
+    }
+
+
+    /**
+     * Redisson Client 등록 메서드.
+     */
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress(REDISSON_HOST_PREFIX + redisProperties.getHost() + ":" + redisProperties.getPort())
+                .setPassword(redisProperties.getPassword())
+                .setSslEnableEndpointIdentification(true);
+
+        return Redisson.create(config);
     }
 }
