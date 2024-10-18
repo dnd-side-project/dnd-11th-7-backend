@@ -15,16 +15,13 @@ public class SecurityEndpointPaths {
             "/api/v1/meetings/*/times/**",
             "/api/v1/meetings/*/participants",
             "/api/v1/meetings/*/schedules/guests/**",
-            "/api/v1/meetings/*/schedules/*"
     };
 
     public static final String[] USER_LIST = {
             "/api/v1/categories",
             "/api/v1/members/**",
             "/api/v1/meetings",
-            "/api/v1/meetings/*/schedules/members",
-            "/api/v1/meetings/*/schedules",
-            "/api/v1/meetings/*/schedules/check"
+            "/api/v1/meetings/*/schedules/members/**",
     };
 
     public static final String[] ADMIN_LIST = {
