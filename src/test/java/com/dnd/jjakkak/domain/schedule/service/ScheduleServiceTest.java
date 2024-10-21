@@ -123,7 +123,7 @@ class ScheduleServiceTest {
         // then
         verify(scheduleRepository, times(1)).findNotAssignedScheduleByMeetingUuid(MEETING_UUID);
         verify(meetingRepository, times(1)).checkMeetingFull(any());
-        verify(dateOfScheduleService, times(2)).createDateOfSchedule(anyLong(), any());
+        verify(dateOfScheduleService, times(1)).createDateOfSchedule(anyLong(), any());
     }
 
     @Test
@@ -253,7 +253,7 @@ class ScheduleServiceTest {
         // then
         verify(scheduleRepository, times(1)).findNotAssignedScheduleByMeetingUuid(MEETING_UUID);
         verify(meetingRepository, times(1)).checkMeetingFull(any());
-        verify(dateOfScheduleService, times(2)).createDateOfSchedule(anyLong(), any());
+        verify(dateOfScheduleService, times(1)).createDateOfSchedule(anyLong(), any());
         verify(meetingMemberService, times(1)).createMeetingMemberBySchedule(anyLong(), anyLong());
     }
 

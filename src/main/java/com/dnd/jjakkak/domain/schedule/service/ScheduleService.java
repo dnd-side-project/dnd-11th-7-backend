@@ -1,6 +1,5 @@
 package com.dnd.jjakkak.domain.schedule.service;
 
-import com.dnd.jjakkak.domain.dateofschedule.dto.request.DateOfScheduleCreateRequestDto;
 import com.dnd.jjakkak.domain.dateofschedule.service.DateOfScheduleService;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingAlreadyEndedException;
@@ -272,12 +271,7 @@ public class ScheduleService {
         // 닉네임 변경
         schedule.updateScheduleNickname(requestDto.getNickname() == null ? schedule.getScheduleNickname() : requestDto.getNickname());
 
-        // 일정 날짜 저장
-        for (DateOfScheduleCreateRequestDto dateOfScheduleCreateRequestDto : requestDto.getDateOfScheduleList()) {
-            dateOfScheduleService.createDateOfSchedule(schedule.getScheduleId(), dateOfScheduleCreateRequestDto);
-        }
-
-        // isAssigned -> true
+        dateOfScheduleService.createDateOfSchedule(schedule.getScheduleId(), requestDto.getDateOfScheduleList());
         schedule.scheduleAssign();
     }
 
