@@ -111,11 +111,8 @@ public class SecurityConfig {
     protected CorsConfigurationSource corsConfigurationSource() { // 추후 CORS 수정 필요
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(jjakkakProperties.getFrontUrl(), "http://localhost:5173")); // 허용할 도메인 명시
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-
-//        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-//        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers", "_retry"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Access-Control-Allow-Headers", "Access-Control-Expose-Headers", "_retry"));
 
         config.addExposedHeader("Authorization"); //프론트에서 해당 헤더를 읽을 수 있게
         config.setAllowCredentials(true);
