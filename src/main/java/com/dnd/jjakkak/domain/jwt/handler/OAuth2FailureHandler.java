@@ -29,6 +29,6 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
 
         request.getSession().removeAttribute(tokenProperties.getQueryParam());
-        response.sendRedirect(jjakkakProperties.getFrontUrl() + "/login/failure");
+        response.sendRedirect(jjakkakProperties.getFrontUrl().get(0) + "/login/failure");
     }
 }

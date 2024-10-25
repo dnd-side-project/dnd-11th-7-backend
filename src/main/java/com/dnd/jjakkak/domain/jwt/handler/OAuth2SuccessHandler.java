@@ -56,7 +56,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      * @return 리다이렉트 URL
      */
     public String getRedirectUrl(HttpServletRequest request) {
-        String baseUrl = jjakkakProperties.getFrontUrl() + "/login/success";
+        String baseUrl = jjakkakProperties.getFrontUrl().get(0) + "/login/success";
 
         HttpSession session = request.getSession();
         String redirectParam = (String) session.getAttribute(tokenProperties.getQueryParam());
