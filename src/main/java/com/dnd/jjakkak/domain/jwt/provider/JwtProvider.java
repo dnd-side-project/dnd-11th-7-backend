@@ -48,10 +48,10 @@ public class JwtProvider {
      */
     public String createAccessToken(String kakaoId) {
 
-//        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
+        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
 
         // fixme: 테스트를 위해 AT 만료시간 3분으로 설정함!
-        Date expiredDate = Date.from(Instant.now().plus(3, ChronoUnit.MINUTES));
+//        Date expiredDate = Date.from(Instant.now().plus(3, ChronoUnit.MINUTES));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
