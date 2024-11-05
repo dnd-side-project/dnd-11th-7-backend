@@ -61,7 +61,12 @@ public class AuthService {
     public boolean checkAuth(String authorization) {
 
         String accessToken = authorization.substring(7);
-        String validate = jwtProvider.validateToken(accessToken);
+        String validate;
+        try {
+            validate = jwtProvider.validateToken(accessToken);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException("accessError");
+        }
 
         return Strings.isNotBlank(validate);
     }
