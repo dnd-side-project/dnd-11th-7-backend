@@ -10,6 +10,10 @@ public class TokenExpiredException extends GeneralException {
         super(MESSAGE);
     }
 
+    public TokenExpiredException(String message) {
+        super(message);
+    }
+
     @Override
     public int getStatusCode() {
         return 401;

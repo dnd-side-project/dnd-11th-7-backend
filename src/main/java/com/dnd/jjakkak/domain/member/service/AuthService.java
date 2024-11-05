@@ -1,9 +1,11 @@
 package com.dnd.jjakkak.domain.member.service;
 
+import com.dnd.jjakkak.domain.jwt.exception.TokenExpiredException;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
 import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
 import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,13 @@ public class AuthService {
      */
     public ReissueResponseDto reissueToken(String refreshToken) {
 
-        String kakaoId = jwtProvider.validateToken(refreshToken);
+        String kakaoId;
+        try {
+            kakaoId = jwtProvider.validateToken(refreshToken);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException("refreshError");
+        }
+
         String existsToken = refreshTokenService.findByKakaoId(kakaoId);
 
         if (!refreshToken.equals(existsToken)) {

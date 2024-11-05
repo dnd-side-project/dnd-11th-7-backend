@@ -1,7 +1,6 @@
 package com.dnd.jjakkak.domain.jwt.provider;
 
 import com.dnd.jjakkak.domain.jwt.exception.MalformedTokenException;
-import com.dnd.jjakkak.domain.jwt.exception.TokenExpiredException;
 import com.dnd.jjakkak.global.config.proprties.JjakkakProperties;
 import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import io.jsonwebtoken.*;
@@ -49,7 +48,10 @@ public class JwtProvider {
      */
     public String createAccessToken(String kakaoId) {
 
-        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
+//        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
+
+        // fixme: 테스트를 위해 AT 만료시간 3분으로 설정함!
+        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -91,8 +93,6 @@ public class JwtProvider {
                     .parseClaimsJws(jwt)
                     .getBody();
             return claims.getSubject();
-        } catch (ExpiredJwtException e) {
-            throw new TokenExpiredException();
         } catch (MalformedJwtException e) {
             throw new MalformedTokenException();
         }

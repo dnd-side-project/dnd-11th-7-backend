@@ -1,10 +1,12 @@
 package com.dnd.jjakkak.domain.jwt.filter;
 
+import com.dnd.jjakkak.domain.jwt.exception.TokenExpiredException;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
 import com.dnd.jjakkak.global.config.security.SecurityEndpointPaths;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,7 +64,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String kakaoId = jwtProvider.validateToken(token);
+        String kakaoId;
+
+        try {
+            kakaoId = jwtProvider.validateToken(token);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException("accessError");
+        }
+
         if (Strings.isEmpty(kakaoId)) {
             filterChain.doFilter(request, response);
             return;
