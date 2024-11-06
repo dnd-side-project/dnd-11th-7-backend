@@ -1,6 +1,7 @@
 package com.dnd.jjakkak.domain.member.service;
 
-import com.dnd.jjakkak.domain.jwt.exception.TokenExpiredException;
+import com.dnd.jjakkak.domain.jwt.exception.AccessTokenExpiredException;
+import com.dnd.jjakkak.domain.jwt.exception.RefreshTokenExpiredException;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
 import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
 import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
@@ -35,7 +36,7 @@ public class AuthService {
         try {
             kakaoId = jwtProvider.validateToken(refreshToken);
         } catch (ExpiredJwtException e) {
-            throw new TokenExpiredException("refreshError");
+            throw new RefreshTokenExpiredException();
         }
 
         String existsToken = refreshTokenService.findByKakaoId(kakaoId);
@@ -65,7 +66,7 @@ public class AuthService {
         try {
             validate = jwtProvider.validateToken(accessToken);
         } catch (ExpiredJwtException e) {
-            throw new TokenExpiredException("accessError");
+            throw new AccessTokenExpiredException();
         }
 
         return Strings.isNotBlank(validate);
