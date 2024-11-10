@@ -48,10 +48,10 @@ public class JwtProvider {
      */
     public String createAccessToken(String kakaoId) {
 
-        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
+//        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
 
         // fixme: 테스트를 위해 AT 만료시간 3분으로 설정함!
-//        Date expiredDate = Date.from(Instant.now().plus(3, ChronoUnit.MINUTES));
+        Date expiredDate = Date.from(Instant.now().plus(3, ChronoUnit.MINUTES));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -70,7 +70,11 @@ public class JwtProvider {
      * @return JWT
      */
     public String createRefreshToken(String kakaoId) {
-        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
+//        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
+
+        // fixme: 테스트를 위해 RT 만료시간 5분으로 설정
+        Date expiredDate = Date.from(Instant.now().plus(5, ChronoUnit.MINUTES));
+
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(kakaoId)
@@ -80,10 +84,11 @@ public class JwtProvider {
     }
 
     /**
-     * JWT를 검증하는 메소드
+     * JWT를 검증하는 메소드.
      *
      * @param jwt String (JWT)
      * @return subject (kakaoId)
+     * @throws ExpiredJwtException 토큰이 만료되었을 경우 발생합니다.
      */
     public String validateToken(String jwt) throws JwtException {
         try {
