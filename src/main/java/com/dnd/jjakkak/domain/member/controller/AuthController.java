@@ -1,5 +1,6 @@
 package com.dnd.jjakkak.domain.member.controller;
 
+import com.dnd.jjakkak.domain.member.dto.response.AccessTokenResponseDto;
 import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
 import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
 import com.dnd.jjakkak.domain.member.service.AuthService;
@@ -57,7 +58,7 @@ public class AuthController {
      */
 
     @GetMapping("/reissue")
-    public ResponseEntity<Void> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken) {
+    public ResponseEntity<AccessTokenResponseDto> reissueToken(@CookieValue(value = "refresh_token", required = false) String refreshToken) {
 
         if (Strings.isEmpty(refreshToken)) {
             throw new UnauthorizedException();
@@ -65,14 +66,16 @@ public class AuthController {
 
         ReissueResponseDto reissuedToken = authService.reissueToken(refreshToken);
 
+
         ResponseCookie refreshCookie = CookieUtils.createCookie(
                 "refresh_token",
                 reissuedToken.getRefreshToken(),
                 60 * 60 * 24 * 7);
 
+        AccessTokenResponseDto responseDto = new AccessTokenResponseDto(reissuedToken.getAccessToken());
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, reissuedToken.getAccessToken())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .build();
+                .body(responseDto);
     }
 }
