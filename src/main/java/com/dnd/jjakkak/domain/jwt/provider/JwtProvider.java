@@ -47,11 +47,7 @@ public class JwtProvider {
      * @return JWT
      */
     public String createAccessToken(String kakaoId) {
-
-//        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
-
-        // TODO: 테스트용으로 만료시간 1분으로 설정
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
+        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -70,11 +66,7 @@ public class JwtProvider {
      * @return JWT
      */
     public String createRefreshToken(String kakaoId) {
-//        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
-
-        // TODO: 테스트용으로 만료시간 2분으로 설정
-        Date expiredDate = Date.from(Instant.now().plus(2, ChronoUnit.MINUTES));
-
+        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
