@@ -47,10 +47,7 @@ public class JwtProvider {
      * @return JWT
      */
     public String createAccessToken(String kakaoId) {
-
-//        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
-
+        Date expiredDate = Date.from(Instant.now().plus(accessTokenExpirationDay, ChronoUnit.DAYS));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -69,8 +66,7 @@ public class JwtProvider {
      * @return JWT
      */
     public String createRefreshToken(String kakaoId) {
-//        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
-        Date expiredDate = Date.from(Instant.now().plus(2, ChronoUnit.MINUTES));
+        Date expiredDate = Date.from(Instant.now().plus(refreshTokenExpirationDay, ChronoUnit.DAYS));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
