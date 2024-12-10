@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+
 /**
  * 째깍 서비스 Properties 관리 클래스
  *
@@ -15,7 +17,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "jjakkak")
 public class JjakkakProperties {
 
-    private String frontUrl;
+    private List<String> frontUrl;
 
     private String jwtSecret;
 }

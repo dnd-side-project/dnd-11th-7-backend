@@ -1,6 +1,5 @@
 package com.dnd.jjakkak.domain.meeting.dto.response;
 
-import lombok.Builder;
 import lombok.Getter;
 
 /**
@@ -14,7 +13,6 @@ public class MeetingCreateResponseDto {
 
     private final String meetingUuid;
 
-    @Builder
     public MeetingCreateResponseDto(String meetingUuid) {
         this.meetingUuid = meetingUuid;
     }

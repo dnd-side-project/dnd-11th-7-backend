@@ -1,7 +1,5 @@
 package com.dnd.jjakkak.domain.meeting.entity;
 
-import com.dnd.jjakkak.domain.meeting.dto.request.MeetingConfirmRequestDto;
-import com.dnd.jjakkak.domain.meeting.exception.InvalidMeetingDateException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,11 +41,8 @@ public class Meeting {
     @Column(name = "is_anonymous")
     private Boolean isAnonymous;
 
-    @Column(nullable = false, name = "vote_end_date")
-    private LocalDateTime voteEndDate;
-
-    @Column(name = "confirmed_schedule")
-    private LocalDateTime confirmedSchedule;
+    @Column(nullable = false, name = "due_date_time")
+    private LocalDateTime dueDateTime;
 
     @Column(nullable = false, name = "meeting_leader_id")
     private Long meetingLeaderId;
@@ -58,31 +53,14 @@ public class Meeting {
     @Builder
     public Meeting(String meetingName, LocalDate meetingStartDate, LocalDate meetingEndDate,
                    Integer numberOfPeople, Boolean isAnonymous,
-                   LocalDateTime voteEndDate, Long meetingLeaderId, String meetingUuid) {
+                   LocalDateTime dueDateTime, Long meetingLeaderId, String meetingUuid) {
         this.meetingName = meetingName;
         this.meetingStartDate = meetingStartDate;
         this.meetingEndDate = meetingEndDate;
         this.numberOfPeople = numberOfPeople;
         this.isAnonymous = isAnonymous;
-        this.voteEndDate = voteEndDate;
+        this.dueDateTime = dueDateTime;
         this.meetingLeaderId = meetingLeaderId;
         this.meetingUuid = meetingUuid;
-    }
-
-
-    /**
-     * 확정된 모임 일자를 설정합니다.
-     *
-     * @param requestDto 확정된 모임 일자 수정 요청 DTO
-     */
-    public void updateConfirmedSchedule(MeetingConfirmRequestDto requestDto) {
-
-        // 확정된 일자가 유효한지 확인합니다.
-        if (requestDto.getConfirmedSchedule().isBefore(this.meetingStartDate.atStartOfDay()) ||
-                requestDto.getConfirmedSchedule().isAfter(this.meetingEndDate.atStartOfDay())) {
-            throw new InvalidMeetingDateException();
-        }
-
-        this.confirmedSchedule = requestDto.getConfirmedSchedule();
     }
 }

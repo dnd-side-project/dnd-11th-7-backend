@@ -22,28 +22,6 @@ include::{snippets}/meeting-controller-test/create_fail_invalid/http-response.ad
 .Error Response
 include::{snippets}/meeting-controller-test/create_fail_invalid/response-fields.adoc[]
 
-=== 모임 조회 (UUID)
-
-include::{snippets}/meeting-controller-test/get_by-uuid/path-parameters.adoc[]
-
-.HTTP Request
-include::{snippets}/meeting-controller-test/get_by-uuid/http-request.adoc[]
-
-.HTTP Response
-include::{snippets}/meeting-controller-test/get_by-uuid/http-response.adoc[]
-
-include::{snippets}/meeting-controller-test/get_by-uuid/response-fields.adoc[]
-
-=== 모임 확정 일정 수정
-
-.HTTP Request
-include::{snippets}/meeting-controller-test/update_confirmed-schedule/http-request.adoc[]
-
-include::{snippets}/meeting-controller-test/update_confirmed-schedule/request-fields.adoc[]
-
-.HTTP Response
-include::{snippets}/meeting-controller-test/update_confirmed-schedule/http-response.adoc[]
-
 === 모임 삭제
 
 .HTTP Request
@@ -52,3 +30,33 @@ include::{snippets}/meeting-controller-test/delete_success/http-request.adoc[]
 
 .HTTP Response
 include::{snippets}/meeting-controller-test/delete_success/http-response.adoc[]
+
+=== 모임 정보 조회
+
+.HTTP Request
+include::{snippets}/meeting-controller-test/get-meeting-info_success/http-request.adoc[]
+include::{snippets}/meeting-controller-test/get-meeting-info_success/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/meeting-controller-test/get-meeting-info_success/http-response.adoc[]
+include::{snippets}/meeting-controller-test/get-meeting-info_success/response-fields.adoc[]
+
+=== 모임 최적 시간 조회
+
+.HTTP Request
+include::{snippets}/meeting-controller-test/get-best-time_success/http-request.adoc[]
+include::{snippets}/meeting-controller-test/get-best-time_success/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/meeting-controller-test/get-best-time_success/http-response.adoc[]
+include::{snippets}/meeting-controller-test/get-best-time_success/response-fields.adoc[]
+
+=== 모임 참가자 목록 조회
+
+.HTTP Request
+include::{snippets}/meeting-controller-test/get-participants_success/http-request.adoc[]
+include::{snippets}/meeting-controller-test/get-participants_success/path-parameters.adoc[]
+
+.HTTP Response
+include::{snippets}/meeting-controller-test/get-participants_success/http-response.adoc[]
+include::{snippets}/meeting-controller-test/get-participants_success/response-fields.adoc[]

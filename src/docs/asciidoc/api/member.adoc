@@ -1,0 +1,31 @@
+== 회원
+
+=== 회원이 속한 모임 조회
+
+.HTTP Request
+include::{snippets}/member-controller-test/test-get-member-list-by-member-id/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/member-controller-test/test-get-member-list-by-member-id/http-response.adoc[]
+
+.Response Fields
+include::{snippets}/member-controller-test/test-get-member-list-by-member-id/response-fields.adoc[]
+
+=== 회원 닉네임 수정
+
+.HTTP Request
+include::{snippets}/member-controller-test/test-update-nickname/http-request.adoc[]
+
+.Request Fields
+include::{snippets}/member-controller-test/test-update-nickname/request-fields.adoc[]
+
+.HTTP Response
+include::{snippets}/member-controller-test/test-update-nickname/http-response.adoc[]
+
+=== 회원 탈퇴
+
+.HTTP Request
+include::{snippets}/member-controller-test/test-delete-member/http-request.adoc[]
+
+.HTTP Response
+include::{snippets}/member-controller-test/test-update-nickname/http-response.adoc[]

@@ -1,6 +1,12 @@
 package com.dnd.jjakkak.domain.member.service;
 
+import com.dnd.jjakkak.domain.jwt.exception.AccessTokenExpiredException;
+import com.dnd.jjakkak.domain.jwt.exception.RefreshTokenExpiredException;
 import com.dnd.jjakkak.domain.jwt.provider.JwtProvider;
+import com.dnd.jjakkak.domain.member.dto.response.ReissueResponseDto;
+import com.dnd.jjakkak.domain.member.exception.UnauthorizedException;
+import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
@@ -16,19 +22,36 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     /**
-     * RefreshToken을 이용하여 AccessToken 재발급
+     * RT를 통해 모든 토큰을 재발급합니다.
      *
-     * @param refreshToken Refresh Token 값
-     * @return 재발급된 AccessToken
+     * @param refreshToken Refresh Token (Cookie)
+     * @return 재발급된 토큰 정보를 담은 DTO
      */
-    public String reissueToken(String refreshToken) {
+    public ReissueResponseDto reissueToken(String refreshToken) {
 
-        String kakaoId = jwtProvider.validate(refreshToken);
-        String accessToken = jwtProvider.createAccessToken(kakaoId);
+        String kakaoId;
+        try {
+            kakaoId = jwtProvider.validateToken(refreshToken);
+        } catch (ExpiredJwtException e) {
+            throw new RefreshTokenExpiredException();
+        }
 
-        return "Bearer " + accessToken;
+        String existsToken = refreshTokenService.findByKakaoId(kakaoId);
+
+        if (!refreshToken.equals(existsToken)) {
+            refreshTokenService.deleteRefreshToken(kakaoId);
+            throw new UnauthorizedException();
+        }
+
+        String newAccessToken = jwtProvider.createAccessToken(kakaoId);
+        String newRefreshToken = jwtProvider.createRefreshToken(kakaoId);
+
+        refreshTokenService.saveRefreshToken(kakaoId, newRefreshToken);
+
+        return new ReissueResponseDto("Bearer " + newAccessToken, newRefreshToken);
     }
 
     /**
@@ -39,7 +62,12 @@ public class AuthService {
     public boolean checkAuth(String authorization) {
 
         String accessToken = authorization.substring(7);
-        String validate = jwtProvider.validate(accessToken);
+        String validate;
+        try {
+            validate = jwtProvider.validateToken(accessToken);
+        } catch (ExpiredJwtException e) {
+            throw new AccessTokenExpiredException();
+        }
 
         return Strings.isNotBlank(validate);
     }

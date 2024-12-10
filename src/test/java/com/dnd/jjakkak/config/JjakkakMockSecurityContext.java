@@ -34,7 +34,7 @@ public class JjakkakMockSecurityContext implements WithSecurityContextFactory<Jj
         memberRepository.save(member);
 
         SimpleGrantedAuthority role = new SimpleGrantedAuthority("ROLE_USER");
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(member, null, List.of(role));
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(member.getMemberId(), null, List.of(role));
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authToken);
