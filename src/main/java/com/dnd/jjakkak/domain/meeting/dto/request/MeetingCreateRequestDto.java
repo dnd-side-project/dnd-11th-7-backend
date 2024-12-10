@@ -69,7 +69,7 @@ public class MeetingCreateRequestDto {
                     "모임 종료일은 모임 시작일 이후로 설정해주세요.");
         }
 
-        if (dueDateTime.isAfter(meetingStartDate.atStartOfDay())) {
+        if (dueDateTime.isAfter(meetingStartDate.atStartOfDay().plusDays(1))) {
             invalidMeetingDateException.addValidation(
                     "dueDateTime",
                     "일정 입력 종료 시간은 모임 시작일 이전으로 설정해주세요.");
