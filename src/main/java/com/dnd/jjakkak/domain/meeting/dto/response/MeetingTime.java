@@ -33,4 +33,15 @@ public class MeetingTime {
     public void addMemberNames(List<String> memberNames) {
         this.memberNames.addAll(memberNames);
     }
+
+    public void setAnonymous() {
+
+        List<String> anonymous = new ArrayList<>();
+        for (int i = 1; i <= memberNames.size(); i++) {
+            anonymous.add("익명" + i);
+        }
+
+        this.memberNames.clear();
+        this.memberNames.addAll(anonymous);
+    }
 }
