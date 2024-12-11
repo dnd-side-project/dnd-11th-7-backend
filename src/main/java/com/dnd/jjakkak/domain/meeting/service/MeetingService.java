@@ -4,10 +4,7 @@ import com.dnd.jjakkak.domain.category.entity.Category;
 import com.dnd.jjakkak.domain.category.exception.CategoryNotFoundException;
 import com.dnd.jjakkak.domain.category.repository.CategoryRepository;
 import com.dnd.jjakkak.domain.meeting.dto.request.MeetingCreateRequestDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingCreateResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingInfoResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingParticipantResponseDto;
-import com.dnd.jjakkak.domain.meeting.dto.response.MeetingTimeResponseDto;
+import com.dnd.jjakkak.domain.meeting.dto.response.*;
 import com.dnd.jjakkak.domain.meeting.entity.Meeting;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingNotFoundException;
 import com.dnd.jjakkak.domain.meeting.exception.MeetingUnauthorizedException;
@@ -173,7 +170,16 @@ public class MeetingService {
             throw new MeetingNotFoundException();
         }
 
-        return meetingRepository.getMeetingTimes(uuid, pageable, requestTime);
+        PagedResponse<MeetingTimeResponseDto> meetingTimes = meetingRepository.getMeetingTimes(uuid, pageable, requestTime);
+
+        if (Boolean.TRUE.equals(meetingTimes.getData().getIsAnonymous())) {
+            List<MeetingTime> meetingTimeList = meetingTimes.getData().getMeetingTimeList();
+            for (MeetingTime meetingTime : meetingTimeList) {
+                meetingTime.setAnonymous();
+            }
+        }
+
+        return meetingTimes;
     }
 
     /**

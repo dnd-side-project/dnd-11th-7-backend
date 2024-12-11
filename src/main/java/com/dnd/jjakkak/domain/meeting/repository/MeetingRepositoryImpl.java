@@ -162,26 +162,19 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                 .select(dateOfSchedule.dateOfScheduleRank.count())
                 .fetchCount();
 
-        // 3. 익명 모임이 아닌 경우, 일정을 할당한 사용자의 닉네임 조회 후 추가
-        Boolean isAnonymous = from(meeting)
-                .where(meeting.meetingUuid.eq(uuid))
-                .select(meeting.isAnonymous)
-                .fetchOne();
+        // 3. 일정을 할당한 사용자의 닉네임 조회 후 추가
+        for (MeetingTime meetingTime : meetingTimeList) {
+            List<String> nicknames = from(dateOfSchedule)
+                    .join(dateOfSchedule.schedule, schedule)
+                    .join(schedule.meeting, meeting)
+                    .where(meeting.meetingUuid.eq(uuid)
+                            .and(dateOfSchedule.dateOfScheduleStart.eq(meetingTime.getStartTime()))
+                            .and(dateOfSchedule.dateOfScheduleEnd.eq(meetingTime.getEndTime()))
+                            .and(schedule.assignedAt.loe(requestTime)))
+                    .select(schedule.scheduleNickname)
+                    .fetch();
 
-        if (Boolean.FALSE.equals(isAnonymous)) {
-            for (MeetingTime meetingTime : meetingTimeList) {
-                List<String> nicknames = from(dateOfSchedule)
-                        .join(dateOfSchedule.schedule, schedule)
-                        .join(schedule.meeting, meeting)
-                        .where(meeting.meetingUuid.eq(uuid)
-                                .and(dateOfSchedule.dateOfScheduleStart.eq(meetingTime.getStartTime()))
-                                .and(dateOfSchedule.dateOfScheduleEnd.eq(meetingTime.getEndTime()))
-                                .and(schedule.assignedAt.loe(requestTime)))
-                        .select(schedule.scheduleNickname)
-                        .fetch();
-
-                meetingTime.addMemberNames(nicknames);
-            }
+            meetingTime.addMemberNames(nicknames);
         }
 
         // 4. PageInfo 생성
