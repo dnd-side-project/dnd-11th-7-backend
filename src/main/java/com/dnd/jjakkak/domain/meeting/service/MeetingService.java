@@ -17,6 +17,7 @@ import com.dnd.jjakkak.domain.member.dto.response.MemberResponseDto;
 import com.dnd.jjakkak.domain.member.entity.Member;
 import com.dnd.jjakkak.domain.member.exception.MemberNotFoundException;
 import com.dnd.jjakkak.domain.member.repository.MemberRepository;
+import com.dnd.jjakkak.domain.refreshtoken.service.RefreshTokenService;
 import com.dnd.jjakkak.domain.schedule.service.ScheduleService;
 import com.dnd.jjakkak.global.common.PagedResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class MeetingService {
     private final MeetingMemberRepository meetingMemberRepository;
     private final MemberRepository memberRepository;
     private final MeetingMemberService meetingMemberService;
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * 모임을 생성하는 메서드입니다.
@@ -195,7 +197,13 @@ public class MeetingService {
             throw new MeetingNotFoundException();
         }
 
-        return meetingRepository.getParticipant(uuid);
+        MeetingParticipantResponseDto response = meetingRepository.getParticipant(uuid);
+
+        if (Boolean.TRUE.equals(response.getIsAnonymous())) {
+            response.anonymizeNickname();
+        }
+
+        return response;
     }
 
     /**
