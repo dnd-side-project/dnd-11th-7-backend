@@ -195,7 +195,13 @@ public class MeetingService {
             throw new MeetingNotFoundException();
         }
 
-        return meetingRepository.getParticipant(uuid);
+        MeetingParticipantResponseDto response = meetingRepository.getParticipant(uuid);
+
+        if (Boolean.TRUE.equals(response.getIsAnonymous())) {
+            response.anonymizeNickname();
+        }
+
+        return response;
     }
 
     /**

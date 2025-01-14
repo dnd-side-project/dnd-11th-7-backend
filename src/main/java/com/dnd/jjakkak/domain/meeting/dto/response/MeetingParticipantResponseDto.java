@@ -30,10 +30,14 @@ public class MeetingParticipantResponseDto {
         this.participantInfoList.addAll(participantInfoList);
     }
 
+    public void anonymizeNickname() {
+        this.participantInfoList.forEach(ParticipantInfo::changeNicknameToAnonymous);
+    }
+
     @Getter
     public static class ParticipantInfo {
 
-        private final String nickname;
+        private String nickname;
         private final Boolean isAssigned;
         private final Boolean isLeader;
 
@@ -41,6 +45,10 @@ public class MeetingParticipantResponseDto {
             this.nickname = nickname;
             this.isAssigned = isAssigned;
             this.isLeader = isLeader != null && isLeader;
+        }
+
+        public void changeNicknameToAnonymous() {
+            this.nickname = "익명";
         }
     }
 }
