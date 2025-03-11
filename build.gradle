@@ -52,10 +52,10 @@ dependencies {
     // oauth2 dependency
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    // JWT dependencies
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // jwt token
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
     // Spring REST Docs
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
