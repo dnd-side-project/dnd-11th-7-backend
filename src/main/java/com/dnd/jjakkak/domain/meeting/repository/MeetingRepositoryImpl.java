@@ -165,7 +165,8 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
                         dateOfSchedule.dateOfScheduleEnd
                 )
                 .select(dateOfSchedule.dateOfScheduleRank.count())
-                .fetchOne();
+                .fetch()
+                .size();
 
         // 3. 일정을 할당한 사용자의 닉네임 조회 후 추가
         for (MeetingTime meetingTime : meetingTimeList) {
