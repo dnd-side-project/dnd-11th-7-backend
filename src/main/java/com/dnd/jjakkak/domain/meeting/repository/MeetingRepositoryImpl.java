@@ -155,12 +155,17 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         long totalElements = from(dateOfSchedule)
                 .join(dateOfSchedule.schedule, schedule)
                 .join(schedule.meeting, meeting)
-                .where(meeting.meetingUuid.eq(uuid)
-                        .and(schedule.assignedAt.isNotNull())
-                        .and(schedule.assignedAt.loe(requestTime)))
-                .groupBy(dateOfSchedule.dateOfScheduleStart, dateOfSchedule.dateOfScheduleEnd)
+                .where(
+                        meeting.meetingUuid.eq(uuid),
+                        schedule.assignedAt.isNotNull(),
+                        schedule.assignedAt.loe(requestTime)
+                )
+                .groupBy(
+                        dateOfSchedule.dateOfScheduleStart,
+                        dateOfSchedule.dateOfScheduleEnd
+                )
                 .select(dateOfSchedule.dateOfScheduleRank.count())
-                .fetchCount();
+                .fetchOne();
 
         // 3. 일정을 할당한 사용자의 닉네임 조회 후 추가
         for (MeetingTime meetingTime : meetingTimeList) {
@@ -246,9 +251,12 @@ public class MeetingRepositoryImpl extends QuerydslRepositorySupport implements 
         return from(schedule)
                 .join(schedule.meeting, meeting)
                 .join(schedule.member, member)
-                .where(meeting.meetingUuid.eq(meetingUuid)
-                        .and(member.memberId.eq(memberId)))
-                .fetchCount() > 0;
+                .where(
+                        meeting.meetingUuid.eq(meetingUuid),
+                        member.memberId.eq(memberId)
+                )
+                .select(schedule.scheduleId)
+                .fetchFirst() != null;
 
     }
 
