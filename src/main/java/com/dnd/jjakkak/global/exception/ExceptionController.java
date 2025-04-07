@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * 전역 예외 처리 컨트롤러.
@@ -16,6 +17,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionController {
+
+
+    /**
+     * NoResourceFoundException 예외 처리 (Resource Not Found)
+     *
+     * @param e NoResourceFoundException
+     * @return ErrorResponse (에러 응답 - code, message)
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
+        ErrorResponse body = ErrorResponse.builder()
+                .code("404")
+                .message("요청하신 자원을 찾을 수 없습니다.")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
 
     /**
      * BindingResult 에러 처리 (invalid request)
