@@ -34,7 +34,7 @@
 ## API 문서
 
 Spring Rest Docs를 사용하여 API 문서를 작성하였습니다.
-작성된 API 문서는 [해당 페이지](http://43.203.239.67.nip.io/index.html)를 참고해주세요 :)
+작성된 API 문서는 [해당 페이지](https://api.jjakkak.com/index.html)를 참고해주세요 :)
 
 ## 🏘️TEAM
 
