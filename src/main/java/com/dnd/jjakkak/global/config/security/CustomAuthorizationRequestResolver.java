@@ -7,6 +7,9 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
+import java.util.UUID;
+
 /**
  * OAuth 로그인 요청 리졸버 커스터마이징 클래스.
  *
@@ -17,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class CustomAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
     private static final String AUTHORIZATION_REQUEST_BASE_URI = "/api/v1/auth/oauth2";
-    private static final String QUERY_PARAM = "redirect";
+    private static final String REDIRECT_PARAM = "redirect";
     private final OAuth2AuthorizationRequestResolver defaultAuthorizationRequestResolver;
 
     public CustomAuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
@@ -38,7 +41,7 @@ public class CustomAuthorizationRequestResolver implements OAuth2AuthorizationRe
     }
 
     /**
-     * 쿼리 파라미터에서 redirect 값을 추출하여 세션에 저장하는 메서드입니다.
+     * 쿼리 파라미터에서 redirect 값을 추출하여 state 파라미터에 인코딩하여 전달합니다.
      *
      * @param request              HttpServletRequest
      * @param authorizationRequest OAuth2AuthorizationRequest
@@ -50,11 +53,18 @@ public class CustomAuthorizationRequestResolver implements OAuth2AuthorizationRe
             return null;
         }
 
-        String redirect = request.getParameter(QUERY_PARAM);
-        if (redirect != null) {
-            request.getSession().setAttribute(QUERY_PARAM, redirect);
+        String redirectUri = request.getParameter(REDIRECT_PARAM);
+
+        if (redirectUri == null || redirectUri.isEmpty()) {
+            return authorizationRequest;
         }
 
-        return authorizationRequest;
+
+        String stateValue = redirectUri + ":" + UUID.randomUUID();
+        String encodedState = Base64.getEncoder().encodeToString(stateValue.getBytes());
+
+        return OAuth2AuthorizationRequest.from(authorizationRequest)
+                .state(encodedState)
+                .build();
     }
 }
