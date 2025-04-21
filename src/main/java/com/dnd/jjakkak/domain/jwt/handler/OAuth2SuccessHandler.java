@@ -8,8 +8,8 @@ import com.dnd.jjakkak.global.config.proprties.TokenProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Base64;
 
 /**
  * OAuth 로그인 성공시 JWT 토큰(AT, RT)을 생성하고 쿠키에 저장합니다.
@@ -24,9 +25,12 @@ import java.io.IOException;
  * @author 류태웅, 정승조
  * @version 2024. 09. 13.
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private static final String STATE_PARAM = "state";
 
     private final JjakkakProperties jjakkakProperties;
     private final JwtProvider jwtProvider;
@@ -55,16 +59,35 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
      * @param request HttpServletRequest
      * @return 리다이렉트 URL
      */
-    public String getRedirectUrl(HttpServletRequest request) {
+    private String getRedirectUrl(HttpServletRequest request) {
         String baseUrl = jjakkakProperties.getFrontUrl().get(0) + "/login/success";
 
-        HttpSession session = request.getSession();
-        String redirectParam = (String) session.getAttribute(tokenProperties.getQueryParam());
-        session.removeAttribute(tokenProperties.getQueryParam());
+        String state = request.getParameter(STATE_PARAM);
+        String redirectParam = extractRedirectFromState(state);
 
-        return (redirectParam != null)
+        return (redirectParam != null && !redirectParam.isEmpty())
                 ? baseUrl + "?redirect=" + redirectParam
                 : baseUrl;
+    }
+
+    private String extractRedirectFromState(String state) {
+        if (state == null || state.isEmpty()) {
+            return null;
+        }
+
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(state);
+            String decodedState = new String(decodedBytes);
+
+            String[] parts = decodedState.split(":");
+            if (parts.length > 1) {
+                return parts[0];
+            }
+        } catch (Exception e) {
+            log.error("Failed to decode state parameter = {}", state);
+        }
+
+        return null;
     }
 
     /**
